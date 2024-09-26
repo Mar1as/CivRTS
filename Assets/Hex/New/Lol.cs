@@ -63,7 +63,7 @@ public class Lol : MonoBehaviour
                 else
                 {
                     gm.transform.localPosition = new Vector3(width * x + width / 2, 0, height * y);
-                    label.rectTransform.anchoredPosition = new Vector2(width * x + width / 2, height * y);
+                    label.rectTransform.anchoredPosition = new Vector2(width * x + width / 2, height * y);  
                 }
 
                 
@@ -75,7 +75,7 @@ public class Lol : MonoBehaviour
                 //CivGameManagerSingleton.Instance.hexagons[x, y] = gm;
 
                 label.rectTransform.SetParent(gridCanvas.transform, false);
-                label.text = x.ToString() + "\n" + y.ToString();
+                label.text = (x - y / 2).ToString() + "\n"  + (-(x - y / 2) - y).ToString() + "\n" + y.ToString();
             }
         }
     }
