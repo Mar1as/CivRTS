@@ -14,10 +14,11 @@ public class CivGameManagerSingleton
             if (instance == null)
             {
                 instance = new CivGameManagerSingleton();
+                instance.hexagons = new List<MainHexCell>();
             }
             return instance;
         }
     }
 
-    public GameObject[,] hexagons;
+    public List<MainHexCell> hexagons;
 }

@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 using static Lol;
 
+[System.Serializable]
 public class DataHexCell
 {
-    TerrainType terrainType = TerrainType.None;
+    /*TerrainType terrainType = TerrainType.None;
 
     public TerrainType TerrainType
     {
@@ -17,13 +19,15 @@ public class DataHexCell
         {
             TerrainType = value;
         }
-    }
+    }*/
 
-    public HexCoordinates coordinates;
+    [SerializeField]
+    public HexCoordinates coordinates = new HexCoordinates(0,0);
+    [SerializeField]
+    public MainHexCell[] neighbours = new MainHexCell[6];
 
-    public DataHexCell(int x, int y)
+    public DataHexCell()
     {
 
     }
-
 }
