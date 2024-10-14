@@ -1,9 +1,5 @@
 fileFormatVersion: 2
-<<<<<<< HEAD
-guid: bc56aecff80fc22449354890c6853aab
-=======
 guid: 28513914097534b43959b5a080de54ec
->>>>>>> parent of 2759c9a (Reapply "Nefunguje shader")
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}
