@@ -25,8 +25,6 @@ public class DataHexCell
     public HexCoordinates coordinates = new HexCoordinates(0,0);
     [SerializeField]
     public MainHexCell[] neighbours = new MainHexCell[6];
-    [SerializeField]
-    public Color color;
 
     public DataHexCell()
     {

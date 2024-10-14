@@ -1,7 +1,11 @@
 fileFormatVersion: 2
+<<<<<<< HEAD
+guid: 536effd54db728b4f83740ad9218dc42
+=======
 guid: 6d4f7053a6af6364baa7a4aaf0b83a70
 PrefabImporter:
   externalObjects: {}
   userData: 
   assetBundleName: 
   assetBundleVariant: 
+>>>>>>> parent of 2759c9a (Reapply "Nefunguje shader")

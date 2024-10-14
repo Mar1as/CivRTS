@@ -1,4 +1,7 @@
 fileFormatVersion: 2
+<<<<<<< HEAD
+guid: 02aac72e421b17e41aef900993d9b644
+=======
 guid: 658ef1db426588e4ea4845a4baad9be3
 NativeFormatImporter:
   externalObjects: {}
@@ -6,3 +9,4 @@ NativeFormatImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
+>>>>>>> parent of 2759c9a (Reapply "Nefunguje shader")

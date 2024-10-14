@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
@@ -7,91 +6,146 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
-using static UnityEditor.Searcher.SearcherWindow.Alignment;
 using Color = UnityEngine.Color;
-using Vector2 = UnityEngine.Vector2;
 using Vector3 = UnityEngine.Vector3;
 
 public class Lol : MonoBehaviour
 {
-    [SerializeField] private int width = 6, height = 6;
-    public Color defaultColor = Color.white;
-    public Color touchedColor = Color.magenta;
-    public MainHexCell cellPrefab;
+    [SerializeField] Canvas gridCanvas;
+    [SerializeField] TextMeshProUGUI cellLabelPrefab;
 
-    public TextMeshProUGUI cellLabelPrefab;
+    [SerializeField] private Vector2Int gridSize;
 
-    Canvas gridCanvas;
+    [SerializeField] Material material;
+    Color[] colors = new Color[] { Color.red, Color.green, Color.blue, Color.yellow, Color.cyan, Color.magenta, Color.white };
+    List<Color> col = new List<Color>();
 
-    HexMesh hexMesh;
-
-    private void Awake()
+    void OnEnable()
     {
-        gridCanvas = GetComponentInChildren<Canvas>();
-        hexMesh = GetComponentInChildren<HexMesh>();
+        CreateGrid();
 
-        CivGameManagerSingleton.Instance.hexagons = new MainHexCell[width * height];
-
-        for (int z = 0, i = 0; z < height; z++)
+        /*GameObject[] gms = CivGameManagerSingleton.Instance.hexagons[3, 3].GetComponent<MainHexCell>().dataProvince.NeighboringProvinces();
+        foreach (var item in gms)
         {
-            for (int x = 0; x < width; x++)
+            if (item != null)
+            {
+                item.GetComponent<MeshRenderer>().material.color = Color.black;
+            }
+        }*/
+    }
+
+    private void OnValidate()
+    {
+        if (Application.isPlaying)
+        {
+            //CreateGrid();
+        }
+    }
+
+    void CreateGrid()
+    {
+
+        for (int z = 0, i = 0; z < gridSize.x; z++)
+        {
+            for (int x = 0; x < gridSize.y; x++)
             {
                 CreateCell(x, z, i++);
             }
         }
     }
-
-    void Start()
+    void CreateCell(int x, int z, int i)
     {
-        hexMesh.Triangulate(CivGameManagerSingleton.Instance.hexagons);
-    }
+        col.Clear();
+        GameObject gm = new GameObject($"Hex: {x}, {z}");
+        MeshRenderer meshRenderer = gm.AddComponent<MeshRenderer>();
+        MeshFilter meshFilter = gm.AddComponent<MeshFilter>();
+        MeshCollider meshCollider = gm.AddComponent<MeshCollider>();
+        Mesh mesh = CreateMesh();
+        Debug.Log(mesh.colors.Length + " " + col.Count);
+        mesh.colors = col.ToArray();
+        meshCollider.sharedMesh = mesh;
+        meshFilter.mesh = mesh;
+        //meshRenderer.material = material;
 
-    private void CreateCell(int x, int z, int i)
-    {
-        Vector3 position;
-        position.x = (x + z * 0.5f - z / 2) * (HexMetrics.innerRadius * 2f);
-        position.y = 0f;
-        position.z = z * (HexMetrics.outerRadius * 1.5f);
+        
 
-        MainHexCell cell = CivGameManagerSingleton.Instance.hexagons[i] = Instantiate(cellPrefab);
-        cell.transform.SetParent(transform, false);
-        cell.transform.localPosition = position;
-        cell.dataHexCell.coordinates = HexCoordinates.FromOffsetCoordinates(x, z);
-        cell.dataHexCell.color = defaultColor;
+        TextMeshProUGUI label = Instantiate<TextMeshProUGUI>(cellLabelPrefab);
 
-        TextMeshProUGUI label = Instantiate(cellLabelPrefab);
+        gm.transform.parent = this.transform;
+        
+        gm.transform.localPosition = new UnityEngine.Vector3((x + z * 0.5f - z / 2) * (HexMetrics.innerRadius * 2f), 0, z * (HexMetrics.outerRadius * 1.5f));
+        label.rectTransform.anchoredPosition = new UnityEngine.Vector2((x + z * 0.5f - z / 2) * (HexMetrics.innerRadius * 2f), z * (HexMetrics.outerRadius * 1.5f));
+
+        //meshRenderer.material.color = colors[Random.Range(0, colors.Length)];
+
+        MainHexCell mainHexCell = gm.AddComponent<MainHexCell>();  // Pøidej komponentu MainHexCell pøímo
+                                                                   //mainHexCell.dataHexCell = new DataHexCell();  // Inicializuj DataProvince, pokud není již inicializováno
+        mainHexCell.Inicilizace();
+        mainHexCell.dataHexCell.coordinates = new HexCoordinates(x - z / 2, z);  // Nastav HexCoordinates
+        if (x > 0)
+        {
+            mainHexCell.brainHexCell.SetNeighbor(HexDirection.W, CivGameManagerSingleton.Instance.hexagons[i - 1]);
+        }
+        if (z > 0)
+        {
+            if ((z % 2) == 0)
+            {
+                mainHexCell.brainHexCell.SetNeighbor(HexDirection.SE, CivGameManagerSingleton.Instance.hexagons[i - gridSize.y]);
+                if (x > 0)
+                {
+                    mainHexCell.brainHexCell.SetNeighbor(HexDirection.SW, CivGameManagerSingleton.Instance.hexagons[i - gridSize.y - 1]);
+                }
+            }
+            else
+            {
+                mainHexCell.brainHexCell.SetNeighbor(HexDirection.SW, CivGameManagerSingleton.Instance.hexagons[i - gridSize.y]);
+                if (x < gridSize.y - 1)
+                {
+                    mainHexCell.brainHexCell.SetNeighbor(HexDirection.SE, CivGameManagerSingleton.Instance.hexagons[i - gridSize.y + 1]);
+                }
+            }
+        }
+        CivGameManagerSingleton.Instance.hexagons.Add(mainHexCell);
+
+        //CivGameManagerSingleton.Instance.hexagons[x, y] = gm;
+
         label.rectTransform.SetParent(gridCanvas.transform, false);
-        label.rectTransform.anchoredPosition = new Vector2(position.x, position.z);
-        label.text = cell.dataHexCell.coordinates.ToStringOnSeparateLines();
+        label.text = $"X: {mainHexCell.dataHexCell.coordinates.X}\nY: {mainHexCell.dataHexCell.coordinates.Y}\nZ: {mainHexCell.dataHexCell.coordinates.Z}";
+
     }
 
-    void Update()
+    Mesh CreateMesh()
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-            HandleInput();
+        Mesh mesh = new Mesh();
+
+        Vector3[] vertices = new Vector3[7];
+        int[] triangles = new int[18];
+
+        vertices[0] = new Vector3(0, 0, 0);
+
+        for (int i = 0; i < 6; i++) //Verticies
+        {            
+            float angleDeg = 60 * i - 30;
+            float angleRad = Mathf.Deg2Rad * angleDeg;
+            vertices[i + 1] = new Vector3(-1 * Mathf.Cos(angleRad), 0, 1 * Mathf.Sin(angleRad)) * HexMetrics.outerRadius;
         }
-    }
-
-    void HandleInput()
-    {
-        Ray inputRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-        Debug.DrawRay(inputRay.origin, inputRay.direction * 1000000, Color.red, 10f); // Debugging (optional
-        if (Physics.Raycast(inputRay, out hit))
+            
+        for (int i = 0; i < 6; i++) //Triangles
         {
-            TouchCell(hit.point);
+
+            triangles[i * 3] = 0;
+            triangles[i * 3 + 1] = i + 1;
+            triangles[i * 3 + 2] = i == 5 ? 1 : i + 2;
+            col.Add(Color.blue);
+            col.Add(Color.blue);
+            col.Add(Color.blue);
         }
+
+        mesh.vertices = vertices;
+        mesh.triangles = triangles;
+        mesh.RecalculateNormals();
+        return mesh;
+        
     }
 
-    void TouchCell(Vector3 position)
-    {
-        position = transform.InverseTransformPoint(position);
-        HexCoordinates coordinates = HexCoordinates.FromPosition(position);
-        Debug.Log($"Touched at {coordinates.X}, {coordinates.Y}, {coordinates.Z}");
-        int index = coordinates.X + coordinates.Z * width + coordinates.Z / 2;
-        MainHexCell cell = CivGameManagerSingleton.Instance.hexagons[index];
-        cell.dataHexCell.color = touchedColor;
-        hexMesh.Triangulate(CivGameManagerSingleton.Instance.hexagons);
-    }
 }

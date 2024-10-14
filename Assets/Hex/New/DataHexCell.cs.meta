@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<< HEAD
+guid: 52e903557b5b1a74eab3cb5cc00d8afc
+=======
 guid: f469f609d31b3dc4c8df220021d2d2cd
+>>>>>>> parent of 2759c9a (Reapply "Nefunguje shader")
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
