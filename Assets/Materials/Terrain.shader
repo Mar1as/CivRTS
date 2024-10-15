@@ -21,8 +21,8 @@
 
 		#pragma shader_feature SHOW_MAP_DATA
 
-		#include "../HexMetrics.cginc"
-		#include "../HexCellData.cginc"
+		//#include "../HexMetrics.cginc"
+		//#include "../HexCellData.cginc"
 
 		UNITY_DECLARE_TEX2DARRAY(_MainTex);
 

@@ -54,10 +54,36 @@ public class Lol : MonoBehaviour
         position.z = z * (HexMetrics.outerRadius * 1.5f);
 
         MainHexCell cell = CivGameManagerSingleton.Instance.hexagons[i] = Instantiate(cellPrefab);
+        cell.Inicilizace();
         cell.transform.SetParent(transform, false);
         cell.transform.localPosition = position;
         cell.dataHexCell.coordinates = HexCoordinates.FromOffsetCoordinates(x, z);
         cell.dataHexCell.color = defaultColor;
+
+        if (x > 0)
+        {
+            Debug.Log(CivGameManagerSingleton.Instance.hexagons.Length);
+            cell.brainHexCell.SetNeighbor(HexDirection.W, CivGameManagerSingleton.Instance.hexagons[i - 1]);
+        }
+        if (z > 0)
+        {
+            if ((z & 1) == 0)
+            {
+                cell.brainHexCell.SetNeighbor(HexDirection.SE, CivGameManagerSingleton.Instance.hexagons[i - width]);
+                if (x > 0)
+                {
+                    cell.brainHexCell.SetNeighbor(HexDirection.SW, CivGameManagerSingleton.Instance.hexagons[i - width - 1]);
+                }
+            }
+            else
+            {
+                cell.brainHexCell.SetNeighbor(HexDirection.SW, CivGameManagerSingleton.Instance.hexagons[i - width]);
+                if (x < width - 1)
+                {
+                    cell.brainHexCell.SetNeighbor(HexDirection.SE, CivGameManagerSingleton.Instance.hexagons[i - width + 1]);
+                }
+            }
+        }
 
         TextMeshProUGUI label = Instantiate(cellLabelPrefab);
         label.rectTransform.SetParent(gridCanvas.transform, false);
