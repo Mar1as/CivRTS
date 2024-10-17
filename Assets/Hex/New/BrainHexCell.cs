@@ -23,6 +23,14 @@ public class BrainHexCell
         dataHexCell.neighbours[(int)direction] = cell;
         cell.dataHexCell.neighbours[(int)direction.Opposite()] = mainHexCell;
     }
+    public HexEdgeType GetEdgeType(HexDirection direction)
+    {
+        return HexMetrics.GetEdgeType(dataHexCell.Elevation, dataHexCell.neighbours[(int)direction].dataHexCell.Elevation);
+    }
+    public HexEdgeType GetEdgeType(MainHexCell otherCell)
+    {
+        return HexMetrics.GetEdgeType(dataHexCell.Elevation, otherCell.dataHexCell.Elevation);
+    }
 }
 
 public enum HexDirection
@@ -37,4 +45,16 @@ public static class HexDirectionExtensions
     {
         return (int)direction < 3 ? (direction + 3) : (direction - 3);
     }
+
+    public static HexDirection Previous(this HexDirection direction)
+    {
+        return direction == HexDirection.NE ? HexDirection.NW : (direction - 1);
+    }
+
+    public static HexDirection Next(this HexDirection direction)
+    {
+        return direction == HexDirection.NW ? HexDirection.NE : (direction + 1);
+    }
+
+
 }

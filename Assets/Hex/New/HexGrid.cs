@@ -4,15 +4,17 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Numerics;
 using TMPro;
+using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
 using static UnityEditor.Searcher.SearcherWindow.Alignment;
 using Color = UnityEngine.Color;
+using Random = UnityEngine.Random;
 using Vector2 = UnityEngine.Vector2;
 using Vector3 = UnityEngine.Vector3;
 
-public class Lol : MonoBehaviour
+public class HexGrid : MonoBehaviour
 {
     [SerializeField] private int width = 6, height = 6;
     public Color defaultColor = Color.white;
@@ -39,6 +41,8 @@ public class Lol : MonoBehaviour
                 CreateCell(x, z, i++);
             }
         }
+
+        RandomColor();
     }
 
     void Start()
@@ -89,35 +93,50 @@ public class Lol : MonoBehaviour
         label.rectTransform.SetParent(gridCanvas.transform, false);
         label.rectTransform.anchoredPosition = new Vector2(position.x, position.z);
         label.text = cell.dataHexCell.coordinates.ToStringOnSeparateLines();
+
+        cell.dataHexCell.uiRect = label.rectTransform;
     }
 
-    void Update()
+    void RandomColor()
     {
-        if (Input.GetMouseButtonDown(0))
+        Color[] colors = { Color.blue, Color.white, Color.green, Color.yellow };
+        foreach (MainHexCell cell in CivGameManagerSingleton.Instance.hexagons)
         {
-            HandleInput();
+            
+            Color color = colors[Random.Range(0,colors.Length)];
+            cell.dataHexCell.color = color;
+            cell.dataHexCell.Elevation = Random.Range(0, 3);
         }
+        //hexMesh.Triangulate(CivGameManagerSingleton.Instance.hexagons);
     }
 
-    void HandleInput()
+    void RandomColor(int colorsCount)
     {
-        Ray inputRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-        Debug.DrawRay(inputRay.origin, inputRay.direction * 1000000, Color.red, 10f); // Debugging (optional
-        if (Physics.Raycast(inputRay, out hit))
+        Color[] c = new Color[colorsCount];
+        for (int i = 0; i < colorsCount; i++)
         {
-            TouchCell(hit.point);
+            float r = Random.Range(0f, 1f);
+            float g = Random.Range(0f, 1f);
+            float b = Random.Range(0f, 1f);
+            c[i] = new Color(r, g, b);
         }
+        foreach (MainHexCell cell in CivGameManagerSingleton.Instance.hexagons)
+        {
+            cell.dataHexCell.color = c[Random.Range(0, c.Length)];
+        }
+        //hexMesh.Triangulate(CivGameManagerSingleton.Instance.hexagons);
     }
 
-    void TouchCell(Vector3 position)
+    public MainHexCell GetCell(Vector3 position)
     {
         position = transform.InverseTransformPoint(position);
         HexCoordinates coordinates = HexCoordinates.FromPosition(position);
-        Debug.Log($"Touched at {coordinates.X}, {coordinates.Y}, {coordinates.Z}");
         int index = coordinates.X + coordinates.Z * width + coordinates.Z / 2;
-        MainHexCell cell = CivGameManagerSingleton.Instance.hexagons[index];
-        cell.dataHexCell.color = touchedColor;
+        return CivGameManagerSingleton.Instance.hexagons[index];
+    }
+
+    public void Refresh()
+    {
         hexMesh.Triangulate(CivGameManagerSingleton.Instance.hexagons);
     }
 }

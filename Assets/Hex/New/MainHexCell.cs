@@ -14,7 +14,7 @@ public class MainHexCell : MonoBehaviour
     }
     public void Inicilizace()
     {
-        dataHexCell = new DataHexCell();
+        dataHexCell = new DataHexCell(this);
         brainHexCell = new BrainHexCell(this);
     }
 }
