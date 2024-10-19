@@ -24,11 +24,13 @@ public class HexGrid : MonoBehaviour
     public TextMeshProUGUI cellLabelPrefab;
 
     Canvas gridCanvas;
+    public Texture2D noiseSource;
 
     HexMesh hexMesh;
 
     private void Awake()
     {
+        HexMetrics.noiseSource = noiseSource;
         gridCanvas = GetComponentInChildren<Canvas>();
         hexMesh = GetComponentInChildren<HexMesh>();
 
@@ -48,6 +50,11 @@ public class HexGrid : MonoBehaviour
     void Start()
     {
         hexMesh.Triangulate(CivGameManagerSingleton.Instance.hexagons);
+    }
+
+    void OnEnable()
+    {
+        HexMetrics.noiseSource = noiseSource;
     }
 
     private void CreateCell(int x, int z, int i)
@@ -95,6 +102,7 @@ public class HexGrid : MonoBehaviour
         label.text = cell.dataHexCell.coordinates.ToStringOnSeparateLines();
 
         cell.dataHexCell.uiRect = label.rectTransform;
+        cell.dataHexCell.Elevation = 0;
     }
 
     void RandomColor()
@@ -105,7 +113,7 @@ public class HexGrid : MonoBehaviour
             
             Color color = colors[Random.Range(0,colors.Length)];
             cell.dataHexCell.color = color;
-            cell.dataHexCell.Elevation = Random.Range(0, 3);
+            cell.dataHexCell.Elevation = Random.Range(0, 4);
         }
         //hexMesh.Triangulate(CivGameManagerSingleton.Instance.hexagons);
     }
