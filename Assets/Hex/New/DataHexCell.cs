@@ -21,6 +21,8 @@ public class DataHexCell
     }*/
     private MainHexCell mainHexCell; //Pointer Parent
 
+    public HexGridChunk chunk;
+
     public RectTransform uiRect;
     [SerializeField]
     public HexCoordinates coordinates = new HexCoordinates(0,0);
@@ -28,8 +30,26 @@ public class DataHexCell
     public MainHexCell[] neighbours = new MainHexCell[6];
     [SerializeField]
     public Color color;
+
+    public Color Color
+    {
+        get
+        {
+            return color;
+        }
+        set
+        {
+            if (color == value)
+            {
+                return;
+            }
+            color = value;
+            mainHexCell.brainHexCell.Refresh();
+        }
+    }
+
     //[SerializeField]
-    private int elevation;
+    private int elevation = int.MinValue;
 
     public int Elevation
     {
@@ -39,6 +59,11 @@ public class DataHexCell
         }
         set
         {
+            if (elevation == value)
+            {
+                return;
+            }
+
             elevation = value;
             Vector3 position = mainHexCell.transform.localPosition;
             position.y = value * HexMetrics.elevationStep;
@@ -49,6 +74,8 @@ public class DataHexCell
             Vector3 uiPosition = uiRect.localPosition;
             uiPosition.z = -position.y;
             uiRect.localPosition = uiPosition;
+
+            mainHexCell.brainHexCell.Refresh();
         }
     }
 

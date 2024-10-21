@@ -92,7 +92,6 @@ public class HexGrid : MonoBehaviour
 
         if (x > 0)
         {
-            Debug.Log(CivGameManagerSingleton.Instance.hexagons.Length);
             cell.brainHexCell.SetNeighbor(HexDirection.W, CivGameManagerSingleton.Instance.hexagons[i - 1]);
         }
         if (z > 0)

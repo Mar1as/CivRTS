@@ -19,13 +19,26 @@ public class HexGridChunk : MonoBehaviour
 
     void Start()
     {
-        hexMesh.Triangulate(cells);
+        //hexMesh.Triangulate(cells);
     }
 
     public void AddCell(int index, MainHexCell cell)
     {
         cells[index] = cell;
+        cell.dataHexCell.chunk = this;
         cell.transform.SetParent(transform, false);
         cell.dataHexCell.uiRect.SetParent(gridCanvas.transform, false);
+    }
+
+    public void Refresh()
+    {
+        //hexMesh.Triangulate(cells);
+        enabled = true;
+    }
+
+    private void LateUpdate()
+    {
+        hexMesh.Triangulate(cells);
+        enabled = false;
     }
 }

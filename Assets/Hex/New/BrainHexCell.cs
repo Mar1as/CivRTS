@@ -31,6 +31,22 @@ public class BrainHexCell
     {
         return HexMetrics.GetEdgeType(dataHexCell.Elevation, otherCell.dataHexCell.Elevation);
     }
+
+    public void Refresh()
+    {
+        if (dataHexCell.chunk)
+        {
+            dataHexCell.chunk.Refresh();
+            for (int i = 0; i < dataHexCell.neighbours.Length; i++)
+            {
+                MainHexCell neighbor = dataHexCell.neighbours[i];
+                if (neighbor != null && neighbor.dataHexCell.chunk != dataHexCell.chunk)
+                {
+                    neighbor.dataHexCell.chunk.Refresh();
+                }
+            }
+        }
+    }
 }
 
 public enum HexDirection

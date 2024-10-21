@@ -51,7 +51,7 @@ public class MapEditor : MonoBehaviour
 
     void EditCell(MainHexCell cell)
     {
-        cell.dataHexCell.color = activeColor;
+        cell.dataHexCell.Color = activeColor;
         cell.dataHexCell.Elevation = activeElevation;
     }
 }
