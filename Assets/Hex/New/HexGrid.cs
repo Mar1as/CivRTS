@@ -16,45 +16,64 @@ using Vector3 = UnityEngine.Vector3;
 
 public class HexGrid : MonoBehaviour
 {
-    [SerializeField] private int width = 6, height = 6;
+    public int chunkCountX = 4, chunkCountZ = 3;
+    private int cellCountX = 6, cellCountZ = 6;
+
     public Color defaultColor = Color.white;
-    public Color touchedColor = Color.magenta;
+
     public MainHexCell cellPrefab;
-
     public TextMeshProUGUI cellLabelPrefab;
-
-    Canvas gridCanvas;
+    public HexGridChunk chunkPrefab;
     public Texture2D noiseSource;
 
-    HexMesh hexMesh;
+    HexGridChunk[] chunks;
 
     private void Awake()
     {
         HexMetrics.noiseSource = noiseSource;
-        gridCanvas = GetComponentInChildren<Canvas>();
-        hexMesh = GetComponentInChildren<HexMesh>();
 
-        CivGameManagerSingleton.Instance.hexagons = new MainHexCell[width * height];
+        cellCountX = chunkCountX * HexMetrics.chunkSizeX;
+        cellCountZ = chunkCountZ * HexMetrics.chunkSizeZ;
 
-        for (int z = 0, i = 0; z < height; z++)
-        {
-            for (int x = 0; x < width; x++)
-            {
-                CreateCell(x, z, i++);
-            }
-        }
-
-        RandomColor();
+        CreateChunks();
+        CreateCells();
     }
 
     void Start()
     {
-        hexMesh.Triangulate(CivGameManagerSingleton.Instance.hexagons);
+
     }
 
     void OnEnable()
     {
         HexMetrics.noiseSource = noiseSource;
+    }
+
+    void CreateChunks()
+    {
+        chunks = new HexGridChunk[chunkCountX * chunkCountZ];
+
+        for (int z = 0, i = 0; z < chunkCountZ; z++)
+        {
+            for (int x = 0; x < chunkCountX; x++)
+            {
+                HexGridChunk chunk = chunks[i++] = Instantiate(chunkPrefab);
+                chunk.transform.SetParent(transform);
+            }
+        }
+    }
+
+    void CreateCells()
+    {
+        CivGameManagerSingleton.Instance.hexagons = new MainHexCell[cellCountX * cellCountZ];
+
+        for (int z = 0, i = 0; z < cellCountZ; z++)
+        {
+            for (int x = 0; x < cellCountX; x++)
+            {
+                CreateCell(x, z, i++);
+            }
+        }
     }
 
     private void CreateCell(int x, int z, int i)
@@ -66,7 +85,7 @@ public class HexGrid : MonoBehaviour
 
         MainHexCell cell = CivGameManagerSingleton.Instance.hexagons[i] = Instantiate(cellPrefab);
         cell.Inicilizace();
-        cell.transform.SetParent(transform, false);
+        //cell.transform.SetParent(transform, false);
         cell.transform.localPosition = position;
         cell.dataHexCell.coordinates = HexCoordinates.FromOffsetCoordinates(x, z);
         cell.dataHexCell.color = defaultColor;
@@ -80,29 +99,42 @@ public class HexGrid : MonoBehaviour
         {
             if ((z & 1) == 0)
             {
-                cell.brainHexCell.SetNeighbor(HexDirection.SE, CivGameManagerSingleton.Instance.hexagons[i - width]);
+                cell.brainHexCell.SetNeighbor(HexDirection.SE, CivGameManagerSingleton.Instance.hexagons[i - cellCountX]);
                 if (x > 0)
                 {
-                    cell.brainHexCell.SetNeighbor(HexDirection.SW, CivGameManagerSingleton.Instance.hexagons[i - width - 1]);
+                    cell.brainHexCell.SetNeighbor(HexDirection.SW, CivGameManagerSingleton.Instance.hexagons[i - cellCountX - 1]);
                 }
             }
             else
             {
-                cell.brainHexCell.SetNeighbor(HexDirection.SW, CivGameManagerSingleton.Instance.hexagons[i - width]);
-                if (x < width - 1)
+                cell.brainHexCell.SetNeighbor(HexDirection.SW, CivGameManagerSingleton.Instance.hexagons[i - cellCountX]);
+                if (x < cellCountX - 1)
                 {
-                    cell.brainHexCell.SetNeighbor(HexDirection.SE, CivGameManagerSingleton.Instance.hexagons[i - width + 1]);
+                    cell.brainHexCell.SetNeighbor(HexDirection.SE, CivGameManagerSingleton.Instance.hexagons[i - cellCountX + 1]);
                 }
             }
         }
 
         TextMeshProUGUI label = Instantiate(cellLabelPrefab);
-        label.rectTransform.SetParent(gridCanvas.transform, false);
+        //label.rectTransform.SetParent(gridCanvas.transform, false);
         label.rectTransform.anchoredPosition = new Vector2(position.x, position.z);
         label.text = cell.dataHexCell.coordinates.ToStringOnSeparateLines();
 
         cell.dataHexCell.uiRect = label.rectTransform;
         cell.dataHexCell.Elevation = 0;
+
+        AddCellToChunk(x, z, cell);
+    }
+
+    void AddCellToChunk(int x, int z, MainHexCell cell)
+    {
+        int chunkX = x / HexMetrics.chunkSizeX;
+        int chunkZ = z / HexMetrics.chunkSizeZ;
+        HexGridChunk chunk = chunks[chunkX + chunkZ * chunkCountX];
+
+        int localX = x - chunkX * HexMetrics.chunkSizeX;
+        int localZ = z - chunkZ * HexMetrics.chunkSizeZ;
+        chunk.AddCell(localX + localZ * HexMetrics.chunkSizeX, cell);
     }
 
     void RandomColor()
@@ -139,12 +171,8 @@ public class HexGrid : MonoBehaviour
     {
         position = transform.InverseTransformPoint(position);
         HexCoordinates coordinates = HexCoordinates.FromPosition(position);
-        int index = coordinates.X + coordinates.Z * width + coordinates.Z / 2;
+        int index = coordinates.X + coordinates.Z * cellCountX + coordinates.Z / 2;
         return CivGameManagerSingleton.Instance.hexagons[index];
     }
 
-    public void Refresh()
-    {
-        hexMesh.Triangulate(CivGameManagerSingleton.Instance.hexagons);
-    }
 }

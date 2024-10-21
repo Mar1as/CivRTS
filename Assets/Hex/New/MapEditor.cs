@@ -53,6 +53,5 @@ public class MapEditor : MonoBehaviour
     {
         cell.dataHexCell.color = activeColor;
         cell.dataHexCell.Elevation = activeElevation;
-        hexGrid.Refresh();
     }
 }
