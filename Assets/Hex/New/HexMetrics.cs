@@ -5,10 +5,15 @@ using UnityEngine;
 
 public static class HexMetrics
 {
+    //Hex smìry
+    public const float outerToInner = 0.866025404f;
+
+    public const float innerToOuter = 1f / outerToInner;
+
     //Hex polomìr
     public const float outerRadius = 1.5f;
 
-    public const float innerRadius = outerRadius * 0.866025404f;
+    public const float innerRadius = outerRadius * outerToInner;
 
     //Hex velikost vnitøku a vnìjšku
     public const float solidFactor = 0.75f;
@@ -30,14 +35,19 @@ public static class HexMetrics
     //Hex noise
     public static Texture2D noiseSource;
 
-    public const float cellPerturbStrength = 1f;
+    public const float cellPerturbStrength = 3f;
 
     public const float noiseScale = 0.003f;
 
-    public const float elevationPerturbStrength = 1.5f;
+    public const float elevationPerturbStrength = 1.1f;
 
     //Chunky
     public const int chunkSizeX = 5, chunkSizeZ = 5;
+
+    //Øeka
+    public const float streamBedElevationOffset = -1f;
+
+    public const float riverSurfaceElevationOffset = -0.1f;
 
     public static Vector3[] corners = {
         new Vector3(0f, 0f, outerRadius),
@@ -67,6 +77,13 @@ public static class HexMetrics
     public static Vector3 GetSecondSolidCorner(HexDirection direction)
     {
         return corners[(int)direction + 1] * solidFactor;
+    }
+
+    public static Vector3 GetSolidEdgeMiddle(HexDirection direction)
+    {
+        return
+            (corners[(int)direction] + corners[(int)direction + 1]) *
+            (0.5f * solidFactor);
     }
 
     public static Vector3 GetBridge(HexDirection direction)
@@ -106,6 +123,16 @@ public static class HexMetrics
     {
         return noiseSource.GetPixelBilinear(position.x * noiseScale, position.z * noiseScale);
     }
+
+    public static Vector3 Perturb(Vector3 position)
+    {
+        Vector4 sample = HexMetrics.SampleNoise(position);
+        position.x += (sample.x * 2f - 1f) * HexMetrics.cellPerturbStrength;
+        position.z += (sample.z * 2f - 1f) * HexMetrics.cellPerturbStrength;
+        return position;
+    }
+
+
 }
 
 public enum HexEdgeType

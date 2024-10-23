@@ -20,6 +20,8 @@ public class DataHexCell
         }
     }*/
     private MainHexCell mainHexCell; //Pointer Parent
+    public River river;
+
 
     public HexGridChunk chunk;
 
@@ -75,6 +77,21 @@ public class DataHexCell
             uiPosition.z = -position.y;
             uiRect.localPosition = uiPosition;
 
+            if (
+                river.hasOutgoingRiver &&
+                elevation < mainHexCell.brainHexCell.GetNeighbor(river.outgoingRiver).dataHexCell.Elevation
+            )
+            {
+                river.RemoveOutgoingRiver();
+            }
+            if (
+                river.hasIncomingRiver &&
+                elevation > mainHexCell.brainHexCell.GetNeighbor(river.incomingRiver).dataHexCell.elevation
+            )
+            {
+                river.RemoveIncomingRiver();
+            }
+
             mainHexCell.brainHexCell.Refresh();
         }
     }
@@ -87,8 +104,29 @@ public class DataHexCell
         }
     }
 
+    public float StreamBedY
+    {
+        get
+        {
+            return
+                (elevation + HexMetrics.streamBedElevationOffset) *
+                HexMetrics.elevationStep;
+        }
+    }
+
+    public float RiverSurfaceY
+    {
+        get
+        {
+            return
+                (elevation + HexMetrics.riverSurfaceElevationOffset) *
+                HexMetrics.elevationStep;
+        }
+    }
+
     public DataHexCell(MainHexCell mainHexCell)
     {
         this.mainHexCell = mainHexCell;
+        river = new River(mainHexCell);
     }
 }

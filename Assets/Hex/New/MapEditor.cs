@@ -11,7 +11,15 @@ public class MapEditor : MonoBehaviour
     public HexGrid hexGrid;
 
     private Color activeColor;
+    private bool paint = true;
     private int activeElevation;
+    private bool applyElevation = true;
+    private OptionalToggle riverMode;
+    
+
+    bool isDrag;
+    HexDirection dragDirection;
+    MainHexCell previousCell;
 
     void Awake()
     {
@@ -27,6 +35,10 @@ public class MapEditor : MonoBehaviour
         {
             HandleInput();
         }
+        else
+        {
+            previousCell = null;
+        }
     }
 
     void HandleInput()
@@ -35,12 +47,28 @@ public class MapEditor : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(inputRay, out hit))
         {
-            EditCell(hexGrid.GetCell(hit.point));
+            MainHexCell currentCell = hexGrid.GetCell(hit.point);
+            if (previousCell && previousCell != currentCell)
+            {
+                ValidateDrag(currentCell);
+            }
+            else
+            {
+                isDrag = false;
+            }
+            EditCell(currentCell);
+            previousCell = currentCell;
+        }
+        else
+        {
+            previousCell = null;
         }
     }
 
     public void SelectColor(int index)
     {
+        if(index != 0) paint = true;
+        else paint = false;
         activeColor = colors[index];
     }
 
@@ -49,9 +77,57 @@ public class MapEditor : MonoBehaviour
         activeElevation = (int)elevation;
     }
 
+    public void SetRiverMode(int mode)
+    {
+        riverMode = (OptionalToggle)mode;
+    }
+
+    public void SetApplyElevation(bool toggle)
+    {
+        applyElevation = toggle;
+    }
+
     void EditCell(MainHexCell cell)
     {
-        cell.dataHexCell.Color = activeColor;
-        cell.dataHexCell.Elevation = activeElevation;
+        if (paint)
+        {
+            cell.dataHexCell.Color = activeColor;
+        }
+        if (applyElevation)
+        {
+            cell.dataHexCell.Elevation = activeElevation;
+        }
+        if (riverMode == OptionalToggle.No)
+        {
+            cell.dataHexCell.river.RemoveRiver();
+        }
+        else if (isDrag && riverMode == OptionalToggle.Yes)
+        {
+            previousCell.dataHexCell.river.SetOutgoingRiver(dragDirection);
+        }
+    }
+
+    void ValidateDrag(MainHexCell currentCell)
+    {
+        for (
+            dragDirection = HexDirection.NE;
+            dragDirection <= HexDirection.NW;
+            dragDirection++
+        )
+        {
+            if (previousCell.brainHexCell.GetNeighbor(dragDirection) == currentCell)
+            {
+                isDrag = true;
+                return;
+            }
+        }
+        isDrag = false;
+    }
+
+    enum OptionalToggle
+    {
+        Ignore, Yes, No
     }
 }
+
+

@@ -37,6 +37,8 @@ public class HexGrid : MonoBehaviour
 
         CreateChunks();
         CreateCells();
+
+        RandomColor();
     }
 
     void Start()
