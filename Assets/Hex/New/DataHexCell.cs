@@ -21,6 +21,10 @@ public class DataHexCell
     }*/
     private MainHexCell mainHexCell; //Pointer Parent
     public River river;
+    public Road roadScript;
+    public WaterScript waterScript;
+    public FeaturesHexCell featuresHexCell;
+    public Walls wallsScript;
 
 
     public HexGridChunk chunk;
@@ -77,19 +81,14 @@ public class DataHexCell
             uiPosition.z = -position.y;
             uiRect.localPosition = uiPosition;
 
-            if (
-                river.hasOutgoingRiver &&
-                elevation < mainHexCell.brainHexCell.GetNeighbor(river.outgoingRiver).dataHexCell.Elevation
-            )
+            river.ValidateRivers();
+
+            for (int i = 0; i < roadScript.roads.Length; i++)
             {
-                river.RemoveOutgoingRiver();
-            }
-            if (
-                river.hasIncomingRiver &&
-                elevation > mainHexCell.brainHexCell.GetNeighbor(river.incomingRiver).dataHexCell.elevation
-            )
-            {
-                river.RemoveIncomingRiver();
+                if (roadScript.roads[i] && roadScript.GetElevationDifference((HexDirection)i) > 1)
+                {
+                    roadScript.SetRoad(i, false);
+                }
             }
 
             mainHexCell.brainHexCell.Refresh();
@@ -114,19 +113,14 @@ public class DataHexCell
         }
     }
 
-    public float RiverSurfaceY
-    {
-        get
-        {
-            return
-                (elevation + HexMetrics.riverSurfaceElevationOffset) *
-                HexMetrics.elevationStep;
-        }
-    }
 
     public DataHexCell(MainHexCell mainHexCell)
     {
         this.mainHexCell = mainHexCell;
         river = new River(mainHexCell);
+        roadScript = new Road(mainHexCell);
+        waterScript = new WaterScript(mainHexCell);
+        featuresHexCell = new FeaturesHexCell(mainHexCell);
+        wallsScript = new Walls(mainHexCell);
     }
 }

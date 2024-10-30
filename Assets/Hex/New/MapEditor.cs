@@ -12,9 +12,16 @@ public class MapEditor : MonoBehaviour
 
     private Color activeColor;
     private bool paint = true;
+
     private int activeElevation;
+    int activeWaterLevel;
+    int activeUrbanLevel, activeFarmLevel, activePlantLevel;
+
     private bool applyElevation = true;
-    private OptionalToggle riverMode;
+    bool applyWaterLevel = true;
+    bool applyUrbanLevel, applyFarmLevel, applyPlantLevel;
+
+    private OptionalToggle riverMode, roadMode, walledMode;
     
 
     bool isDrag;
@@ -47,7 +54,16 @@ public class MapEditor : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(inputRay, out hit))
         {
-            MainHexCell currentCell = hexGrid.GetCell(hit.point);
+            MainHexCell currentCell;
+            try
+            {
+                currentCell = hexGrid.GetCell(hit.point);
+            }
+            catch (System.Exception)
+            {
+                return;
+                //throw;
+            }
             if (previousCell && previousCell != currentCell)
             {
                 ValidateDrag(currentCell);
@@ -81,10 +97,59 @@ public class MapEditor : MonoBehaviour
     {
         riverMode = (OptionalToggle)mode;
     }
+    public void SetRoadMode(int mode)
+    {
+        roadMode = (OptionalToggle)mode;
+    }
 
     public void SetApplyElevation(bool toggle)
     {
         applyElevation = toggle;
+    }
+
+    public void SetApplyWaterLevel(bool toggle)
+    {
+        applyWaterLevel = toggle;
+    }
+
+    public void SetWaterLevel(float level)
+    {
+        activeWaterLevel = (int)level;
+    }
+
+    public void SetApplyUrbanLevel(bool toggle)
+    {
+        applyUrbanLevel = toggle;
+    }
+
+    public void SetUrbanLevel(float level)
+    {
+        activeUrbanLevel = (int)level;
+    }
+
+    public void SetApplyFarmLevel(bool toggle)
+    {
+        applyFarmLevel = toggle;
+    }
+
+    public void SetFarmLevel(float level)
+    {
+        activeFarmLevel = (int)level;
+    }
+
+    public void SetApplyPlantLevel(bool toggle)
+    {
+        applyPlantLevel = toggle;
+    }
+
+    public void SetPlantLevel(float level)
+    {
+        activePlantLevel = (int)level;
+    }
+
+    public void SetWalledMode(int mode)
+    {
+        walledMode = (OptionalToggle)mode;
     }
 
     void EditCell(MainHexCell cell)
@@ -97,6 +162,24 @@ public class MapEditor : MonoBehaviour
         {
             cell.dataHexCell.Elevation = activeElevation;
         }
+        if (applyWaterLevel)
+        {
+            cell.dataHexCell.waterScript.WaterLevel = activeWaterLevel;
+        }
+
+        if (applyUrbanLevel)
+        {
+            cell.dataHexCell.featuresHexCell.UrbanLevel = activeUrbanLevel;
+        }
+        if (applyFarmLevel)
+        {
+            cell.dataHexCell.featuresHexCell.FarmLevel = activeFarmLevel;
+        }
+        if (applyPlantLevel)
+        {
+            cell.dataHexCell.featuresHexCell.PlantLevel = activePlantLevel;
+        }
+
         if (riverMode == OptionalToggle.No)
         {
             cell.dataHexCell.river.RemoveRiver();
@@ -104,6 +187,18 @@ public class MapEditor : MonoBehaviour
         else if (isDrag && riverMode == OptionalToggle.Yes)
         {
             previousCell.dataHexCell.river.SetOutgoingRiver(dragDirection);
+        }
+        if (roadMode == OptionalToggle.No)
+        {
+            cell.dataHexCell.roadScript.RemoveRoads();
+        }
+        if (walledMode != OptionalToggle.Ignore)
+        {
+            cell.dataHexCell.wallsScript.Walled = walledMode == OptionalToggle.Yes;
+        }
+        else if (isDrag && roadMode == OptionalToggle.Yes)
+        {
+            previousCell.dataHexCell.roadScript.AddRoad(dragDirection);
         }
     }
 

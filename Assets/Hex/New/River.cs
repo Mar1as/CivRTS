@@ -15,6 +15,16 @@ public class River
     public bool hasIncomingRiver, hasOutgoingRiver;
     public HexDirection incomingRiver, outgoingRiver;
 
+    public float RiverSurfaceY
+    {
+        get
+        {
+            return
+                (mainHexCell.dataHexCell.Elevation + HexMetrics.waterElevationOffset) *
+                HexMetrics.elevationStep;
+        }
+    }
+
     public bool HasIncomingRiver
     {
         get
@@ -112,7 +122,7 @@ public class River
             return;
         }
         MainHexCell neighbor = mainHexCell.brainHexCell.GetNeighbor(direction);
-        if (!neighbor || mainHexCell.dataHexCell.Elevation < neighbor.dataHexCell.Elevation)
+        if (!mainHexCell.dataHexCell.waterScript.IsValidRiverDestination(neighbor))
         {
             return;
         }
@@ -123,11 +133,39 @@ public class River
         }
         hasOutgoingRiver = true;
         outgoingRiver = direction;
-        mainHexCell.brainHexCell.RefreshSelfOnly();
+        //mainHexCell.brainHexCell.RefreshSelfOnly();
 
         neighbor.dataHexCell.river.RemoveIncomingRiver();
         neighbor.dataHexCell.river.hasIncomingRiver = true;
         neighbor.dataHexCell.river.incomingRiver = direction.Opposite();
-        neighbor.brainHexCell.RefreshSelfOnly();
+        //neighbor.brainHexCell.RefreshSelfOnly();
+
+        mainHexCell.dataHexCell.roadScript.SetRoad((int)direction, false);
+    }
+
+    public HexDirection RiverBeginOrEndDirection
+    {
+        get
+        {
+            return hasIncomingRiver ? incomingRiver : outgoingRiver;
+        }
+    }
+
+    public void ValidateRivers()
+    {
+        if (
+            hasOutgoingRiver &&
+            !mainHexCell.dataHexCell.waterScript.IsValidRiverDestination(mainHexCell.brainHexCell.GetNeighbor(outgoingRiver))
+        )
+        {
+            RemoveOutgoingRiver();
+        }
+        if (
+            hasIncomingRiver &&
+            !mainHexCell.brainHexCell.GetNeighbor(incomingRiver).dataHexCell.waterScript.IsValidRiverDestination(mainHexCell)
+        )
+        {
+            RemoveIncomingRiver();
+        }
     }
 }

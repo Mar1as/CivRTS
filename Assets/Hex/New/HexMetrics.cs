@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public static class HexMetrics
 {
@@ -24,7 +25,7 @@ public static class HexMetrics
     public const float elevationStep = 0.5f;
 
     //Hex terasa
-    public const int terracesPerSlope = 1;
+    public const int terracesPerSlope = 3;
 
     public const int terraceSteps = terracesPerSlope * 2 + 1;
 
@@ -35,11 +36,11 @@ public static class HexMetrics
     //Hex noise
     public static Texture2D noiseSource;
 
-    public const float cellPerturbStrength = 3f;
+    public const float cellPerturbStrength = 2f;
 
     public const float noiseScale = 0.003f;
 
-    public const float elevationPerturbStrength = 1.1f;
+    public const float elevationPerturbStrength = 0.3f;
 
     //Chunky
     public const int chunkSizeX = 5, chunkSizeZ = 5;
@@ -47,7 +48,42 @@ public static class HexMetrics
     //Øeka
     public const float streamBedElevationOffset = -1f;
 
-    public const float riverSurfaceElevationOffset = -0.1f;
+    public const float waterElevationOffset = 0f;
+
+    //Voda
+    public const float waterFactor = 0.6f;
+
+    public const float waterBlendFactor = 1f - waterFactor;
+
+    //Features
+    public const int hashGridSize = 256;
+
+    static HexHash[] hashGrid;
+
+    public const float hashGridScale = 0.25f;
+
+    static float[][] featureThresholds = {
+        /*new float[] {0.0f, 0.0f, 0.4f}, // 40 % na 1. level
+        new float[] {0.0f, 0.4f, 0.6f}, //40 % na 2. level a 60 % na 3. level
+        new float[] {0.4f, 0.6f, 0.8f}*/ // 40 % na 3. level, 60 % na 2. level a 80 % na 4. level
+        new float[] {1f, 1f, 1f},
+        new float[] {1f, 1f, 1f},
+        new float[] {1f, 1f, 1f}
+    };
+
+    //Hradby
+    public const float wallHeight = 1.25f;
+
+    public const float wallYOffset = -1f;
+
+    public const float wallThickness = 0.05f;
+
+    public const float wallElevationOffset = verticalTerraceStepSize;
+
+    //Další features
+    public const float wallTowerThreshold = 0.5f;
+
+    public const float bridgeDesignLength = 2f;
 
     public static Vector3[] corners = {
         new Vector3(0f, 0f, outerRadius),
@@ -132,10 +168,93 @@ public static class HexMetrics
         return position;
     }
 
+    public static Vector3 GetFirstWaterCorner(HexDirection direction)
+    {
+        return corners[(int)direction] * waterFactor;
+    }
 
+    public static Vector3 GetSecondWaterCorner(HexDirection direction)
+    {
+        return corners[(int)direction + 1] * waterFactor;
+    }
+
+    public static Vector3 GetWaterBridge(HexDirection direction)
+    {
+        return (corners[(int)direction] + corners[(int)direction + 1]) *
+            waterBlendFactor;
+    }
+
+    public static void InitializeHashGrid(int seed)
+    {
+        hashGrid = new HexHash[hashGridSize * hashGridSize];
+
+        Random.State currentState = Random.state;
+        Random.InitState(seed);
+        for (int i = 0; i < hashGrid.Length; i++)
+        {
+            hashGrid[i] = HexHash.Create();
+        }
+        Random.state = currentState;
+    }
+
+    public static HexHash SampleHashGrid(Vector3 position)
+    {
+        int x = (int)(position.x * hashGridScale) % hashGridSize;
+        if (x < 0)
+        {
+            x += hashGridSize;
+        }
+        int z = (int)(position.z * hashGridScale) % hashGridSize;
+        if (z < 0)
+        {
+            z += hashGridSize;
+        }
+        return hashGrid[x + z * hashGridSize];
+    }
+
+    public static float[] GetFeatureThresholds(int level)
+    {
+        return featureThresholds[level];
+    }
+
+    public static Vector3 WallThicknessOffset(Vector3 near, Vector3 far)
+    {
+        Vector3 offset;
+        offset.x = far.x - near.x;
+        offset.y = 0f;
+        offset.z = far.z - near.z;
+        return offset.normalized * (wallThickness * 0.5f);
+    }
+
+    public static Vector3 WallLerp(Vector3 near, Vector3 far)
+    {
+        near.x += (far.x - near.x) * 0.5f;
+        near.z += (far.z - near.z) * 0.5f;
+        float v =
+            near.y < far.y ? wallElevationOffset : (1f - wallElevationOffset);
+        near.y += (far.y - near.y) * v + wallYOffset;
+        return near;
+    }
 }
 
 public enum HexEdgeType
 {
     Flat, Slope, Cliff
+}
+
+public struct HexHash
+{
+
+    public float a, b, c, d, e;
+
+    public static HexHash Create()
+    {
+        HexHash hash;
+        hash.a = Random.value * 0.999f;
+        hash.b = Random.value * 0.999f;
+        hash.c = Random.value * 0.999f;
+        hash.d = Random.value * 0.999f;
+        hash.e = Random.value * 0.999f;
+        return hash;
+    }
 }
