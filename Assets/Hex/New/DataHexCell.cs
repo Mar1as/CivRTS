@@ -25,6 +25,7 @@ public class DataHexCell
     public WaterScript waterScript;
     public FeaturesHexCell featuresHexCell;
     public Walls wallsScript;
+    public SaveLoadHexCell saveLoadHexCell;
 
 
     public HexGridChunk chunk;
@@ -35,22 +36,28 @@ public class DataHexCell
     [SerializeField]
     public MainHexCell[] neighbours = new MainHexCell[6];
     [SerializeField]
-    public Color color;
+    int terrainTypeIndex;
+    public int TerrainTypeIndex
+    {
+        get
+        {
+            return terrainTypeIndex;
+        }
+        set
+        {
+            if (terrainTypeIndex != value)
+            {
+                terrainTypeIndex = value;
+                mainHexCell.brainHexCell.Refresh();
+            }
+        }
+    }
 
     public Color Color
     {
         get
         {
-            return color;
-        }
-        set
-        {
-            if (color == value)
-            {
-                return;
-            }
-            color = value;
-            mainHexCell.brainHexCell.Refresh();
+            return HexMetrics.colors[terrainTypeIndex];
         }
     }
 
@@ -71,15 +78,8 @@ public class DataHexCell
             }
 
             elevation = value;
-            Vector3 position = mainHexCell.transform.localPosition;
-            position.y = value * HexMetrics.elevationStep;
-            position.y += (HexMetrics.SampleNoise(position).y * 2f - 1f) * HexMetrics.elevationPerturbStrength;
 
-            mainHexCell.transform.localPosition = position;
-
-            Vector3 uiPosition = uiRect.localPosition;
-            uiPosition.z = -position.y;
-            uiRect.localPosition = uiPosition;
+            RefreshPosition();
 
             river.ValidateRivers();
 
@@ -113,6 +113,18 @@ public class DataHexCell
         }
     }
 
+    public void RefreshPosition()
+    {
+        Vector3 position = mainHexCell.transform.localPosition;
+        position.y = Elevation * HexMetrics.elevationStep;
+        position.y += (HexMetrics.SampleNoise(position).y * 2f - 1f) * HexMetrics.elevationPerturbStrength;
+
+        mainHexCell.transform.localPosition = position;
+
+        Vector3 uiPosition = uiRect.localPosition;
+        uiPosition.z = -position.y;
+        uiRect.localPosition = uiPosition;
+    }
 
     public DataHexCell(MainHexCell mainHexCell)
     {
@@ -122,5 +134,6 @@ public class DataHexCell
         waterScript = new WaterScript(mainHexCell);
         featuresHexCell = new FeaturesHexCell(mainHexCell);
         wallsScript = new Walls(mainHexCell);
-    }
+        saveLoadHexCell = new SaveLoadHexCell(mainHexCell);
+}
 }

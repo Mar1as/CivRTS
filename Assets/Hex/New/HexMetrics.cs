@@ -55,6 +55,8 @@ public static class HexMetrics
 
     public const float waterBlendFactor = 1f - waterFactor;
 
+    public const float waterYOffset = -0.1f;
+
     //Features
     public const int hashGridSize = 256;
 
@@ -84,6 +86,9 @@ public static class HexMetrics
     public const float wallTowerThreshold = 0.5f;
 
     public const float bridgeDesignLength = 2f;
+
+    //Save
+    public static Color[] colors;
 
     public static Vector3[] corners = {
         new Vector3(0f, 0f, outerRadius),

@@ -2,10 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class FeaturesHexCell
 {
     MainHexCell mainHexCell;
 
+    [SerializeField]
     int urbanLevel, farmLevel, plantLevel;
     public int UrbanLevel
     {

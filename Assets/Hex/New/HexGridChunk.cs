@@ -854,6 +854,8 @@ public class HexGridChunk : MonoBehaviour
 
     private void TriangulateWaterShore(HexDirection direction, MainHexCell cell, MainHexCell neighbor, Vector3 center)
     {
+        //center.y += HexMetrics.waterYOffset;
+
         EdgeVertices e1 = new EdgeVertices(
             center + HexMetrics.GetFirstWaterCorner(direction),
             center + HexMetrics.GetSecondWaterCorner(direction)
@@ -902,6 +904,8 @@ public class HexGridChunk : MonoBehaviour
     void TriangulateOpenWater(
         HexDirection direction, MainHexCell cell, MainHexCell neighbor, Vector3 center)
     {
+        //center.y += HexMetrics.waterYOffset;
+
         Vector3 c1 = center + HexMetrics.GetFirstWaterCorner(direction);
         Vector3 c2 = center + HexMetrics.GetSecondWaterCorner(direction);
 
@@ -933,6 +937,9 @@ public class HexGridChunk : MonoBehaviour
     Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4,
     float y1, float y2, float waterY)
     {
+        //v3.y += HexMetrics.waterYOffset;
+        //v4.y += HexMetrics.waterYOffset;
+
         v1.y = v2.y = y1;
         v3.y = v4.y = y2;
         v1 = HexMetrics.Perturb(v1);

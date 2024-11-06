@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Numerics;
 using TMPro;
 using Unity.Mathematics;
@@ -19,8 +20,6 @@ public class HexGrid : MonoBehaviour
     public int chunkCountX = 4, chunkCountZ = 3;
     private int cellCountX = 6, cellCountZ = 6;
 
-    public Color defaultColor = Color.white;
-
     public MainHexCell cellPrefab;
     public TextMeshProUGUI cellLabelPrefab;
     public HexGridChunk chunkPrefab;
@@ -30,10 +29,13 @@ public class HexGrid : MonoBehaviour
 
     HexGridChunk[] chunks;
 
+    public Color[] colors;
+
     private void Awake()
     {
         HexMetrics.noiseSource = noiseSource;
         HexMetrics.InitializeHashGrid(seed);
+        HexMetrics.colors = colors;
 
         cellCountX = chunkCountX * HexMetrics.chunkSizeX;
         cellCountZ = chunkCountZ * HexMetrics.chunkSizeZ;
@@ -55,6 +57,7 @@ public class HexGrid : MonoBehaviour
         {
             HexMetrics.noiseSource = noiseSource;
             HexMetrics.InitializeHashGrid(seed);
+            HexMetrics.colors = colors;
         }
     }
 
@@ -97,7 +100,6 @@ public class HexGrid : MonoBehaviour
         //cell.transform.SetParent(transform, false);
         cell.transform.localPosition = position;
         cell.dataHexCell.coordinates = HexCoordinates.FromOffsetCoordinates(x, z);
-        cell.dataHexCell.color = defaultColor;
 
         if (x > 0)
         {
@@ -152,7 +154,7 @@ public class HexGrid : MonoBehaviour
         {
             
             Color color = colors[Random.Range(0,colors.Length)];
-            cell.dataHexCell.color = color;
+            //cell.dataHexCell.color = color;
             cell.dataHexCell.Elevation = Random.Range(0, 4);
         }
         //hexMesh.Triangulate(CivGameManagerSingleton.Instance.hexagons);
@@ -170,7 +172,7 @@ public class HexGrid : MonoBehaviour
         }
         foreach (MainHexCell cell in CivGameManagerSingleton.Instance.hexagons)
         {
-            cell.dataHexCell.color = c[Random.Range(0, c.Length)];
+            //cell.dataHexCell.color = c[Random.Range(0, c.Length)];
         }
         //hexMesh.Triangulate(CivGameManagerSingleton.Instance.hexagons);
     }
@@ -183,4 +185,27 @@ public class HexGrid : MonoBehaviour
         return CivGameManagerSingleton.Instance.hexagons[index];
     }
 
+    #region Save Load Manager
+
+    public void Save(BinaryWriter writer)
+    {
+        for (int i = 0; i < CivGameManagerSingleton.Instance.hexagons.Length; i++)
+        {
+            CivGameManagerSingleton.Instance.hexagons[i].dataHexCell.saveLoadHexCell.Save(writer);
+        }
+    }
+
+    public void Load(BinaryReader reader)
+    {
+        for (int i = 0; i < CivGameManagerSingleton.Instance.hexagons.Length; i++)
+        {
+            CivGameManagerSingleton.Instance.hexagons[i].dataHexCell.saveLoadHexCell.Load(reader);
+        }
+        for (int i = 0; i < chunks.Length; i++)
+        {
+            chunks[i].Refresh();
+        }
+    }
+
+    #endregion
 }

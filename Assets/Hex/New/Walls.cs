@@ -2,8 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class Walls
 {
+    //[SerializeField]
     bool walled;
 
     public bool Walled

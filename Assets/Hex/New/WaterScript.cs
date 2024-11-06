@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class WaterScript
 {
     MainHexCell mainHexCell;
@@ -9,9 +10,11 @@ public class WaterScript
     public WaterScript(MainHexCell mainHexCell)
     {
         this.mainHexCell = mainHexCell;
+        waterLevel = 0;
     }
 
-    int waterLevel;
+    [SerializeField]
+    int waterLevel = 0;
 
     public int WaterLevel
     {

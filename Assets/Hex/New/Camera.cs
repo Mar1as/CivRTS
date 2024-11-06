@@ -36,15 +36,15 @@ public class Kamera : MonoBehaviour
 
         if (inputDirection != Vector3.zero)
         {
-            rb.velocity = inputDirection.normalized * speed;
+            rb.linearVelocity = inputDirection.normalized * speed;
         }
         else
         {
-            rb.velocity *= decelerationFactor;
+            rb.linearVelocity *= decelerationFactor;
 
-            if (rb.velocity.magnitude < 0.1f)
+            if (rb.linearVelocity.magnitude < 0.1f)
             {
-                rb.velocity = Vector3.zero;
+                rb.linearVelocity = Vector3.zero;
             }
         }
     }
