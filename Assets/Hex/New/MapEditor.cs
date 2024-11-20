@@ -219,6 +219,7 @@ public class MapEditor : MonoBehaviour
     {
         Debug.Log("Save " + Application.persistentDataPath);
         string path = Path.Combine(Application.persistentDataPath, "test.map");
+        Debug.Log("Path: " + path);
         using (
             BinaryWriter writer =
                 new BinaryWriter(File.Open(path, FileMode.Create))
@@ -234,6 +235,7 @@ public class MapEditor : MonoBehaviour
     {
         Debug.Log("Load");
         string path = Path.Combine(Application.persistentDataPath, "test.map");
+        Debug.Log("Path: " + path);
         using (BinaryReader reader = new BinaryReader(File.OpenRead(path)))
         {
             int header = reader.ReadInt32();
