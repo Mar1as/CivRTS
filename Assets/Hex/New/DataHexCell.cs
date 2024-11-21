@@ -30,6 +30,17 @@ public class DataHexCell
 
     public HexGridChunk chunk;
 
+    public DataHexCell(MainHexCell mainHexCell)
+    {
+        this.mainHexCell = mainHexCell;
+        river = new River(mainHexCell);
+        roadScript = new Road(mainHexCell);
+        waterScript = new WaterScript(mainHexCell);
+        featuresHexCell = new FeaturesHexCell(mainHexCell);
+        wallsScript = new Walls(mainHexCell);
+        saveLoadHexCell = new SaveLoadHexCell(mainHexCell);
+    }
+
     public RectTransform uiRect;
     [SerializeField]
     public HexCoordinates coordinates = new HexCoordinates(0,0);
@@ -61,7 +72,7 @@ public class DataHexCell
         }
     }
 
-    //[SerializeField]
+    [SerializeField]
     private int elevation = int.MinValue;
 
     public int Elevation
@@ -115,8 +126,9 @@ public class DataHexCell
 
     public void RefreshPosition()
     {
+        Debug.Log("Refresh");
         Vector3 position = mainHexCell.transform.localPosition;
-        position.y = Elevation * HexMetrics.elevationStep;
+        position.y = elevation * HexMetrics.elevationStep;
         position.y += (HexMetrics.SampleNoise(position).y * 2f - 1f) * HexMetrics.elevationPerturbStrength;
 
         mainHexCell.transform.localPosition = position;
@@ -126,14 +138,5 @@ public class DataHexCell
         uiRect.localPosition = uiPosition;
     }
 
-    public DataHexCell(MainHexCell mainHexCell)
-    {
-        this.mainHexCell = mainHexCell;
-        river = new River(mainHexCell);
-        roadScript = new Road(mainHexCell);
-        waterScript = new WaterScript(mainHexCell);
-        featuresHexCell = new FeaturesHexCell(mainHexCell);
-        wallsScript = new Walls(mainHexCell);
-        saveLoadHexCell = new SaveLoadHexCell(mainHexCell);
-}
+    
 }

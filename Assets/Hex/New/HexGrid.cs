@@ -197,6 +197,7 @@ public class HexGrid : MonoBehaviour
 
     public void Load(BinaryReader reader)
     {
+        Debug.Log(CivGameManagerSingleton.Instance.hexagons.Length);
         for (int i = 0; i < CivGameManagerSingleton.Instance.hexagons.Length; i++)
         {
             CivGameManagerSingleton.Instance.hexagons[i].dataHexCell.saveLoadHexCell.Load(reader);

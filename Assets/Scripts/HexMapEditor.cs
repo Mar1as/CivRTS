@@ -2,8 +2,8 @@
 using UnityEngine.EventSystems;
 using System.IO;
 
-public class HexMapEditor : MonoBehaviour {
-
+public class HexMapEditorKokot : MonoBehaviour {
+	/*
 	public HexGrid hexGrid;
 
 	int activeElevation;
@@ -231,5 +231,5 @@ public class HexMapEditor : MonoBehaviour {
 				Debug.LogWarning("Unknown map format " + header);
 			}
 		}
-	}
+	}*/
 }

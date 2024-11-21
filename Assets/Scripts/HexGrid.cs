@@ -2,8 +2,8 @@
 using UnityEngine.UI;
 using System.IO;
 
-public class HexGrid : MonoBehaviour {
-
+public class HexGridKokot : MonoBehaviour {
+	/*
 	public int chunkCountX = 4, chunkCountZ = 3;
 
 	public HexCell cellPrefab;
@@ -150,5 +150,5 @@ public class HexGrid : MonoBehaviour {
 		for (int i = 0; i < chunks.Length; i++) {
 			chunks[i].Refresh();
 		}
-	}
+	}*/
 }

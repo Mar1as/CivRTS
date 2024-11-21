@@ -4,12 +4,25 @@ using UnityEngine;
 public class SaveLoadHexCell
 {
     MainHexCell mainHexCell;
-    DataHexCell data;
+    DataHexCell data { get => mainHexCell.dataHexCell;}
 
+    int kokot = 0;
     public SaveLoadHexCell(MainHexCell mainHexCell)
     {
         this.mainHexCell = mainHexCell;
-        data = mainHexCell.dataHexCell;
+    }
+
+    void RefreshPosition()
+    {
+        Vector3 position = mainHexCell.transform.localPosition;
+        position.y = data.Elevation * HexMetrics.elevationStep;
+        position.y += (HexMetrics.SampleNoise(position).y * 2f - 1f) * HexMetrics.elevationPerturbStrength;
+
+        mainHexCell.transform.localPosition = position;
+
+        Vector3 uiPosition = data.uiRect.localPosition;
+        uiPosition.z = -position.y;
+        data.uiRect.localPosition = uiPosition;
     }
 
     public void Save(BinaryWriter writer)
@@ -20,42 +33,74 @@ public class SaveLoadHexCell
         writer.Write((byte)data.featuresHexCell.UrbanLevel);
         writer.Write((byte)data.featuresHexCell.FarmLevel);
         writer.Write((byte)data.featuresHexCell.PlantLevel);
-
         writer.Write(data.wallsScript.Walled);
 
-        writer.Write(data.river.hasIncomingRiver);
-        writer.Write((byte)data.river.incomingRiver);
+        if (data.river.hasIncomingRiver)
+        {
+            writer.Write((byte)(data.river.incomingRiver + 128));
+        }
+        else
+        {
+            writer.Write((byte)0);
+        }
 
-        writer.Write(data.river.hasOutgoingRiver);
-        writer.Write((byte)data.river.outgoingRiver);
+        if (data.river.hasOutgoingRiver)
+        {
+            writer.Write((byte)(data.river.outgoingRiver + 128));
+        }
+        else
+        {
+            writer.Write((byte)0);
+        }
 
+        int roadFlags = 0;
         for (int i = 0; i < data.roadScript.roads.Length; i++)
         {
-            writer.Write(data.roadScript.roads[i]);
+            if (data.roadScript.roads[i])
+            {
+                roadFlags |= 1 << i;
+            }
         }
+        writer.Write((byte)roadFlags);
     }
 
     public void Load(BinaryReader reader)
     {
         data.TerrainTypeIndex = reader.ReadByte();
         data.Elevation = reader.ReadByte();
+        RefreshPosition();
         data.waterScript.WaterLevel = reader.ReadByte();
         data.featuresHexCell.UrbanLevel = reader.ReadByte();
         data.featuresHexCell.FarmLevel = reader.ReadByte();
         data.featuresHexCell.PlantLevel = reader.ReadByte();
-
         data.wallsScript.Walled = reader.ReadBoolean();
 
-        data.river.hasIncomingRiver = reader.ReadBoolean();
-        data.river.incomingRiver = (HexDirection)reader.ReadByte();
-
-        data.river.hasOutgoingRiver = reader.ReadBoolean();
-        data.river.outgoingRiver = (HexDirection)reader.ReadByte();
-
-        for (int i = 0; i < data.roadScript.roads.Length; i++)
+        byte riverData = reader.ReadByte();
+        if (riverData >= 128)
         {
-            data.roadScript.roads[i] = reader.ReadBoolean();
+            data.river.hasIncomingRiver = true;
+            data.river.incomingRiver = (HexDirection)(riverData - 128);
+        }
+        else
+        {
+            data.river.hasIncomingRiver = false;
         }
 
+        riverData = reader.ReadByte();
+        if (riverData >= 128)
+        {
+            data.river.hasOutgoingRiver = true;
+            data.river.outgoingRiver = (HexDirection)(riverData - 128);
+        }
+        else
+        {
+            data.river.hasOutgoingRiver = false;
+        }
+
+        int roadFlags = reader.ReadByte();
+        for (int i = 0; i < data.roadScript.roads.Length; i++)
+        {
+            data.roadScript.roads[i] = (roadFlags & (1 << i)) != 0;
+        }
     }
 }

@@ -214,12 +214,10 @@ public class MapEditor : MonoBehaviour
         Ignore, Yes, No
     }
 
-    #region Save Load Manager
+    //#region Save Load Manager
     public void Save()
     {
-        Debug.Log("Save " + Application.persistentDataPath);
         string path = Path.Combine(Application.persistentDataPath, "test.map");
-        Debug.Log("Path: " + path);
         using (
             BinaryWriter writer =
                 new BinaryWriter(File.Open(path, FileMode.Create))
@@ -228,14 +226,11 @@ public class MapEditor : MonoBehaviour
             writer.Write(0);
             hexGrid.Save(writer);
         }
-        Debug.Log("Done");
     }
 
     public void Load()
     {
-        Debug.Log("Load");
         string path = Path.Combine(Application.persistentDataPath, "test.map");
-        Debug.Log("Path: " + path);
         using (BinaryReader reader = new BinaryReader(File.OpenRead(path)))
         {
             int header = reader.ReadInt32();
@@ -248,10 +243,8 @@ public class MapEditor : MonoBehaviour
                 Debug.LogWarning("Unknown map format " + header);
             }
         }
-        Debug.Log("Done");
-
     }
-    #endregion
+    //#endregion
 }
 
 
