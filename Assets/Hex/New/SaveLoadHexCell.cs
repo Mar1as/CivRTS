@@ -66,6 +66,7 @@ public class SaveLoadHexCell
 
     public void Load(BinaryReader reader)
     {
+
         data.TerrainTypeIndex = reader.ReadByte();
         data.Elevation = reader.ReadByte();
         RefreshPosition();

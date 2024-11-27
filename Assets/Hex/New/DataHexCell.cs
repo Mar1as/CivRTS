@@ -27,6 +27,7 @@ public class DataHexCell
     public Walls wallsScript;
     public SaveLoadHexCell saveLoadHexCell;
 
+    public HexCellDistance hexCellDistance;
 
     public HexGridChunk chunk;
 
@@ -39,6 +40,7 @@ public class DataHexCell
         featuresHexCell = new FeaturesHexCell(mainHexCell);
         wallsScript = new Walls(mainHexCell);
         saveLoadHexCell = new SaveLoadHexCell(mainHexCell);
+        hexCellDistance = new HexCellDistance(mainHexCell);
     }
 
     public RectTransform uiRect;

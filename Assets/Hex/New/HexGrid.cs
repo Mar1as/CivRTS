@@ -5,6 +5,7 @@ using System.Drawing;
 using System.IO;
 using System.Numerics;
 using TMPro;
+using Unity.Loading;
 using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -197,7 +198,7 @@ public class HexGrid : MonoBehaviour
 
     public void Load(BinaryReader reader)
     {
-        Debug.Log(CivGameManagerSingleton.Instance.hexagons.Length);
+        StopAllCoroutines();
         for (int i = 0; i < CivGameManagerSingleton.Instance.hexagons.Length; i++)
         {
             CivGameManagerSingleton.Instance.hexagons[i].dataHexCell.saveLoadHexCell.Load(reader);
@@ -206,6 +207,99 @@ public class HexGrid : MonoBehaviour
         {
             chunks[i].Refresh();
         }
+    }
+
+    #endregion
+
+    #region Distance
+
+    HexCellPriorityQueue searchFrontier;
+
+    public void FindPath(MainHexCell fromCell, MainHexCell toCell)
+    {
+        StopAllCoroutines();
+        StartCoroutine(Search(fromCell, toCell));
+    }
+
+    IEnumerator Search(MainHexCell fromCell, MainHexCell toCell)
+    {
+        if (searchFrontier == null)
+        {
+            searchFrontier = new HexCellPriorityQueue();
+        }
+        else
+        {
+            searchFrontier.Clear();
+        }
+
+        for (int i = 0; i < CivGameManagerSingleton.Instance.hexagons.Length; i++)
+        {
+            CivGameManagerSingleton.Instance.hexagons[i].dataHexCell.hexCellDistance.Distance = int.MaxValue;
+        }
+        
+
+        WaitForSeconds delay = new WaitForSeconds(1 / 60f);
+        fromCell.dataHexCell.hexCellDistance.Distance = 0;
+        searchFrontier.Enqueue(fromCell);
+        while (searchFrontier.Count > 0)
+        {
+            yield return delay;
+            MainHexCell current = searchFrontier.Dequeue();
+
+            if (current == toCell)
+            {
+                current = current.dataHexCell.hexCellDistance.PathFrom;
+                while (current != fromCell)
+                {
+                    current.dataHexCell.uiRect.GetComponent<TextMeshProUGUI>().text += " PATH";
+                    current = current.dataHexCell.hexCellDistance.PathFrom;
+                }
+                break;
+            }
+
+            for (HexDirection d = HexDirection.NE; d <= HexDirection.NW; d++)
+            {
+                MainHexCell neighbor = current.brainHexCell.GetNeighbor(d);
+                if (neighbor == null) continue;
+                if (neighbor.dataHexCell.waterScript.IsUnderwater) continue;
+                HexEdgeType edgeType = current.brainHexCell.GetEdgeType(neighbor);
+                if (edgeType == HexEdgeType.Cliff) continue;
+
+                int distance = current.dataHexCell.hexCellDistance.Distance;
+                if (current.dataHexCell.roadScript.HasRoadThroughEdge(d))
+                {
+                    distance += 1;
+                }
+                else if (current.dataHexCell.wallsScript.Walled != neighbor.dataHexCell.wallsScript.Walled)
+                {
+                    continue;
+                }
+                else
+                {
+                    distance += edgeType == HexEdgeType.Flat ? 5 : 10;
+                    distance += neighbor.dataHexCell.featuresHexCell.UrbanLevel + neighbor.dataHexCell.featuresHexCell.FarmLevel + neighbor.dataHexCell.featuresHexCell.PlantLevel;
+                }
+
+                if (neighbor.dataHexCell.hexCellDistance.Distance == int.MaxValue)
+                {
+                    neighbor.dataHexCell.hexCellDistance.Distance = distance;
+                    neighbor.dataHexCell.hexCellDistance.PathFrom = current;
+                    neighbor.dataHexCell.hexCellDistance.SearchHeuristic = neighbor.dataHexCell.coordinates.DistanceTo(toCell.dataHexCell.coordinates);
+                    searchFrontier.Enqueue(neighbor);
+                }
+                else if (distance < neighbor.dataHexCell.hexCellDistance.Distance)
+                {
+                    int oldPriority = neighbor.dataHexCell.hexCellDistance.SearchPriority;
+                    neighbor.dataHexCell.hexCellDistance.Distance = distance;
+                    neighbor.dataHexCell.hexCellDistance.PathFrom = current;
+                    searchFrontier.Change(neighbor, oldPriority);
+                }
+
+
+            }
+        }
+        fromCell.dataHexCell.uiRect.GetComponent<TextMeshProUGUI>().text += " START";
+        toCell.dataHexCell.uiRect.GetComponent<TextMeshProUGUI>().text += " END";
     }
 
     #endregion

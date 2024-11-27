@@ -21,7 +21,7 @@ public class MapEditor : MonoBehaviour
 
     bool isDrag;
     HexDirection dragDirection;
-    MainHexCell previousCell;
+    MainHexCell previousCell, searchFromCell, searchToCell;
 
 
     void Update()
@@ -49,6 +49,21 @@ public class MapEditor : MonoBehaviour
             try
             {
                 currentCell = hexGrid.GetCell(hit.point);
+
+                //hexGrid.FindDistancesTo(currentCell);
+                if (Input.GetKey(KeyCode.LeftShift) && searchToCell != currentCell)
+                {
+                    searchFromCell = currentCell;
+                    if (searchToCell)
+                    {
+                        hexGrid.FindPath(searchFromCell, searchToCell);
+                    }
+                }
+                else if (searchFromCell && searchFromCell != currentCell)
+                {
+                    searchToCell = currentCell;
+                    hexGrid.FindPath(searchFromCell, searchToCell);
+                }
             }
             catch (System.Exception)
             {

@@ -644,7 +644,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 862243522}
         m_TargetAssemblyTypeName: MapEditor, Assembly-CSharp
-        m_MethodName: SelectColor
+        m_MethodName: SetTerrainTypeIndex
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4906,7 +4906,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 862243522}
         m_TargetAssemblyTypeName: MapEditor, Assembly-CSharp
-        m_MethodName: SelectColor
+        m_MethodName: SetTerrainTypeIndex
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5385,7 +5385,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 862243522}
         m_TargetAssemblyTypeName: MapEditor, Assembly-CSharp
-        m_MethodName: SelectColor
+        m_MethodName: SetTerrainTypeIndex
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -8104,7 +8104,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 862243522}
         m_TargetAssemblyTypeName: MapEditor, Assembly-CSharp
-        m_MethodName: SelectColor
+        m_MethodName: SetTerrainTypeIndex
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -9288,7 +9288,7 @@ MonoBehaviour:
   noiseSource: {fileID: 2800000, guid: 38701cdeb1fb9427cbb585f917aa59cb, type: 3}
   seed: 12345678
   colors:
-  - {r: 0, g: 0, b: 0, a: 0}
+  - {r: 1, g: 1, b: 1, a: 0}
   - {r: 0, g: 0, b: 1, a: 0}
   - {r: 0, g: 1, b: 0, a: 0}
   - {r: 1, g: 1, b: 0, a: 0}
@@ -10361,7 +10361,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 862243522}
         m_TargetAssemblyTypeName: MapEditor, Assembly-CSharp
-        m_MethodName: SelectColor
+        m_MethodName: SetTerrainTypeIndex
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
