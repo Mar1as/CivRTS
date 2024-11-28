@@ -15,6 +15,8 @@ public class HexCellDistance
 
     public MainHexCell NextWithSamePriority { get; set; }
 
+    public int SearchPhase { get; set; }
+
     public int SearchHeuristic { get; set; }
 
     private int distance;

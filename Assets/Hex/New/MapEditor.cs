@@ -1,12 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using Unity.Burst.CompilerServices;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class MapEditor : MonoBehaviour
 {
     public HexGrid hexGrid;
+    public MainHexUnit unitPrefab;
 
     private int activeElevation;
     int activeWaterLevel;
@@ -26,65 +29,82 @@ public class MapEditor : MonoBehaviour
 
     void Update()
     {
-        if (
-            Input.GetMouseButton(0) &&
-            !EventSystem.current.IsPointerOverGameObject()
-        )
-        {
-            HandleInput();
-        }
+       if (!EventSystem.current.IsPointerOverGameObject()) {
+			if (Input.GetMouseButton(0)) {
+				HandleInput();
+				return;
+			}
+			if (Input.GetKeyDown(KeyCode.U)) {
+                if (Input.GetKey(KeyCode.LeftShift))
+                {
+                    DestroyUnit();
+                }
+                else CreateUnit();
+				return;
+			}
+		}
         else
         {
             previousCell = null;
         }
+		
     }
 
     void HandleInput()
+    {
+        MainHexCell currentCell;
+        try
+        {
+            currentCell = GetCellUnderCursor();
+
+            //hexGrid.FindDistancesTo(currentCell);
+            if (Input.GetKey(KeyCode.LeftShift) && searchToCell != currentCell)
+            {
+                if (searchFromCell != currentCell)
+                {
+                    searchFromCell = currentCell;
+                    if (searchToCell)
+                    {
+                        hexGrid.FindPath(searchFromCell, searchToCell, 24);
+                    }
+                }
+
+            }
+            else if (searchFromCell && searchFromCell != currentCell)
+            {
+                if (searchToCell != currentCell)
+                {
+                    searchToCell = currentCell;
+                    hexGrid.FindPath(searchFromCell, searchToCell, 24);
+                }
+            }
+        }
+        catch (System.Exception)
+        {
+            return;
+            //throw;
+        }
+        if (previousCell && previousCell != currentCell)
+        {
+            ValidateDrag(currentCell);
+        }
+        else
+        {
+            isDrag = false;
+        }
+        EditCell(currentCell);
+        previousCell = currentCell;
+    }
+
+    MainHexCell GetCellUnderCursor()
     {
         Ray inputRay = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
         if (Physics.Raycast(inputRay, out hit))
         {
-            MainHexCell currentCell;
-            try
-            {
-                currentCell = hexGrid.GetCell(hit.point);
-
-                //hexGrid.FindDistancesTo(currentCell);
-                if (Input.GetKey(KeyCode.LeftShift) && searchToCell != currentCell)
-                {
-                    searchFromCell = currentCell;
-                    if (searchToCell)
-                    {
-                        hexGrid.FindPath(searchFromCell, searchToCell);
-                    }
-                }
-                else if (searchFromCell && searchFromCell != currentCell)
-                {
-                    searchToCell = currentCell;
-                    hexGrid.FindPath(searchFromCell, searchToCell);
-                }
-            }
-            catch (System.Exception)
-            {
-                return;
-                //throw;
-            }
-            if (previousCell && previousCell != currentCell)
-            {
-                ValidateDrag(currentCell);
-            }
-            else
-            {
-                isDrag = false;
-            }
-            EditCell(currentCell);
-            previousCell = currentCell;
+            return hexGrid.GetCell(hit.point);
         }
-        else
-        {
-            previousCell = null;
-        }
+        return null;
     }
 
     public void SetTerrainTypeIndex(int index)
@@ -207,6 +227,7 @@ public class MapEditor : MonoBehaviour
         }
     }
 
+
     void ValidateDrag(MainHexCell currentCell)
     {
         for (
@@ -229,7 +250,31 @@ public class MapEditor : MonoBehaviour
         Ignore, Yes, No
     }
 
-    //#region Save Load Manager
+    #region Unit
+
+    void CreateUnit()
+    {
+        MainHexCell cell = GetCellUnderCursor();
+        if (cell && !cell.dataHexCell.Unit)
+        {
+            hexGrid.AddUnit(
+                Instantiate(DataHexUnit.unitPrefab), cell, Random.Range(0f, 360f)
+            );
+        }
+    }
+
+    void DestroyUnit()
+    {
+        MainHexCell cell = GetCellUnderCursor();
+        if (cell && cell.dataHexCell.Unit)
+        {
+            cell.dataHexCell.Unit.Die();
+        }
+    }
+
+    #endregion
+
+    #region Save Load Manager
     public void Save()
     {
         string path = Path.Combine(Application.persistentDataPath, "test.map");
@@ -238,7 +283,7 @@ public class MapEditor : MonoBehaviour
                 new BinaryWriter(File.Open(path, FileMode.Create))
         )
         {
-            writer.Write(0);
+            writer.Write(2);
             hexGrid.Save(writer);
         }
     }
@@ -249,7 +294,7 @@ public class MapEditor : MonoBehaviour
         using (BinaryReader reader = new BinaryReader(File.OpenRead(path)))
         {
             int header = reader.ReadInt32();
-            if (header == 0)
+            if (header <= 2)
             {
                 hexGrid.Load(reader);
             }
@@ -259,7 +304,7 @@ public class MapEditor : MonoBehaviour
             }
         }
     }
-    //#endregion
+    #endregion
 }
 
 

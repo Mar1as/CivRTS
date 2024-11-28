@@ -45,11 +45,19 @@ public class BrainHexCell
                     neighbor.dataHexCell.chunk.Refresh();
                 }
             }
+            if (dataHexCell.Unit)
+            {
+                dataHexCell.Unit.dataHexUnit.ValidateLocation();
+            }
         }
     }
     public void RefreshSelfOnly()
     {
         dataHexCell.chunk.Refresh();
+        if (dataHexCell.Unit)
+        {
+            dataHexCell.Unit.dataHexUnit.ValidateLocation();
+        }
     }
 }
 

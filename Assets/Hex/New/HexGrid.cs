@@ -26,6 +26,8 @@ public class HexGrid : MonoBehaviour
     public HexGridChunk chunkPrefab;
     public Texture2D noiseSource;
 
+    public MainHexUnit unitPrefab;
+
     public int seed;
 
     HexGridChunk[] chunks;
@@ -36,6 +38,7 @@ public class HexGrid : MonoBehaviour
     {
         HexMetrics.noiseSource = noiseSource;
         HexMetrics.InitializeHashGrid(seed);
+        DataHexUnit.unitPrefab = unitPrefab;
         HexMetrics.colors = colors;
 
         cellCountX = chunkCountX * HexMetrics.chunkSizeX;
@@ -58,6 +61,7 @@ public class HexGrid : MonoBehaviour
         {
             HexMetrics.noiseSource = noiseSource;
             HexMetrics.InitializeHashGrid(seed);
+            DataHexUnit.unitPrefab = unitPrefab;
             HexMetrics.colors = colors;
         }
     }
@@ -194,11 +198,19 @@ public class HexGrid : MonoBehaviour
         {
             CivGameManagerSingleton.Instance.hexagons[i].dataHexCell.saveLoadHexCell.Save(writer);
         }
+
+        writer.Write(CivGameManagerSingleton.Instance.allUnits.Count);
+        for (int i = 0; i < CivGameManagerSingleton.Instance.allUnits.Count; i++)
+        {
+            CivGameManagerSingleton.Instance.allUnits[i].dataHexUnit.Save(writer);
+        }
     }
 
     public void Load(BinaryReader reader)
     {
-        StopAllCoroutines();
+        int header = reader.ReadInt32();
+        ClearUnits();
+
         for (int i = 0; i < CivGameManagerSingleton.Instance.hexagons.Length; i++)
         {
             CivGameManagerSingleton.Instance.hexagons[i].dataHexCell.saveLoadHexCell.Load(reader);
@@ -207,6 +219,14 @@ public class HexGrid : MonoBehaviour
         {
             chunks[i].Refresh();
         }
+        if (header >= 2)
+        {
+            int unitCount = reader.ReadInt32();
+            for (int i = 0; i < unitCount; i++)
+            {
+                MainHexUnit.Load(reader, this);
+            }
+        }
     }
 
     #endregion
@@ -214,15 +234,21 @@ public class HexGrid : MonoBehaviour
     #region Distance
 
     HexCellPriorityQueue searchFrontier;
+    int searchFrontierPhase;
 
-    public void FindPath(MainHexCell fromCell, MainHexCell toCell)
+    public void FindPath(MainHexCell fromCell, MainHexCell toCell, int speed)
     {
-        StopAllCoroutines();
-        StartCoroutine(Search(fromCell, toCell));
+        System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+        sw.Start();
+        Search(fromCell, toCell, speed);
+        sw.Stop();
+        Debug.Log(sw.ElapsedMilliseconds);
     }
 
-    IEnumerator Search(MainHexCell fromCell, MainHexCell toCell)
+    void Search(MainHexCell fromCell, MainHexCell toCell, int speed)
     {
+        searchFrontierPhase += 2;
+
         if (searchFrontier == null)
         {
             searchFrontier = new HexCellPriorityQueue();
@@ -234,17 +260,17 @@ public class HexGrid : MonoBehaviour
 
         for (int i = 0; i < CivGameManagerSingleton.Instance.hexagons.Length; i++)
         {
-            CivGameManagerSingleton.Instance.hexagons[i].dataHexCell.hexCellDistance.Distance = int.MaxValue;
+            //CivGameManagerSingleton.Instance.hexagons[i].dataHexCell.hexCellDistance.Distance = int.MaxValue;
+            CivGameManagerSingleton.Instance.hexagons[i].dataHexCell.uiRect.GetComponent<TextMeshProUGUI>().text = "";
         }
-        
 
-        WaitForSeconds delay = new WaitForSeconds(1 / 60f);
+        fromCell.dataHexCell.hexCellDistance.SearchPhase = searchFrontierPhase;
         fromCell.dataHexCell.hexCellDistance.Distance = 0;
         searchFrontier.Enqueue(fromCell);
         while (searchFrontier.Count > 0)
         {
-            yield return delay;
             MainHexCell current = searchFrontier.Dequeue();
+            current.dataHexCell.hexCellDistance.SearchPhase += 1;
 
             if (current == toCell)
             {
@@ -257,18 +283,20 @@ public class HexGrid : MonoBehaviour
                 break;
             }
 
+            int currentTurn = current.dataHexCell.hexCellDistance.Distance / speed;
+
             for (HexDirection d = HexDirection.NE; d <= HexDirection.NW; d++)
             {
                 MainHexCell neighbor = current.brainHexCell.GetNeighbor(d);
-                if (neighbor == null) continue;
+                if (neighbor == null || neighbor.dataHexCell.hexCellDistance.SearchPhase > searchFrontierPhase) continue;
                 if (neighbor.dataHexCell.waterScript.IsUnderwater) continue;
                 HexEdgeType edgeType = current.brainHexCell.GetEdgeType(neighbor);
                 if (edgeType == HexEdgeType.Cliff) continue;
 
-                int distance = current.dataHexCell.hexCellDistance.Distance;
+                int moveCost = 0;
                 if (current.dataHexCell.roadScript.HasRoadThroughEdge(d))
                 {
-                    distance += 1;
+                    moveCost += 1;
                 }
                 else if (current.dataHexCell.wallsScript.Walled != neighbor.dataHexCell.wallsScript.Walled)
                 {
@@ -276,12 +304,20 @@ public class HexGrid : MonoBehaviour
                 }
                 else
                 {
-                    distance += edgeType == HexEdgeType.Flat ? 5 : 10;
-                    distance += neighbor.dataHexCell.featuresHexCell.UrbanLevel + neighbor.dataHexCell.featuresHexCell.FarmLevel + neighbor.dataHexCell.featuresHexCell.PlantLevel;
+                    moveCost += edgeType == HexEdgeType.Flat ? 5 : 10;
+                    moveCost += neighbor.dataHexCell.featuresHexCell.UrbanLevel + neighbor.dataHexCell.featuresHexCell.FarmLevel + neighbor.dataHexCell.featuresHexCell.PlantLevel;
                 }
 
-                if (neighbor.dataHexCell.hexCellDistance.Distance == int.MaxValue)
+                int distance = current.dataHexCell.hexCellDistance.Distance + moveCost;
+                int turn = distance / speed;
+                if (turn > currentTurn)
                 {
+                    distance = turn * speed + moveCost;
+                }
+
+                if (neighbor.dataHexCell.hexCellDistance.SearchPhase < searchFrontierPhase)
+                {
+                    neighbor.dataHexCell.hexCellDistance.SearchPhase = searchFrontierPhase;
                     neighbor.dataHexCell.hexCellDistance.Distance = distance;
                     neighbor.dataHexCell.hexCellDistance.PathFrom = current;
                     neighbor.dataHexCell.hexCellDistance.SearchHeuristic = neighbor.dataHexCell.coordinates.DistanceTo(toCell.dataHexCell.coordinates);
@@ -302,5 +338,30 @@ public class HexGrid : MonoBehaviour
         toCell.dataHexCell.uiRect.GetComponent<TextMeshProUGUI>().text += " END";
     }
 
+    #endregion
+
+    #region Units
+
+    void ClearUnits()
+    {
+        for (int i = 0; i < CivGameManagerSingleton.Instance.allUnits.Count; i++)
+        {
+            CivGameManagerSingleton.Instance.allUnits[i].Die();
+        }
+        CivGameManagerSingleton.Instance.allUnits.Clear();
+    }
+
+    public void AddUnit(MainHexUnit unit, MainHexCell location, float orientation)
+    {
+        CivGameManagerSingleton.Instance.allUnits.Add(unit);
+        unit.transform.SetParent(transform, false);
+        unit.dataHexUnit.Location = location;
+        unit.dataHexUnit.Orientation = orientation;
+    }
+    public void RemoveUnit(MainHexUnit unit)
+    {
+        CivGameManagerSingleton.Instance.allUnits.Remove(unit);
+        unit.Die();
+    }
     #endregion
 }

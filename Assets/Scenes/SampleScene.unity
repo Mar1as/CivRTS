@@ -4410,6 +4410,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hexGrid: {fileID: 1787214589}
+  unitPrefab: {fileID: 0}
 --- !u!1 &878334231
 GameObject:
   m_ObjectHideFlags: 0
