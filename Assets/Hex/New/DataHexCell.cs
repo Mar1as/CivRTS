@@ -127,6 +127,23 @@ public class DataHexCell
         }
     }
 
+    public MainCity city;
+    public MainCity City
+    {
+        get
+        {
+            return city;
+        }
+        set
+        {
+            if (city == value)
+            {
+                return;
+            }
+            city = value;
+        }
+    }
+
     public void RefreshPosition()
     {
         Debug.Log("Refresh");

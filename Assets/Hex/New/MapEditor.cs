@@ -13,18 +13,18 @@ public class MapEditor : MonoBehaviour
 
     private int activeElevation;
     int activeWaterLevel;
-    int activeUrbanLevel, activeFarmLevel, activePlantLevel, activeTerrainTypeIndex;
+    int activeUrbanLevel, activeFarmLevel, activePlantLevel, activeSpecialIndex, activeTerrainTypeIndex;
 
     private bool applyElevation = true;
     bool applyWaterLevel = true;
-    bool applyUrbanLevel, applyFarmLevel, applyPlantLevel;
+    bool applyUrbanLevel, applyFarmLevel, applyPlantLevel, applySpecialIndex;
 
     private OptionalToggle riverMode, roadMode, walledMode;
     
 
     bool isDrag;
     HexDirection dragDirection;
-    MainHexCell previousCell, searchFromCell, searchToCell;
+    MainHexCell previousCell;
 
 
     void Update()
@@ -42,7 +42,33 @@ public class MapEditor : MonoBehaviour
                 else CreateUnit();
 				return;
 			}
-		}
+            try
+            {
+                if (Input.GetKeyDown(KeyCode.F)) //FARMA
+                {
+                    MainHexCell currentCell = GetCellUnderCursor();
+                    currentCell.dataHexCell.city.dataCity.productionCity.productionQueue.AddToQueue(new Building(2, currentCell, BuildingEnum.Farm));
+                    return;
+                }
+                if (Input.GetKeyDown(KeyCode.G)) //URBAN
+                {
+                    MainHexCell currentCell = GetCellUnderCursor();
+                    currentCell.dataHexCell.city.dataCity.productionCity.productionQueue.AddToQueue(new Building(2, currentCell, BuildingEnum.Urban));
+                    return;
+                }
+                if (Input.GetKeyDown(KeyCode.H)) //UNIT
+                {
+                    MainHexCell currentCell = GetCellUnderCursor();
+                    currentCell.dataHexCell.city.dataCity.productionCity.productionQueue.AddToQueue(new Unit(2, currentCell, new MainHexUnit()));
+                    return;
+                }
+            }
+            catch (System.Exception)
+            {
+
+                throw;
+            }
+        }
         else
         {
             previousCell = null;
@@ -57,7 +83,7 @@ public class MapEditor : MonoBehaviour
         {
             currentCell = GetCellUnderCursor();
 
-            //hexGrid.FindDistancesTo(currentCell);
+            /*
             if (Input.GetKey(KeyCode.LeftShift) && searchToCell != currentCell)
             {
                 if (searchFromCell != currentCell)
@@ -77,34 +103,29 @@ public class MapEditor : MonoBehaviour
                     searchToCell = currentCell;
                     hexGrid.FindPath(searchFromCell, searchToCell, 24);
                 }
+            }*/
+            if (previousCell && previousCell != currentCell)
+            {
+                ValidateDrag(currentCell);
             }
+            else
+            {
+                isDrag = false;
+            }
+            EditCell(currentCell);
+            previousCell = currentCell;
         }
         catch (System.Exception)
         {
             return;
             //throw;
         }
-        if (previousCell && previousCell != currentCell)
-        {
-            ValidateDrag(currentCell);
-        }
-        else
-        {
-            isDrag = false;
-        }
-        EditCell(currentCell);
-        previousCell = currentCell;
+        
     }
 
     MainHexCell GetCellUnderCursor()
     {
-        Ray inputRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-        if (Physics.Raycast(inputRay, out hit))
-        {
-            return hexGrid.GetCell(hit.point);
-        }
-        return null;
+        return hexGrid.GetCell(Camera.main.ScreenPointToRay(Input.mousePosition));
     }
 
     public void SetTerrainTypeIndex(int index)
@@ -176,6 +197,17 @@ public class MapEditor : MonoBehaviour
         walledMode = (OptionalToggle)mode;
     }
 
+    public void SetApplySpecialIndex(bool toggle)
+    {
+        applySpecialIndex = toggle;
+    }
+
+    public void SetSpecialIndex(float index)
+    {
+        activeSpecialIndex = (int)index;
+    }
+
+
     void EditCell(MainHexCell cell)
     {
         if (activeTerrainTypeIndex >= 0)
@@ -190,6 +222,12 @@ public class MapEditor : MonoBehaviour
         if (applyWaterLevel)
         {
             cell.dataHexCell.waterScript.WaterLevel = activeWaterLevel;
+        }
+
+        if (applySpecialIndex)
+        {
+            cell.dataHexCell.featuresHexCell.SpecialIndex = activeSpecialIndex;
+            
         }
 
         if (applyUrbanLevel)
@@ -250,6 +288,7 @@ public class MapEditor : MonoBehaviour
         Ignore, Yes, No
     }
 
+
     #region Unit
 
     void CreateUnit()
@@ -258,7 +297,7 @@ public class MapEditor : MonoBehaviour
         if (cell && !cell.dataHexCell.Unit)
         {
             hexGrid.AddUnit(
-                Instantiate(DataHexUnit.unitPrefab), cell, Random.Range(0f, 360f)
+                DataHexUnit.unitPrefab, cell, Random.Range(0f, 360f)
             );
         }
     }
@@ -305,6 +344,12 @@ public class MapEditor : MonoBehaviour
         }
     }
     #endregion
+
+    public void Turn()
+    {
+        Debug.Log("Tah 1");
+        CivGameManagerSingleton.Instance.allCities.ForEach(city => city.dataCity.statsCity.Turn());
+    }
 }
 
 

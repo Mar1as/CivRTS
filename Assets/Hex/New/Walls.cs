@@ -20,6 +20,7 @@ public class Walls
             {
                 walled = value;
                 mainHexCell.brainHexCell.Refresh();
+                Debug.Log("Refresh");
             }
         }
     }

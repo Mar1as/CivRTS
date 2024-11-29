@@ -34,6 +34,9 @@ public class HexGrid : MonoBehaviour
 
     public Color[] colors;
 
+    MainHexCell currentPathFrom, currentPathTo;
+    bool currentPathExists;
+
     private void Awake()
     {
         HexMetrics.noiseSource = noiseSource;
@@ -47,6 +50,7 @@ public class HexGrid : MonoBehaviour
         CreateChunks();
         CreateCells();
 
+        CivGameManagerSingleton.Instance.hexGrid = this;
         //RandomColor();
     }
 
@@ -202,13 +206,14 @@ public class HexGrid : MonoBehaviour
         writer.Write(CivGameManagerSingleton.Instance.allUnits.Count);
         for (int i = 0; i < CivGameManagerSingleton.Instance.allUnits.Count; i++)
         {
-            CivGameManagerSingleton.Instance.allUnits[i].dataHexUnit.Save(writer);
+            CivGameManagerSingleton.Instance.allUnits[i].Save(writer);
         }
     }
 
     public void Load(BinaryReader reader)
     {
         int header = reader.ReadInt32();
+        ClearPath();
         ClearUnits();
 
         for (int i = 0; i < CivGameManagerSingleton.Instance.hexagons.Length; i++)
@@ -238,14 +243,14 @@ public class HexGrid : MonoBehaviour
 
     public void FindPath(MainHexCell fromCell, MainHexCell toCell, int speed)
     {
-        System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
-        sw.Start();
-        Search(fromCell, toCell, speed);
-        sw.Stop();
-        Debug.Log(sw.ElapsedMilliseconds);
+        ClearPath();
+        currentPathFrom = fromCell;
+        currentPathTo = toCell;
+        currentPathExists = Search(fromCell, toCell, speed);
+        ShowPath(speed);
     }
 
-    void Search(MainHexCell fromCell, MainHexCell toCell, int speed)
+    bool Search(MainHexCell fromCell, MainHexCell toCell, int speed)
     {
         searchFrontierPhase += 2;
 
@@ -258,12 +263,6 @@ public class HexGrid : MonoBehaviour
             searchFrontier.Clear();
         }
 
-        for (int i = 0; i < CivGameManagerSingleton.Instance.hexagons.Length; i++)
-        {
-            //CivGameManagerSingleton.Instance.hexagons[i].dataHexCell.hexCellDistance.Distance = int.MaxValue;
-            CivGameManagerSingleton.Instance.hexagons[i].dataHexCell.uiRect.GetComponent<TextMeshProUGUI>().text = "";
-        }
-
         fromCell.dataHexCell.hexCellDistance.SearchPhase = searchFrontierPhase;
         fromCell.dataHexCell.hexCellDistance.Distance = 0;
         searchFrontier.Enqueue(fromCell);
@@ -274,22 +273,16 @@ public class HexGrid : MonoBehaviour
 
             if (current == toCell)
             {
-                current = current.dataHexCell.hexCellDistance.PathFrom;
-                while (current != fromCell)
-                {
-                    current.dataHexCell.uiRect.GetComponent<TextMeshProUGUI>().text += " PATH";
-                    current = current.dataHexCell.hexCellDistance.PathFrom;
-                }
-                break;
+                return true;
             }
 
-            int currentTurn = current.dataHexCell.hexCellDistance.Distance / speed;
+            int currentTurn = (current.dataHexCell.hexCellDistance.Distance - 1) / speed;
 
             for (HexDirection d = HexDirection.NE; d <= HexDirection.NW; d++)
             {
                 MainHexCell neighbor = current.brainHexCell.GetNeighbor(d);
                 if (neighbor == null || neighbor.dataHexCell.hexCellDistance.SearchPhase > searchFrontierPhase) continue;
-                if (neighbor.dataHexCell.waterScript.IsUnderwater) continue;
+                if (neighbor.dataHexCell.waterScript.IsUnderwater || neighbor.dataHexCell.Unit) continue;
                 HexEdgeType edgeType = current.brainHexCell.GetEdgeType(neighbor);
                 if (edgeType == HexEdgeType.Cliff) continue;
 
@@ -309,7 +302,7 @@ public class HexGrid : MonoBehaviour
                 }
 
                 int distance = current.dataHexCell.hexCellDistance.Distance + moveCost;
-                int turn = distance / speed;
+                int turn = (current.dataHexCell.hexCellDistance.Distance - 1) / speed;
                 if (turn > currentTurn)
                 {
                     distance = turn * speed + moveCost;
@@ -334,8 +327,56 @@ public class HexGrid : MonoBehaviour
 
             }
         }
-        fromCell.dataHexCell.uiRect.GetComponent<TextMeshProUGUI>().text += " START";
-        toCell.dataHexCell.uiRect.GetComponent<TextMeshProUGUI>().text += " END";
+        //fromCell.dataHexCell.uiRect.GetComponent<TextMeshProUGUI>().text += " START";
+        //toCell.dataHexCell.uiRect.GetComponent<TextMeshProUGUI>().text += " END";
+
+        return false;
+    }
+
+    void ShowPath(int speed)
+    {
+        if (currentPathExists)
+        {
+            MainHexCell current = currentPathTo;
+            while (current != currentPathFrom)
+            {
+                int turn = (current.dataHexCell.hexCellDistance.Distance - 1) / speed;
+                current.dataHexCell.uiRect.GetComponent<TextMeshProUGUI>().text += turn.ToString() + " Path";
+                //current.SetLabel(turn.ToString());
+                //current.EnableHighlight(Color.white);
+                current = current.dataHexCell.hexCellDistance.PathFrom;
+            }
+        }
+        currentPathFrom.dataHexCell.uiRect.GetComponent<TextMeshProUGUI>().text += " Start";
+        currentPathTo.dataHexCell.uiRect.GetComponent<TextMeshProUGUI>().text += " End";
+        //currentPathFrom.EnableHighlight(Color.blue);
+        //currentPathTo.EnableHighlight(Color.red);
+    }
+
+    public void ClearPath()
+    {
+        if (currentPathExists)
+        {
+            MainHexCell current = currentPathTo;
+            while (current != currentPathFrom)
+            {
+                current.dataHexCell.uiRect.GetComponent<TextMeshProUGUI>().text = current.dataHexCell.coordinates.ToStringOnSeparateLines();
+                //current.SetLabel(null);
+                //current.DisableHighlight();
+                current = current.dataHexCell.hexCellDistance.PathFrom;
+            }
+            current.dataHexCell.uiRect.GetComponent<TextMeshProUGUI>().text = current.dataHexCell.coordinates.ToStringOnSeparateLines();
+            //current.DisableHighlight();
+            currentPathExists = false;
+        }
+        else if (currentPathFrom)
+        {
+            currentPathFrom.dataHexCell.uiRect.GetComponent<TextMeshProUGUI>().text = currentPathFrom.dataHexCell.coordinates.ToStringOnSeparateLines();
+            //currentPathFrom.DisableHighlight();
+            currentPathTo.dataHexCell.uiRect.GetComponent<TextMeshProUGUI>().text = currentPathTo.dataHexCell.coordinates.ToStringOnSeparateLines();
+            //currentPathTo.DisableHighlight();
+        }
+        currentPathFrom = currentPathTo = null;
     }
 
     #endregion
@@ -353,15 +394,50 @@ public class HexGrid : MonoBehaviour
 
     public void AddUnit(MainHexUnit unit, MainHexCell location, float orientation)
     {
-        CivGameManagerSingleton.Instance.allUnits.Add(unit);
-        unit.transform.SetParent(transform, false);
-        unit.dataHexUnit.Location = location;
-        unit.dataHexUnit.Orientation = orientation;
+        MainHexUnit newUnit = MainHexUnit.Instantiate(unit);
+        CivGameManagerSingleton.Instance.allUnits.Add(newUnit);
+        newUnit.transform.SetParent(transform, false);
+        newUnit.dataHexUnit.Location = location;
+        newUnit.dataHexUnit.Orientation = orientation;
     }
     public void RemoveUnit(MainHexUnit unit)
     {
         CivGameManagerSingleton.Instance.allUnits.Remove(unit);
         unit.Die();
     }
+
+    public bool HasPath
+    {
+        get
+        {
+            return currentPathExists;
+        }
+    }
+
+    public List<MainHexCell> GetPath()
+    {
+        if (!currentPathExists)
+        {
+            return null;
+        }
+        List<MainHexCell> path = ListPool<MainHexCell>.Get();
+        for (MainHexCell c = currentPathTo; c != currentPathFrom; c = c.dataHexCell.hexCellDistance.PathFrom)
+        {
+            path.Add(c);
+        }
+        path.Add(currentPathFrom);
+        path.Reverse();
+        return path;
+    }
     #endregion
+
+    public MainHexCell GetCell(Ray ray)
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit))
+        {
+            return GetCell(hit.point);
+        }
+        return null;
+    }
 }

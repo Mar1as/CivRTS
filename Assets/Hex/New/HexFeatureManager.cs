@@ -10,8 +10,9 @@ public class HexFeatureManager : MonoBehaviour
 
     public Transform wallTower, bridge;
 
-    Transform container;
+    public Transform[] special;
 
+    Transform container;
 
 
     public void Clear() 
@@ -33,6 +34,14 @@ public class HexFeatureManager : MonoBehaviour
 
     public void AddFeature(MainHexCell cell ,Vector3 position) 
     {
+        if (cell.dataHexCell.featuresHexCell.IsSpecial)
+        {
+            cell.dataHexCell.featuresHexCell.PlantLevel = 0;
+            cell.dataHexCell.featuresHexCell.UrbanLevel = 0;
+            cell.dataHexCell.featuresHexCell.FarmLevel = 0;
+            return;
+        }
+
         HexHash hash = HexMetrics.SampleHashGrid(position);
         Transform prefab = PickPrefab(urbanCollections, cell.dataHexCell.featuresHexCell.UrbanLevel, hash.a, hash.d);
         Transform otherPrefab = PickPrefab(farmCollections, cell.dataHexCell.featuresHexCell.FarmLevel, hash.b, hash.d);
@@ -90,6 +99,16 @@ public class HexFeatureManager : MonoBehaviour
             }
         }
         return null;
+    }
+
+    public void AddSpecialFeature(MainHexCell cell, Vector3 position)
+    {
+        Transform instance = Instantiate(special[cell.dataHexCell.featuresHexCell.SpecialIndex - 1]);
+        instance.gameObject.GetComponent<MainCity>().Inicilizace(cell);
+        instance.localPosition = HexMetrics.Perturb(position);
+        HexHash hash = HexMetrics.SampleHashGrid(position);
+        instance.localRotation = Quaternion.Euler(0f, 360f * hash.e, 0f);
+        instance.SetParent(container, false);
     }
 
     public void AddWall(

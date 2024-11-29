@@ -15,6 +15,7 @@ public class CivGameManagerSingleton
             {
                 instance = new CivGameManagerSingleton();
                 instance.allUnits = new List<MainHexUnit>();
+                instance.allCities = new List<MainCity>();
             }
             return instance;
         }
@@ -22,4 +23,6 @@ public class CivGameManagerSingleton
 
     public MainHexCell[] hexagons;
     public List<MainHexUnit> allUnits;
+    public List<MainCity> allCities;
+    public HexGrid hexGrid;
 }

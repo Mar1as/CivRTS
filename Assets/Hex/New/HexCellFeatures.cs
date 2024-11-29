@@ -8,7 +8,7 @@ public class FeaturesHexCell
     MainHexCell mainHexCell;
 
     [SerializeField]
-    int urbanLevel, farmLevel, plantLevel;
+    int urbanLevel, farmLevel, plantLevel, specialIndex;
     public int UrbanLevel
     {
         get
@@ -54,6 +54,30 @@ public class FeaturesHexCell
                 plantLevel = value;
                 mainHexCell.brainHexCell.RefreshSelfOnly();
             }
+        }
+    }
+
+    public int SpecialIndex
+    {
+        get
+        {
+            return specialIndex;
+        }
+        set
+        {
+            if (specialIndex != value && !mainHexCell.dataHexCell.river.HasRiver)
+            {
+                specialIndex = value;
+                mainHexCell.brainHexCell.RefreshSelfOnly();
+            }
+        }
+    }
+
+    public bool IsSpecial
+    {
+        get
+        {
+            return specialIndex > 0;
         }
     }
 

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using static UnityEditor.FilePathAttribute;
@@ -13,6 +14,14 @@ public class MainHexUnit : MonoBehaviour
         Inicilizace();
     }
 
+    void OnEnable()
+    {
+        if (dataHexUnit.Location)
+        {
+            transform.localPosition = dataHexUnit.Location.dataHexCell.Position;
+        }
+    }
+
     public void Inicilizace()
     {
         dataHexUnit = new DataHexUnit(this);
@@ -22,6 +31,14 @@ public class MainHexUnit : MonoBehaviour
     {
         dataHexUnit.Location.dataHexCell.Unit = null;
         Destroy(gameObject);
+    }
+
+    public void Travel(List<MainHexCell> path)
+    {
+        dataHexUnit.Location = path[path.Count - 1];
+        dataHexUnit.pathToTravel = path;
+        StopAllCoroutines();
+        StartCoroutine(dataHexUnit.TravelPath());
     }
 
     #region Save Load

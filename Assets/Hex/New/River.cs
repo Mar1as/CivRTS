@@ -133,11 +133,13 @@ public class River
         }
         hasOutgoingRiver = true;
         outgoingRiver = direction;
+        mainHexCell.dataHexCell.featuresHexCell.SpecialIndex = 0;
         //mainHexCell.brainHexCell.RefreshSelfOnly();
 
         neighbor.dataHexCell.river.RemoveIncomingRiver();
         neighbor.dataHexCell.river.hasIncomingRiver = true;
         neighbor.dataHexCell.river.incomingRiver = direction.Opposite();
+        neighbor.dataHexCell.featuresHexCell.SpecialIndex = 0;
         //neighbor.brainHexCell.RefreshSelfOnly();
 
         mainHexCell.dataHexCell.roadScript.SetRoad((int)direction, false);
