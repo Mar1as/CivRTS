@@ -5,7 +5,7 @@ using UnityEngine;
 [System.Serializable]
 public class Walls
 {
-    //[SerializeField]
+    [SerializeField]
     bool walled;
 
     public bool Walled
@@ -20,7 +20,6 @@ public class Walls
             {
                 walled = value;
                 mainHexCell.brainHexCell.Refresh();
-                Debug.Log("Refresh");
             }
         }
     }

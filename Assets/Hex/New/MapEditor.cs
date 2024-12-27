@@ -13,13 +13,14 @@ public class MapEditor : MonoBehaviour
 
     private int activeElevation;
     int activeWaterLevel;
-    int activeUrbanLevel, activeFarmLevel, activePlantLevel, activeSpecialIndex, activeTerrainTypeIndex;
+    int activeUrbanLevel, activeFarmLevel, activePlantLevel, activeSpecialIndex;
+    public int activeTerrainTypeIndex;
 
-    private bool applyElevation = true;
-    bool applyWaterLevel = true;
-    bool applyUrbanLevel, applyFarmLevel, applyPlantLevel, applySpecialIndex;
+    public bool applyElevation = true;
+    public bool applyWaterLevel = true;
+    public bool applyUrbanLevel, applyFarmLevel, applyPlantLevel, applySpecialIndex;
 
-    private OptionalToggle riverMode, roadMode, walledMode;
+    public OptionalToggle riverMode, roadMode, walledMode;
     
 
     bool isDrag;
@@ -30,11 +31,16 @@ public class MapEditor : MonoBehaviour
     void Update()
     {
        if (!EventSystem.current.IsPointerOverGameObject()) {
-			if (Input.GetMouseButton(0)) {
-				HandleInput();
+            if (Input.GetMouseButtonDown(0))
+            {
+                HandleInput(DrawMode.Put);
+                return;
+            }
+            if (Input.GetMouseButton(0)) {
+				HandleInput(DrawMode.Draw);
 				return;
 			}
-			if (Input.GetKeyDown(KeyCode.U)) {
+            if (Input.GetKeyDown(KeyCode.U)) {
                 if (Input.GetKey(KeyCode.LeftShift))
                 {
                     DestroyUnit();
@@ -76,34 +82,13 @@ public class MapEditor : MonoBehaviour
 		
     }
 
-    void HandleInput()
+    void HandleInput(DrawMode dm)
     {
         MainHexCell currentCell;
         try
         {
             currentCell = GetCellUnderCursor();
 
-            /*
-            if (Input.GetKey(KeyCode.LeftShift) && searchToCell != currentCell)
-            {
-                if (searchFromCell != currentCell)
-                {
-                    searchFromCell = currentCell;
-                    if (searchToCell)
-                    {
-                        hexGrid.FindPath(searchFromCell, searchToCell, 24);
-                    }
-                }
-
-            }
-            else if (searchFromCell && searchFromCell != currentCell)
-            {
-                if (searchToCell != currentCell)
-                {
-                    searchToCell = currentCell;
-                    hexGrid.FindPath(searchFromCell, searchToCell, 24);
-                }
-            }*/
             if (previousCell && previousCell != currentCell)
             {
                 ValidateDrag(currentCell);
@@ -112,7 +97,7 @@ public class MapEditor : MonoBehaviour
             {
                 isDrag = false;
             }
-            EditCell(currentCell);
+            EditCell(currentCell, dm);
             previousCell = currentCell;
         }
         catch (System.Exception)
@@ -208,9 +193,9 @@ public class MapEditor : MonoBehaviour
     }
 
 
-    void EditCell(MainHexCell cell)
+    void EditCell(MainHexCell cell, DrawMode md)
     {
-        if (activeTerrainTypeIndex >= 0)
+        if (activeTerrainTypeIndex > 0)
         {
             cell.dataHexCell.TerrainTypeIndex = activeTerrainTypeIndex;
         }
@@ -223,11 +208,10 @@ public class MapEditor : MonoBehaviour
         {
             cell.dataHexCell.waterScript.WaterLevel = activeWaterLevel;
         }
-
-        if (applySpecialIndex)
+        if (applySpecialIndex && md == DrawMode.Put)
         {
             cell.dataHexCell.featuresHexCell.SpecialIndex = activeSpecialIndex;
-            
+            cell.dataHexCell.City = new MainCity(cell);
         }
 
         if (applyUrbanLevel)
@@ -283,10 +267,7 @@ public class MapEditor : MonoBehaviour
         isDrag = false;
     }
 
-    enum OptionalToggle
-    {
-        Ignore, Yes, No
-    }
+    
 
 
     #region Unit
@@ -350,6 +331,16 @@ public class MapEditor : MonoBehaviour
         Debug.Log("Tah 1");
         CivGameManagerSingleton.Instance.allCities.ForEach(city => city.dataCity.statsCity.Turn());
     }
+}
+
+public enum OptionalToggle
+{
+    Ignore, Yes, No
+}
+
+public enum DrawMode
+{
+    Draw, Put
 }
 
 
