@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[System.Serializable]
+//[System.Serializable]
 public class MainCity
 {
     [SerializeField]
@@ -18,12 +18,6 @@ public class MainCity
         //dataCity.SelfDestruct();
         Debug.Log("City destroyed");
     }
-    public void Inicilizace(MainHexCell cell)
-    {
-        CivGameManagerSingleton.Instance.allCities.Add(this);
-        dataCity = new DataCity(cell, this);
-    }
-
     public MainCity(MainHexCell cell)
     {
         CivGameManagerSingleton.Instance.allCities.Add(this);

@@ -6,25 +6,25 @@ public class ArmyHexUnit
 {
     MainHexUnit mainHexUnit;
 
-    [SerializeField]
-    public Player player;
-    List<GameObject> unitsInArmy = new List<GameObject>();
+    public List<GameObject> unitsInArmy = new List<GameObject>();
+
+    public ArmyHexUnit()
+    {
+        
+    }
 
     public ArmyHexUnit(MainHexUnit mainHexUnit)
     {
         this.mainHexUnit = mainHexUnit;
-        
-        if (player == null) CivGameManagerSingleton.Instance.players[CivGameManagerSingleton.Instance.players.Length - 1].AddArmy(mainHexUnit.gameObject);
-        else player.AddArmy(mainHexUnit.gameObject);
     }
 
-    void AddUnit(GameObject unit)
+    public void AddUnit(GameObject unit)
     {
         unitsInArmy.Add(unit);
         Contains();
     }
 
-    void RemoveUnit(GameObject unit)
+    public void RemoveUnit(GameObject unit)
     {
         unitsInArmy.Remove(unit);
         Contains();

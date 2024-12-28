@@ -24,8 +24,11 @@ public class MainHexUnit : MonoBehaviour
 
     public void Inicilizace()
     {
-        dataHexUnit = new DataHexUnit(this);
-
+        if (dataHexUnit == null) dataHexUnit = new DataHexUnit(this);
+    }
+    public void Inicilizace(Player player, ArmyHexUnit army)
+    {
+        if (dataHexUnit == null) dataHexUnit = new DataHexUnit(this, player, army);
     }
 
     public void Die()

@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using Unity.Burst.Intrinsics;
 using UnityEngine;
 
 public class Player
@@ -13,11 +15,13 @@ public class Player
 
     public void AddArmy(GameObject army)
     {
-        army.GetComponent<MainHexUnit>().dataHexUnit.armyHexUnit.player = this;
-
         if (Armies.Contains(army)) return;
 
         Armies.Add(army);
     }
 
+    internal void RemoveArmy(GameObject army)
+    {
+        Armies.Remove(army);
+    }
 }

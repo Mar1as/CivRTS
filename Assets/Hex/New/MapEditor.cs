@@ -53,19 +53,19 @@ public class MapEditor : MonoBehaviour
                 if (Input.GetKeyDown(KeyCode.F)) //FARMA
                 {
                     MainHexCell currentCell = GetCellUnderCursor();
-                    currentCell.dataHexCell.city.dataCity.productionCity.productionQueue.AddToQueue(new Building(2, currentCell, BuildingEnum.Farm));
+                    //currentCell.dataHexCell.city.dataCity.productionCity.productionQueue.AddToQueue(new Building(2, currentCell, BuildingEnum.Farm));
                     return;
                 }
                 if (Input.GetKeyDown(KeyCode.G)) //URBAN
                 {
                     MainHexCell currentCell = GetCellUnderCursor();
-                    currentCell.dataHexCell.city.dataCity.productionCity.productionQueue.AddToQueue(new Building(2, currentCell, BuildingEnum.Urban));
+                    //currentCell.dataHexCell.city.dataCity.productionCity.productionQueue.AddToQueue(new Building(2, currentCell, BuildingEnum.Urban));
                     return;
                 }
                 if (Input.GetKeyDown(KeyCode.H)) //UNIT
                 {
                     MainHexCell currentCell = GetCellUnderCursor();
-                    currentCell.dataHexCell.city.dataCity.productionCity.productionQueue.AddToQueue(new Unit(2, currentCell, new MainHexUnit()));
+                    //currentCell.dataHexCell.city.dataCity.productionCity.productionQueue.AddToQueue(new Unit(2, currentCell, new MainHexUnit()));
                     return;
                 }
             }
@@ -88,7 +88,6 @@ public class MapEditor : MonoBehaviour
         try
         {
             currentCell = GetCellUnderCursor();
-
             if (previousCell && previousCell != currentCell)
             {
                 ValidateDrag(currentCell);
@@ -97,16 +96,20 @@ public class MapEditor : MonoBehaviour
             {
                 isDrag = false;
             }
-            EditCell(currentCell, dm);
+            if(UiManager.editMode == EditMode.Edit) EditCell(currentCell, dm);
+            
+
             previousCell = currentCell;
         }
         catch (System.Exception)
         {
             return;
-            //throw;
+            throw;
         }
         
     }
+
+    
 
     MainHexCell GetCellUnderCursor()
     {
@@ -329,7 +332,7 @@ public class MapEditor : MonoBehaviour
     public void Turn()
     {
         Debug.Log("Tah 1");
-        CivGameManagerSingleton.Instance.allCities.ForEach(city => city.dataCity.statsCity.Turn());
+        CivGameManagerSingleton.Instance.allCities.ForEach(city => city.dataCity.Turn());
     }
 }
 
@@ -342,5 +345,7 @@ public enum DrawMode
 {
     Draw, Put
 }
+
+
 
 

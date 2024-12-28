@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class HexFeatureManager : MonoBehaviour
@@ -89,7 +90,7 @@ public class HexFeatureManager : MonoBehaviour
     {
         if (level > 0)
         {
-            float[] thresholds = HexMetrics.GetFeatureThresholds(level - 1);
+            float[] thresholds = HexMetrics.GetFeatureThresholds(math.clamp(level - 1, 0, HexMetrics.featureThresholds.Length - 1));
             for (int i = 0; i < thresholds.Length; i++)
             {
                 if (hash < thresholds[i])

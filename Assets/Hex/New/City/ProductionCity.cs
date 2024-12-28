@@ -1,143 +1,151 @@
-using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 
 public class ProductionCity
 {
-    public MainCity mainCity;
-    public ProductionQueue productionQueue;
+    private MainCity mainCity;
+    public ProductionQueue productionQueue { get; private set; }
 
     public ProductionCity(MainCity mainHexUnit)
     {
         this.mainCity = mainHexUnit;
-        Awake();
+        productionQueue = new ProductionQueue(mainCity);
     }
 
-    private void Awake()
+    public void ProduceBuilding(BuildingData building, MainHexCell location)
     {
-        productionQueue = new ProductionQueue();
-    }
-
-    public void ProduceItem(IProductionItem item)
-    {
-        productionQueue.AddToQueue(item);
+        Debug.Log("ProduceXD");
+        productionQueue.AddToQueue(building, location);
     }
 
     public void ProcessTurn(int production)
     {
-        Debug.Log("Tah 3 " + production);
+        Debug.Log($"Processing production for {mainCity}. Production available: {production}");
         productionQueue.ProcessProduction(production);
+    }
+
+    public string GetProductionStatus()
+    {
+        return productionQueue.GetQueueStatus();
     }
 }
 
 public class ProductionQueue
 {
-    public Queue<IProductionItem> queue = new Queue<IProductionItem>();
-    public IProductionItem CurrentItem { get; private set; }
-    public int RemainingTurns { get; private set; }
+    MainCity mainCity;
 
-    public void AddToQueue(IProductionItem item)
+    public Queue<ProductionTask> queue = new Queue<ProductionTask>();
+    private ProductionTask currentTask;
+    private int remainingProduction;
+
+    public event System.Action OnQueueUpdated;
+
+    public ProductionQueue(MainCity mainCity)
     {
-        Debug.Log("ADDED to queue");
-        queue.Enqueue(item);
-        if (CurrentItem == null)
+        this.mainCity = mainCity;
+    }
+
+    public void AddToQueue(BuildingData building, MainHexCell location)
+    {
+        queue.Enqueue(new ProductionTask(building, location));
+        OnQueueUpdated?.Invoke();
+        if (currentTask == null)
         {
-            StartNextItem();
+            StartNextTask();
+        }
+    }
+
+    public void RemoveTaskFromQueue(ProductionTask task)
+    {
+        if (queue.Contains(task))
+        {
+            queue = new Queue<ProductionTask>(queue.Where(t => t != task));
+            OnQueueUpdated?.Invoke();
+        }
+    }
+
+    private void StartNextTask()
+    {
+        if (queue.Count > 0)
+        {
+            currentTask = queue.Dequeue();
+            remainingProduction = currentTask.Building.productionCost;
+            OnQueueUpdated?.Invoke();
+        }
+        else
+        {
+            currentTask = null;
+            remainingProduction = 0;
         }
     }
 
     public void ProcessProduction(int production)
     {
-        Debug.Log("Tah 4 " + RemainingTurns + " " + queue.Count);
-        if (CurrentItem == null) return;
-
-        RemainingTurns -= production;
-
-        if (RemainingTurns <= 0)
+        if (currentTask == null) return;
+        Debug.Log($"{remainingProduction} -= {production}");
+        remainingProduction -= production;
+        
+        if (remainingProduction <= 0)
         {
-            CompleteCurrentItem();
-            StartNextItem();
+            CompleteCurrentTask();
+            StartNextTask();
         }
     }
 
-    private void StartNextItem()
+    public string GetQueueStatus()
     {
-        if (queue.Count > 0)
+        if (currentTask != null)
         {
-            CurrentItem = queue.Dequeue();
-            RemainingTurns = CurrentItem.productionCost;
+            return $"Producing {currentTask.Building.buildingName} at {currentTask.Location}. Remaining: {remainingProduction}";
         }
-        else
-        {
-            CurrentItem = null;
-            RemainingTurns = 0;
-        }
+
+        return queue.Count > 0 ? "Items in queue." : "No items in production.";
     }
 
-    private void CompleteCurrentItem()
+    
+
+    private void CompleteCurrentTask()
     {
-        CurrentItem.OnProductionComplete();
+        Debug.Log($"Completed production of {currentTask.Building.buildingName} at {currentTask.Location}");
+        switch (currentTask.Building.type)
+        {
+            case BuildingType.Farm:
+                currentTask.Location.dataHexCell.featuresHexCell.FarmLevel++;
+                break;
+            case BuildingType.Urban:
+                currentTask.Location.dataHexCell.featuresHexCell.UrbanLevel++;
+                break;
+            case BuildingType.Army:
+                MainHexCell cell = currentTask.Location;
+                if (cell && !cell.dataHexCell.Unit)
+                {
+                    CivGameManagerSingleton.Instance.hexGrid.AddUnit(
+                        mainCity.dataCity.playerOwner.faction.armyUnitStyle[0].GetComponent<MainHexUnit>(), currentTask.Location, Random.Range(0f, 360f), currentTask.Building.army, mainCity.dataCity.playerOwner
+                    );
+                }
+                break;
+            default:
+                break;
+        }
+        currentTask = null;
+    }
+
+
+    public int Count()
+    {
+        return queue.Count;
     }
 }
 
-public interface IProductionItem
+public class ProductionTask
 {
-    int productionCost { get; }
-    MainHexCell location { get; }
-    void OnProductionComplete();
-}
+    public BuildingData Building { get; private set; }
+    public MainHexCell Location { get; private set; }
 
-public class Unit : IProductionItem
-{
-    public int productionCost { get; private set; }
-    public MainHexCell location { get; private set; }
-    public MainHexUnit unit { get; private set; }
-
-    public Unit(int cost, MainHexCell location, MainHexUnit unit)
+    public ProductionTask(BuildingData building, MainHexCell location)
     {
-        productionCost = cost;
-        this.location = location;
-        this.unit = unit;
+        Building = building;
+        Location = location;
     }
-
-    public void OnProductionComplete()
-    {
-        Debug.Log($"Unit has been completed in city {location.name}!");
-        CivGameManagerSingleton.Instance.hexGrid.AddUnit(
-                DataHexUnit.unitPrefab, location, Random.Range(0f, 360f)
-            );
-
-    }
-}
-
-public class Building : IProductionItem
-{
-    public int productionCost { get; private set; }
-    public MainHexCell location { get; private set; }
-    public BuildingEnum be { get; private set; }
-
-    public Building(int cost, MainHexCell location, BuildingEnum be)
-    {
-        productionCost = cost;
-        this.location = location;
-        this.be = be;
-    }
-
-    public void OnProductionComplete()
-    {
-        Debug.Log($"Building has been completed in city {location.name}!");
-        if (be == BuildingEnum.Farm)
-        {
-            location.dataHexCell.featuresHexCell.FarmLevel++;
-        }
-        else
-        {
-            location.dataHexCell.featuresHexCell.UrbanLevel++;
-        }
-    }
-}
-
-public enum BuildingEnum
-{
-    Farm,
-    Urban
 }

@@ -1,19 +1,36 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using Unity.VisualScripting;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 [System.Serializable]
 public class DataHexUnit
 {
     public MainHexUnit mainHexUnit { get; private set; }
-    public ArmyHexUnit armyHexUnit { get; private set; }
+    public ArmyHexUnit armyHexUnit { get; set; }
 
     public DataHexUnit(MainHexUnit mainHexUnit)
     {
         this.mainHexUnit = mainHexUnit;
         armyHexUnit = new ArmyHexUnit(mainHexUnit);
+        CivGameManagerSingleton.Instance.allUnits.Add(mainHexUnit);
+        PlayerOwner = CivGameManagerSingleton.Instance.players[(int)Random.Range(0,CivGameManagerSingleton.Instance.players.Length)];
+
+    }
+    public DataHexUnit(MainHexUnit mainHexUnit, Player player, ArmyHexUnit army)
+    {
+        this.mainHexUnit = mainHexUnit;
+        armyHexUnit = army;
+        PlayerOwner = player;
+
+    }
+    public DataHexUnit(MainHexUnit mainHexUnit, ArmyHexUnit armyHexUnit)
+    {
+        this.mainHexUnit = mainHexUnit;
+        this.armyHexUnit = armyHexUnit;
     }
 
     public static MainHexUnit unitPrefab;
@@ -21,6 +38,44 @@ public class DataHexUnit
     public List<MainHexCell> pathToTravel;
     const float travelSpeed = 4f;
     const float rotationSpeed = 180f;
+
+    Player playerOwner;
+    Player PlayerOwner
+    {
+        get
+        {
+            return playerOwner;
+        }
+        set
+        {
+            if (playerOwner == null)
+            {
+                for (int i = 0; i < CivGameManagerSingleton.Instance.players.Length; i++)
+                {
+                    if (CivGameManagerSingleton.Instance.players[i] == value)
+                    {
+                        CivGameManagerSingleton.Instance.players[i].AddArmy(mainHexUnit.gameObject);
+                        return;
+                    }
+
+                }
+            }
+            else if (playerOwner != value)
+            {
+                for (int i = 0; i < CivGameManagerSingleton.Instance.players.Length; i++)
+                {
+                    if (CivGameManagerSingleton.Instance.players[i] == playerOwner)
+                    {
+                        CivGameManagerSingleton.Instance.players[i].RemoveArmy(mainHexUnit.gameObject);
+                    }
+                    if (CivGameManagerSingleton.Instance.players[i] == value)
+                    {
+                        CivGameManagerSingleton.Instance.players[i].AddArmy(mainHexUnit.gameObject);
+                    }
+                }
+            }
+        }
+    }
 
     MainHexCell location;
     public MainHexCell Location

@@ -13,7 +13,12 @@ MonoBehaviour:
   m_Name: FactionsInCiv 1
   m_EditorClassIdentifier: 
   factionName: Soviet Union
+  armyUnitStyle:
+  - {fileID: 1369767088007361447, guid: c81e5ce50be758d4b8ec256a66f66c33, type: 3}
   availableUnits:
   - {fileID: 2616612572522683862, guid: 80a5bcd7e43e80741a32ed07260bdee1, type: 3}
+  availableBuildings:
+  - {fileID: 11400000, guid: 83bcad57b497a8044a575fd8b18f2529, type: 2}
+  - {fileID: 11400000, guid: ecdfac6d010a27a4c94d1f9db7a95bc9, type: 2}
   factionColor: {r: 0.745283, g: 0, b: 0, a: 0}
   description: Kok

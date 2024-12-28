@@ -400,6 +400,19 @@ public class HexGrid : MonoBehaviour
         newUnit.dataHexUnit.Location = location;
         newUnit.dataHexUnit.Orientation = orientation;
     }
+    public void AddUnit(MainHexUnit unit, MainHexCell location, float orientation, ArmyHexUnit army, Player player)
+    {
+        MainHexUnit newUnit = MainHexUnit.Instantiate(unit);
+        newUnit.Inicilizace(player,army);
+       
+        CivGameManagerSingleton.Instance.allUnits.Add(newUnit);
+        newUnit.transform.SetParent(transform, false);
+        Debug.Log(newUnit.dataHexUnit);
+        Debug.Log(location);
+        newUnit.dataHexUnit.Location = location;
+        newUnit.dataHexUnit.Orientation = orientation;
+    }
+
     public void RemoveUnit(MainHexUnit unit)
     {
         CivGameManagerSingleton.Instance.allUnits.Remove(unit);

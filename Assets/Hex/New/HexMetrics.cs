@@ -64,7 +64,7 @@ public static class HexMetrics
 
     public const float hashGridScale = 0.25f;
 
-    static float[][] featureThresholds = {
+    public static float[][] featureThresholds = {
         /*new float[] {0.0f, 0.0f, 0.4f}, // 40 % na 1. level
         new float[] {0.0f, 0.4f, 0.6f}, //40 % na 2. level a 60 % na 3. level
         new float[] {0.4f, 0.6f, 0.8f}*/ // 40 % na 3. level, 60 % na 2. level a 80 % na 4. level

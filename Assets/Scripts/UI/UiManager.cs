@@ -10,6 +10,7 @@ public class UiManager : MonoBehaviour
     private int[] editSetup = new int[1];
     private bool[] editorToggles = new bool[6];
     private OptionalToggle[] toggleModes = new OptionalToggle[3];
+    static public EditMode editMode = EditMode.Edit;
 
     public void EnableGameUi()
     {
@@ -18,6 +19,8 @@ public class UiManager : MonoBehaviour
 
 
         if (GameUi != null) GameUi.SetActive(true);
+        editMode = EditMode.Game;
+        Debug.Log(editMode);
     }
 
     public void EnableEditUi()
@@ -26,7 +29,8 @@ public class UiManager : MonoBehaviour
         RestoreEditorState();
 
         if (EditUi != null) EditUi.SetActive(true);
-
+        editMode = EditMode.Edit;
+        Debug.Log(editMode);
     }
 
     void DisableAllUiFeatures()
@@ -76,4 +80,9 @@ public class UiManager : MonoBehaviour
         mapEditor.roadMode = toggleModes[1];
         mapEditor.walledMode = toggleModes[2];
     }
+}
+
+public enum EditMode
+{
+    Edit, Game
 }

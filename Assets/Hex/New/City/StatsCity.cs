@@ -1,111 +1,78 @@
 using UnityEngine;
-using static UnityEditor.FilePathAttribute;
 
 public class StatsCity
 {
-    MainCity mainCity;
+    private MainCity mainCity;
+    private int level = 1;
+    private int levelProgress = 0;
+    private int levelUpRequirement = 5;
+
+    public float ProductionModifier { get; private set; } = 1.0f;
 
     public StatsCity(MainCity mainHexUnit)
     {
         this.mainCity = mainHexUnit;
     }
 
-    float productionModifier = 1;
-
-    int level = 1;
-    int levelUp = 5;
-    int levelProgress = 0;
-
-    int LevelProgress
+    public void ProcessTurn()
     {
-        get
-        {
-            return levelProgress;
-        }
-        set
-        {
-            productionModifier = 1;
-            levelProgress = value;
-            if (levelProgress >= levelUp)
-            {
-                level++;
-                levelUp *= 2;
-
-                levelProgress = 0;
-
-                mainCity.dataCity.ExpandCity();
-                //Conquest
-            }
-            else if (levelProgress < 0 && level > 1)
-            {
-                level--;
-
-                levelUp /= 2;
-                levelProgress = 0;
-
-                mainCity.dataCity.ShrinkCity();
-                //Deconquest
-            }
-            else if(levelProgress < 0)
-            {
-                levelProgress = 0;
-                productionModifier = 0;
-            }
-        }
-    }   
-
-    public void Turn()
-    {
-        Debug.Log("Tah 2");
-        LevelProgress += Food - Population;
-        int curProduction = Production * (int)productionModifier;
-        mainCity.dataCity.productionCity.ProcessTurn(curProduction);
-        Debug.Log(StatsToString());
+        int foodSurplus = CalculateFood() - CalculatePopulation();
+        UpdateLevelProgress(foodSurplus);
+        Debug.Log(GetStatsSummary());
     }
 
-    public int Population
+    public int CalculatePopulation()
     {
-        get
+        int population = 0;
+        foreach (var cell in mainCity.dataCity.CellsInBorder)
         {
-            int population = 0;
-            foreach (var cell in mainCity.dataCity.cellsInBorder)
-            {
-                population += (cell.dataHexCell.featuresHexCell.UrbanLevel + cell.dataHexCell.featuresHexCell.FarmLevel) / 2;
-            }
-            return population;
+            population += (cell.dataHexCell.featuresHexCell.UrbanLevel + cell.dataHexCell.featuresHexCell.FarmLevel) / 2;
+        }
+        return population;
+    }
+
+    public int CalculateFood()
+    {
+        int food = 10;
+        foreach (var cell in mainCity.dataCity.CellsInBorder)
+        {
+            food += cell.dataHexCell.featuresHexCell.FarmLevel * 2;
+        }
+        return food + 1;
+    }
+
+    public int CalculateProduction()
+    {
+        int production = 10;
+        foreach (var cell in mainCity.dataCity.CellsInBorder)
+        {
+            production += cell.dataHexCell.featuresHexCell.UrbanLevel;
+        }
+        return production + 1;
+    }
+
+    private void UpdateLevelProgress(int progress)
+    {
+        levelProgress += progress;
+
+        if (levelProgress >= levelUpRequirement)
+        {
+            level++;
+            levelUpRequirement *= 2;
+            levelProgress = 0;
+            mainCity.dataCity.ExpandCity();
+        }
+        else if (levelProgress < 0 && level > 1)
+        {
+            level--;
+            levelUpRequirement /= 2;
+            levelProgress = 0;
+            mainCity.dataCity.ShrinkCity();
         }
     }
 
-    public int Food
+    public string GetStatsSummary()
     {
-        get
-        {
-            int food = 0;
-            foreach (var cell in mainCity.dataCity.cellsInBorder)
-            {
-                food += cell.dataHexCell.featuresHexCell.FarmLevel * 2;
-            }
-            return food + 1;
-        }
-    }
-
-    public int Production
-    {
-        get
-        {
-            int production = 0;
-            foreach (var cell in mainCity.dataCity.cellsInBorder)
-            {
-                production += cell.dataHexCell.featuresHexCell.UrbanLevel;
-            }
-            return production + 1;
-        }
-    }
-
-    public string StatsToString()
-    {
-        string x = $"Level: {level} Level Up: {levelUp} Level Progress: {LevelProgress}\nPopulation: {Population} Food: {Food} Production: {Production}";
-        Debug.Log(x);
-        return x;
+        return $"Level: {level}, Progress: {levelProgress}/{levelUpRequirement}, Population: {CalculatePopulation()}, Food: {CalculateFood()}, Production: {CalculateProduction()}";
     }
 }
