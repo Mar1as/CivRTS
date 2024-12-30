@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class HexCellPriorityQueue
 {
-    List<MainHexCell> list = new List<MainHexCell>();
+    public List<MainHexCell> list = new List<MainHexCell>();
     public MainHexCell NextWithSamePriority { get; set; }
     int count = 0;
     int minimum = int.MaxValue;

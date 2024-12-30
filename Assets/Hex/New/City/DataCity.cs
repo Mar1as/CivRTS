@@ -16,7 +16,7 @@ public class DataCity
 
     public Player playerOwner { get; private set; }
 
-    public DataCity(MainHexCell initialCell, MainCity mainCity)
+    public DataCity(MainHexCell initialCell, MainCity mainCity, Player player)
     {
         this.mainCity = mainCity;
         Location = initialCell;
@@ -24,7 +24,14 @@ public class DataCity
         Production = new ProductionCity(mainCity);
         Stats = new StatsCity(mainCity);
 
-        playerOwner = CivGameManagerSingleton.Instance.players[Random.Range(0, CivGameManagerSingleton.Instance.players.Length)];// ZATÍM!!
+        if(player != null)
+        {
+            playerOwner = player;
+        }
+        else
+        {
+            playerOwner = CivGameManagerSingleton.Instance.players[Random.Range(0, CivGameManagerSingleton.Instance.players.Length)];
+        }
         
         InitializeCity();
     }

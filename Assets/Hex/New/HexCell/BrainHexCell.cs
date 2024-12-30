@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -59,6 +60,21 @@ public class BrainHexCell
             dataHexCell.Unit.dataHexUnit.ValidateLocation();
         }
     }
+
+    public MainHexCell[] GetAllNeighbors()
+    {
+        List<MainHexCell> neighbors = new List<MainHexCell>();
+        foreach (HexDirection direction in Enum.GetValues(typeof(HexDirection)))
+        {
+            MainHexCell neighbor = GetNeighbor(direction);
+            if (neighbor != null)
+            {
+                neighbors.Add(neighbor);
+            }
+        }
+        return neighbors.ToArray();
+    }
+
 }
 
 public enum HexDirection

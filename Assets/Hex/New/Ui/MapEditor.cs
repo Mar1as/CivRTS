@@ -5,6 +5,7 @@ using Unity.Burst.CompilerServices;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class MapEditor : MonoBehaviour
 {
@@ -15,6 +16,7 @@ public class MapEditor : MonoBehaviour
     int activeWaterLevel;
     int activeUrbanLevel, activeFarmLevel, activePlantLevel, activeSpecialIndex;
     public int activeTerrainTypeIndex;
+    int selectedPlayerIndex = 0;
 
     public bool applyElevation = true;
     public bool applyWaterLevel = true;
@@ -116,6 +118,13 @@ public class MapEditor : MonoBehaviour
         return hexGrid.GetCell(Camera.main.ScreenPointToRay(Input.mousePosition));
     }
 
+    public void SetSelectedPlayerIndex(Slider slider)
+    {
+        slider.maxValue = CivGameManagerSingleton.Instance.players.Length - 1;
+        selectedPlayerIndex = (int)slider.value;
+        Debug.Log(selectedPlayerIndex);
+    }
+
     public void SetTerrainTypeIndex(int index)
     {
         activeTerrainTypeIndex = index;
@@ -214,7 +223,7 @@ public class MapEditor : MonoBehaviour
         if (applySpecialIndex && md == DrawMode.Put)
         {
             cell.dataHexCell.featuresHexCell.SpecialIndex = activeSpecialIndex;
-            cell.dataHexCell.City = new MainCity(cell);
+            cell.dataHexCell.City = new MainCity(cell, CivGameManagerSingleton.Instance.players[selectedPlayerIndex]);
         }
 
         if (applyUrbanLevel)
@@ -280,9 +289,9 @@ public class MapEditor : MonoBehaviour
         MainHexCell cell = GetCellUnderCursor();
         if (cell && !cell.dataHexCell.Unit)
         {
-            hexGrid.AddUnit(
-                DataHexUnit.unitPrefab, cell, Random.Range(0f, 360f)
-            );
+            CivGameManagerSingleton.Instance.hexGrid.AddUnit(
+                        CivGameManagerSingleton.Instance.players[selectedPlayerIndex].faction.armyUnitStyle[0].GetComponent<MainHexUnit>(), cell, Random.Range(0f, 360f), new ArmyHexUnit(), CivGameManagerSingleton.Instance.players[selectedPlayerIndex]
+                    );
         }
     }
 
@@ -331,7 +340,7 @@ public class MapEditor : MonoBehaviour
 
     public void Turn()
     {
-        Debug.Log("Tah 1");
+        Debug.Log("Tah");
         CivGameManagerSingleton.Instance.allCities.ForEach(city => city.dataCity.Turn());
     }
 }

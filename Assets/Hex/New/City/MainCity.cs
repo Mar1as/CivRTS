@@ -18,9 +18,9 @@ public class MainCity
         //dataCity.SelfDestruct();
         Debug.Log("City destroyed");
     }
-    public MainCity(MainHexCell cell)
+    public MainCity(MainHexCell cell, Player player)
     {
         CivGameManagerSingleton.Instance.allCities.Add(this);
-        dataCity = new DataCity(cell, this);
+        dataCity = new DataCity(cell, this, player);
     }
 }

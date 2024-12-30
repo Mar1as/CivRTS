@@ -22,7 +22,11 @@ public class DataHexUnit
     }
     public DataHexUnit(MainHexUnit mainHexUnit, Player player, ArmyHexUnit army)
     {
+        Debug.Log(mainHexUnit);
+        Debug.Log(this.mainHexUnit);
         this.mainHexUnit = mainHexUnit;
+        Debug.Log(mainHexUnit);
+        Debug.Log(this.mainHexUnit);
         armyHexUnit = army;
         PlayerOwner = player;
 
@@ -40,7 +44,7 @@ public class DataHexUnit
     const float rotationSpeed = 180f;
 
     Player playerOwner;
-    Player PlayerOwner
+    public Player PlayerOwner
     {
         get
         {
@@ -91,7 +95,26 @@ public class DataHexUnit
                 location.dataHexCell.Unit = null;
             }
             location = value;
+            if (value == null || value.dataHexCell == null)
+            {
+                Debug.LogError("Location or dataHexCell is null.");
+                return;
+            }
+
+            Debug.Log("Kok: " + value);
             value.dataHexCell.Unit = mainHexUnit;
+
+            if (mainHexUnit == null)
+            {
+                Debug.LogError("mainHexUnit is null.");
+                return;
+            }
+
+            if (value.dataHexCell.Position == null)
+            {
+                Debug.LogError("Position is null or not initialized.");
+                return;
+            }
             mainHexUnit.transform.localPosition = value.dataHexCell.Position;
         }
     }
@@ -118,7 +141,7 @@ public class DataHexUnit
 
     public bool IsValidDestination(MainHexCell cell)
     {
-        return !cell.dataHexCell.waterScript.IsUnderwater && !cell.dataHexCell.Unit;
+        return !cell.dataHexCell.waterScript.IsUnderwater; //&& !cell.dataHexCell.Unit;
     }
 
     

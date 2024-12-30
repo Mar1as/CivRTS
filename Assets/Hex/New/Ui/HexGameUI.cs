@@ -18,7 +18,7 @@ public class HexGameUI : MonoBehaviour
     BuildingData selectedBuilding;
 
     [SerializeField]
-    GameObject buildingShopPanel,armyShopPanel , productionPanel;
+    GameObject buildingShopPanel, armyShopPanel, productionPanel;
     [SerializeField]
     GameObject buildingShopButtonPrefab, armyShopButtonPrefab, productionButtonPrefab;
     [SerializeField]
@@ -41,6 +41,10 @@ public class HexGameUI : MonoBehaviour
             {
                 RightClickHandler();
             }
+            if (selectedUnit)
+            {
+                Pathfinding();
+            }
         }
     }
 
@@ -53,10 +57,12 @@ public class HexGameUI : MonoBehaviour
 
             if (!selectedUnit)
             {
+                Debug.Log("select unit");
                 selectedUnit = SelectUnit();
             }
-            if (selectedUnit)
+            else if (selectedUnit)
             {
+                Debug.Log("Unselect unit");
                 selectedUnit = null;
             }
             if (currentCell.dataHexCell.featuresHexCell.SpecialIndex > 0)
@@ -90,11 +96,25 @@ public class HexGameUI : MonoBehaviour
 
             if (selectedUnit)
             {
+                // Získání všech sousedù aktuální buòky
+                MainHexCell[] neighbors = currentCell.brainHexCell.GetAllNeighbors();
+
+                foreach (MainHexCell neighbor in neighbors)
+                {
+                    // Kontrola, zda na sousední buòce je jednotka nepøítele
+                    if (neighbor.dataHexCell.Unit != null &&
+                        neighbor.dataHexCell.Unit.dataHexUnit.PlayerOwner != selectedUnit.dataHexUnit.PlayerOwner)
+                    {
+                        // Útok na nepøítele
+                        Debug.Log("Útok na nepøítele!");
+                        selectedUnit.Attack(neighbor.dataHexCell.Unit);
+                        return; // Po útoku pøerušíme další akce
+                    }
+                }
+
+                // Pokud není žádný nepøítel, jednotka se pohybuje
+                Debug.Log("Pohyb jednotky.");
                 DoMove();
-            }
-            else
-            {
-                Pathfinding();
             }
         }
         catch (System.Exception)
@@ -132,7 +152,6 @@ public class HexGameUI : MonoBehaviour
         return null;
     }
 
-    
 
     void Pathfinding()
     {
@@ -140,7 +159,17 @@ public class HexGameUI : MonoBehaviour
         {
             if (currentCell && selectedUnit.dataHexUnit.IsValidDestination(currentCell))
             {
-                hexGrid.FindPath(selectedUnit.dataHexUnit.Location, currentCell, 24);
+                bool unitOnCell = currentCell.dataHexCell.Unit != null;
+                Player selectedUnitPlayer = selectedUnit.dataHexUnit.PlayerOwner;
+                Player destinationUnitPlayer = unitOnCell ? currentCell.dataHexCell.Unit.dataHexUnit.PlayerOwner : null;
+                Debug.Log("OIDSJOI");
+                UnitAtDestination unitAtD = UnitAtDestination.None;
+                if (unitOnCell)
+                {
+                    unitAtD = selectedUnitPlayer == destinationUnitPlayer ? UnitAtDestination.Ally : UnitAtDestination.Enemy;
+                }
+
+                hexGrid.FindPath(selectedUnit.dataHexUnit.Location, currentCell, 24, unitAtD);
             }
             else
             {
@@ -152,6 +181,7 @@ public class HexGameUI : MonoBehaviour
     {
         if (hexGrid.HasPath)
         {
+            Debug.Log("Move2");
             selectedUnit.Travel(hexGrid.GetPath());
             hexGrid.ClearPath();
         }
@@ -161,6 +191,7 @@ public class HexGameUI : MonoBehaviour
     #region BuildingMenu
     void SelectCity(MainHexCell currentCell)
     {
+        ButtonCancel();
         Player player = currentCell.dataHexCell.city.dataCity.playerOwner;
         selectedCity = currentCell.dataHexCell.city;
         OnArmyUpdated += () => UpdateArmyPanel(player);
@@ -230,6 +261,7 @@ public class HexGameUI : MonoBehaviour
 
     void UpdateProductionPanel(Player player)
     {
+        //Debug.Log(selectedCity.dataCity.Production.productionQueue.queue.Count  + " kokotko ");
         foreach (Transform child in productionPanel.transform)
         {
             Destroy(child.gameObject);
@@ -258,7 +290,7 @@ public class HexGameUI : MonoBehaviour
     }
 
     ProductionTask armyTask;
-    ArmyHexUnit newArmy;
+    ArmyHexUnit newArmy = new ArmyHexUnit();
 
     void UpdateArmyPanel(Player player)
     {
@@ -341,4 +373,9 @@ public class HexGameUI : MonoBehaviour
         selectedCity.dataCity.Production.productionQueue.AddToQueue(selectedBuilding, selectedCity.dataCity.Location);
     }
     #endregion
+}
+
+public enum UnitAtDestination
+{
+    Enemy, Ally, None
 }

@@ -241,19 +241,20 @@ public class HexGrid : MonoBehaviour
     HexCellPriorityQueue searchFrontier;
     int searchFrontierPhase;
 
-    public void FindPath(MainHexCell fromCell, MainHexCell toCell, int speed)
+    public void FindPath(MainHexCell fromCell, MainHexCell toCell, int speed, UnitAtDestination unitAtD)
     {
         ClearPath();
         currentPathFrom = fromCell;
         currentPathTo = toCell;
-        currentPathExists = Search(fromCell, toCell, speed);
+        currentPathExists = Search(fromCell, toCell, speed, unitAtD);
         ShowPath(speed);
     }
 
-    bool Search(MainHexCell fromCell, MainHexCell toCell, int speed)
+    bool Search(MainHexCell fromCell, MainHexCell toCell, int speed, UnitAtDestination unitAtDest)
     {
-        searchFrontierPhase += 2;
 
+        Debug.Log("Search");
+        searchFrontierPhase += 2;
         if (searchFrontier == null)
         {
             searchFrontier = new HexCellPriorityQueue();
@@ -266,15 +267,20 @@ public class HexGrid : MonoBehaviour
         fromCell.dataHexCell.hexCellDistance.SearchPhase = searchFrontierPhase;
         fromCell.dataHexCell.hexCellDistance.Distance = 0;
         searchFrontier.Enqueue(fromCell);
+
+        MainHexCell previousCell = null;
+
         while (searchFrontier.Count > 0)
         {
             MainHexCell current = searchFrontier.Dequeue();
             current.dataHexCell.hexCellDistance.SearchPhase += 1;
-
-            if (current == toCell)
+            
+            if (current == toCell) //Konec
             {
                 return true;
             }
+
+            previousCell = current;
 
             int currentTurn = (current.dataHexCell.hexCellDistance.Distance - 1) / speed;
 
@@ -282,7 +288,7 @@ public class HexGrid : MonoBehaviour
             {
                 MainHexCell neighbor = current.brainHexCell.GetNeighbor(d);
                 if (neighbor == null || neighbor.dataHexCell.hexCellDistance.SearchPhase > searchFrontierPhase) continue;
-                if (neighbor.dataHexCell.waterScript.IsUnderwater || neighbor.dataHexCell.Unit) continue;
+                if ((neighbor.dataHexCell.waterScript.IsUnderwater || neighbor.dataHexCell.Unit)) continue;
                 HexEdgeType edgeType = current.brainHexCell.GetEdgeType(neighbor);
                 if (edgeType == HexEdgeType.Cliff) continue;
 
@@ -290,11 +296,11 @@ public class HexGrid : MonoBehaviour
                 if (current.dataHexCell.roadScript.HasRoadThroughEdge(d))
                 {
                     moveCost += 1;
-                }
-                else if (current.dataHexCell.wallsScript.Walled != neighbor.dataHexCell.wallsScript.Walled)
+                }/*
+                else if (current.dataHexCell.wallsScript.Walled != neighbor.dataHexCell.wallsScript.Walled) //Nemùže procházet zdí
                 {
-                    continue;
-                }
+                    //continue;
+                }*/
                 else
                 {
                     moveCost += edgeType == HexEdgeType.Flat ? 5 : 10;

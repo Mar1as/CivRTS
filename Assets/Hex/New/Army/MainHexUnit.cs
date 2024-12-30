@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -24,11 +25,21 @@ public class MainHexUnit : MonoBehaviour
 
     public void Inicilizace()
     {
-        if (dataHexUnit == null) dataHexUnit = new DataHexUnit(this);
+        if (dataHexUnit == null)
+        {
+            dataHexUnit = new DataHexUnit(this);
+        }
     }
     public void Inicilizace(Player player, ArmyHexUnit army)
     {
-        if (dataHexUnit == null) dataHexUnit = new DataHexUnit(this, player, army);
+        if (dataHexUnit == null)
+        {
+            dataHexUnit = new DataHexUnit(this, player, army);
+        }
+        else if (dataHexUnit.mainHexUnit == null)
+        {
+            dataHexUnit = new DataHexUnit(this, player, army);
+        }
     }
 
     public void Die()
@@ -61,6 +72,14 @@ public class MainHexUnit : MonoBehaviour
         grid.AddUnit(
             Instantiate(DataHexUnit.unitPrefab), grid.GetCell(new Vector3(coordinates.X,coordinates.Y,coordinates.Z)), orientation
         );
+    }
+
+    internal void Attack(MainHexUnit unit)
+    {
+        SceneSwap.armyArray[0] = dataHexUnit.armyHexUnit;
+        SceneSwap.armyArray[1] = unit.dataHexUnit.armyHexUnit;
+
+        CivGameManagerSingleton.Instance.sceneSwap.LoadScene(1);
     }
     #endregion
 }

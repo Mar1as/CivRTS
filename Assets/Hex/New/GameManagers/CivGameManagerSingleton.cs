@@ -30,6 +30,7 @@ public class CivGameManagerSingleton
     public List<MainCity> allCities;
     public Player[] players;
     public HexGrid hexGrid;
+    public SceneSwap sceneSwap;
 
     /*public List<Player> AddPlayers()
     {
