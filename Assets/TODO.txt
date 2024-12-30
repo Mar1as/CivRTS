@@ -1,0 +1,11 @@
+Jednotný UI
+UI container options
+Labely
+Velikosti Textu
+Návaznosti pro obhajoby
+Udělat fotku zeditované mapy
+Předělat celý systém hiearchie
+Příklad: Z dat dostávat pouze informace a ne objekty
+AKA. Máš třídu UI manager a město, z města si pouze zavoláš get info.
+Nemá přístup do objektů, nesmí mít reference na Maina (DataHexCell nesmí mít referenci na MainHexCell)
+Zorganizovat, ArmyHexCell -> DataArmyHexCell

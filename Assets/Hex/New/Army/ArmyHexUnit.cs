@@ -6,6 +6,7 @@ public class ArmyHexUnit
 {
     MainHexUnit mainHexUnit;
 
+    [SerializeField]
     public List<GameObject> unitsInArmy = new List<GameObject>();
 
     public ArmyHexUnit()
@@ -16,6 +17,16 @@ public class ArmyHexUnit
     public ArmyHexUnit(MainHexUnit mainHexUnit)
     {
         this.mainHexUnit = mainHexUnit;
+    }
+
+    public ArmyHexUnit Clone()
+    {
+        ArmyHexUnit clonedArmy = new ArmyHexUnit();
+        foreach (var unit in unitsInArmy)
+        {
+            clonedArmy.unitsInArmy.Add(unit);
+        }
+        return clonedArmy;
     }
 
     public void AddUnit(GameObject unit)

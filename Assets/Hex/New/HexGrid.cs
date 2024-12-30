@@ -253,7 +253,6 @@ public class HexGrid : MonoBehaviour
     bool Search(MainHexCell fromCell, MainHexCell toCell, int speed, UnitAtDestination unitAtDest)
     {
 
-        Debug.Log("Search");
         searchFrontierPhase += 2;
         if (searchFrontier == null)
         {
@@ -408,6 +407,7 @@ public class HexGrid : MonoBehaviour
     }
     public void AddUnit(MainHexUnit unit, MainHexCell location, float orientation, ArmyHexUnit army, Player player)
     {
+        Debug.Log("Velikost: " + army.unitsInArmy.Count);
         MainHexUnit newUnit = MainHexUnit.Instantiate(unit);
         newUnit.Inicilizace(player,army);
        
@@ -417,6 +417,7 @@ public class HexGrid : MonoBehaviour
         Debug.Log(location);
         newUnit.dataHexUnit.Location = location;
         newUnit.dataHexUnit.Orientation = orientation;
+        Debug.Log("Velikost: " + newUnit.dataHexUnit.armyHexUnit.unitsInArmy.Count);
     }
 
     public void RemoveUnit(MainHexUnit unit)

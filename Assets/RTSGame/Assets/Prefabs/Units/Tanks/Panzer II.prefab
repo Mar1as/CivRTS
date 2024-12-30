@@ -1,0 +1,320 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1818386584855238394
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1639864355045983983}
+  - component: {fileID: 3617605286289364589}
+  - component: {fileID: 6034083222850963998}
+  - component: {fileID: 3715263277182092646}
+  m_Layer: 6
+  m_Name: Panzer II
+  m_TagString: FriendlyPlayer
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1639864355045983983
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1818386584855238394}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 23.09, y: 1, z: 99.43}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 5869141202159111907}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!195 &3617605286289364589
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1818386584855238394}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 4
+  m_Acceleration: 1.2
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 3
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
+--- !u!114 &6034083222850963998
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1818386584855238394}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff52d8c3632285a42942a5e6092d147d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 0}
+  unitStats: {fileID: 0}
+  hunt: 0
+  huntBool: 0
+  attackingBool: 0
+  defBool: 0
+  previousDestination: {x: 0, y: 0, z: 0}
+  downRotation: 9
+  upRotation: 20
+--- !u!114 &3715263277182092646
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1818386584855238394}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 678be2fa5300c7a449a2f44738467dc2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mantlet: {fileID: 0}
+  enemyLayerMask:
+    serializedVersion: 2
+    m_Bits: 0
+  terrain:
+    serializedVersion: 2
+    m_Bits: 0
+  hp: 0
+  maxHp: 1000
+  range: 100
+  skill: 0
+  cost: 0
+  armor: 30
+  costCur: 0
+  weapon: {fileID: 7164666666052160007}
+  listWeapon: []
+  agent: {fileID: 0}
+  target: {fileID: 0}
+  jmeno: Panzer II
+  kategorie: Tank
+  icon: {fileID: 21300000, guid: 161e193f6ae3f51438172187a9b7d2a9, type: 3}
+  teamColor: {r: 0, g: 0, b: 0, a: 0}
+  procento: 10
+  timeMax: 5
+  prefab: {fileID: 0}
+  image: {fileID: 0}
+  maxOsadka: 5
+  osadka: 0
+  armorFront: 30
+  armorSide: 20
+  armorBack: 15
+--- !u!1001 &8864897173684041026
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1639864355045983983}
+    m_Modifications:
+    - target: {fileID: 2030639689695119794, guid: 7c4525d5a46da0b47bbbdfd14c376381, type: 3}
+      propertyPath: m_Name
+      value: Panzer_II_F
+      objectReference: {fileID: 0}
+    - target: {fileID: 3059371111557938081, guid: 7c4525d5a46da0b47bbbdfd14c376381, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3059371111557938081, guid: 7c4525d5a46da0b47bbbdfd14c376381, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3059371111557938081, guid: 7c4525d5a46da0b47bbbdfd14c376381, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3059371111557938081, guid: 7c4525d5a46da0b47bbbdfd14c376381, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3059371111557938081, guid: 7c4525d5a46da0b47bbbdfd14c376381, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3059371111557938081, guid: 7c4525d5a46da0b47bbbdfd14c376381, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3059371111557938081, guid: 7c4525d5a46da0b47bbbdfd14c376381, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3059371111557938081, guid: 7c4525d5a46da0b47bbbdfd14c376381, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3059371111557938081, guid: 7c4525d5a46da0b47bbbdfd14c376381, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3059371111557938081, guid: 7c4525d5a46da0b47bbbdfd14c376381, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6075977392547297793, guid: 7c4525d5a46da0b47bbbdfd14c376381, type: 3}
+      propertyPath: m_Name
+      value: mantlet
+      objectReference: {fileID: 0}
+    - target: {fileID: 8280495315140575604, guid: 7c4525d5a46da0b47bbbdfd14c376381, type: 3}
+      propertyPath: m_Name
+      value: turret
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2030639689695119794, guid: 7c4525d5a46da0b47bbbdfd14c376381, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3530734820072372004}
+    - targetCorrespondingSourceObject: {fileID: 8280495315140575604, guid: 7c4525d5a46da0b47bbbdfd14c376381, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3878113859119427397}
+    - targetCorrespondingSourceObject: {fileID: 7877157702237281931, guid: 7c4525d5a46da0b47bbbdfd14c376381, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7164666666052160007}
+    - targetCorrespondingSourceObject: {fileID: 2887499281254638676, guid: 7c4525d5a46da0b47bbbdfd14c376381, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3535262916656139098}
+  m_SourcePrefab: {fileID: 100100000, guid: 7c4525d5a46da0b47bbbdfd14c376381, type: 3}
+--- !u!1 &715029587669595190 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8280495315140575604, guid: 7c4525d5a46da0b47bbbdfd14c376381, type: 3}
+  m_PrefabInstance: {fileID: 8864897173684041026}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &3878113859119427397
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 715029587669595190}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.4393001, y: 0.5613988, z: 1.3863441}
+  m_Center: {x: 0.000000029802322, y: 0.28069928, z: 0.05000341}
+--- !u!1 &1609817184146090953 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7877157702237281931, guid: 7c4525d5a46da0b47bbbdfd14c376381, type: 3}
+  m_PrefabInstance: {fileID: 8864897173684041026}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7164666666052160007
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1609817184146090953}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0226adf1291d6d64cb18fe219cef5138, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 10
+  accuracyWeapon: 100
+  piercing: 48
+  ammoMax: 10
+  ammoCurrent: 0
+  reloadTimeMax: 10
+  fireRateMaxPerMinute: 100
+  bullet: {fileID: 5952814904139090467, guid: 7ed4b3e417582a6499c860cfd63b5090, type: 3}
+  prefabMuzzleFlash: {fileID: 1743301284569550, guid: 368a9812f7696b14f8d3bde21280286b, type: 3}
+  locationForFlash: {fileID: 0}
+  unitStats: {fileID: 0}
+  unitAnimator: {fileID: 0}
+  angleUnderToShoot: 5
+  caliberInMilimeter: 20
+  recoilTimeMax: 0.05
+  boom: {fileID: 1121192042590650, guid: ede23a4da80774247a06371d8abbd562, type: 3}
+--- !u!4 &5869141202159111907 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3059371111557938081, guid: 7c4525d5a46da0b47bbbdfd14c376381, type: 3}
+  m_PrefabInstance: {fileID: 8864897173684041026}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &5986414541690229014 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2887499281254638676, guid: 7c4525d5a46da0b47bbbdfd14c376381, type: 3}
+  m_PrefabInstance: {fileID: 8864897173684041026}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &3535262916656139098
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5986414541690229014}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76ebcf185460d4746b7771217519f717, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 0
+  accuracyWeapon: 0
+  piercing: 0
+  ammoMax: 150
+  ammoCurrent: 0
+  reloadTimeMax: 10
+  fireRateMaxPerMinute: 900
+  bullet: {fileID: 5952814904139090467, guid: 7ed4b3e417582a6499c860cfd63b5090, type: 3}
+  prefabMuzzleFlash: {fileID: 1743301284569550, guid: 368a9812f7696b14f8d3bde21280286b, type: 3}
+  locationForFlash: {fileID: 0}
+  unitStats: {fileID: 0}
+  unitAnimator: {fileID: 0}
+  angleUnderToShoot: 10
+--- !u!1 &7433253905000791280 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2030639689695119794, guid: 7c4525d5a46da0b47bbbdfd14c376381, type: 3}
+  m_PrefabInstance: {fileID: 8864897173684041026}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &3530734820072372004
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7433253905000791280}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2.1553073, y: 1.2328742, z: 4.8966737}
+  m_Center: {x: 0.000010609627, y: 0.85703516, z: -0.10968089}

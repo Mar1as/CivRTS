@@ -17,6 +17,7 @@ MonoBehaviour:
   - {fileID: 1369767088007361447, guid: c81e5ce50be758d4b8ec256a66f66c33, type: 3}
   availableUnits:
   - {fileID: 2616612572522683862, guid: 80a5bcd7e43e80741a32ed07260bdee1, type: 3}
+  - {fileID: 6656656725685842860, guid: 3df1c6fdaf9cb6849b0ccf208e621e60, type: 3}
   availableBuildings:
   - {fileID: 11400000, guid: 83bcad57b497a8044a575fd8b18f2529, type: 2}
   - {fileID: 11400000, guid: ecdfac6d010a27a4c94d1f9db7a95bc9, type: 2}

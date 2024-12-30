@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using System.Linq;
 using static UnityEditor.FilePathAttribute;
 
 [System.Serializable]
@@ -13,8 +14,14 @@ public class MainHexUnit : MonoBehaviour
     private void Start()
     {
         Inicilizace();
-    }
 
+        Debug.Log("KONECC " + dataHexUnit.armyHexUnit.unitsInArmy.Count);
+    }
+    private void Update()
+    {
+        Debug.Log("KONECC " + dataHexUnit.armyHexUnit.unitsInArmy.Count);
+
+    }
     void OnEnable()
     {
         if (dataHexUnit.Location)
@@ -27,6 +34,7 @@ public class MainHexUnit : MonoBehaviour
     {
         if (dataHexUnit == null)
         {
+            Debug.Log("KKT");
             dataHexUnit = new DataHexUnit(this);
         }
     }
@@ -39,6 +47,10 @@ public class MainHexUnit : MonoBehaviour
         else if (dataHexUnit.mainHexUnit == null)
         {
             dataHexUnit = new DataHexUnit(this, player, army);
+        }
+        else
+        {
+            Debug.Log("CO?");
         }
     }
 
@@ -76,8 +88,9 @@ public class MainHexUnit : MonoBehaviour
 
     internal void Attack(MainHexUnit unit)
     {
-        SceneSwap.armyArray[0] = dataHexUnit.armyHexUnit;
-        SceneSwap.armyArray[1] = unit.dataHexUnit.armyHexUnit;
+        Debug.Log("ATTACK " + dataHexUnit.armyHexUnit.unitsInArmy.Count);
+        SceneSwap.passInfo[0] = new PassInformation(dataHexUnit.PlayerOwner, dataHexUnit.armyHexUnit);
+        SceneSwap.passInfo[1] = new PassInformation(unit.dataHexUnit.PlayerOwner, unit.dataHexUnit.armyHexUnit);
 
         CivGameManagerSingleton.Instance.sceneSwap.LoadScene(1);
     }

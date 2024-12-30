@@ -10,7 +10,20 @@ using Random = UnityEngine.Random;
 public class DataHexUnit
 {
     public MainHexUnit mainHexUnit { get; private set; }
-    public ArmyHexUnit armyHexUnit { get; set; }
+    [SerializeField]
+    public ArmyHexUnit ArmyHexUnit { get; set; }
+    public ArmyHexUnit armyHexUnit
+    {
+        get
+        {
+            return ArmyHexUnit;
+        }
+        set
+        {
+            ArmyHexUnit = value;
+            Debug.Log("Zmìna: " + ArmyHexUnit.unitsInArmy.Count);
+        }
+    }
 
     public DataHexUnit(MainHexUnit mainHexUnit)
     {
@@ -30,6 +43,7 @@ public class DataHexUnit
         armyHexUnit = army;
         PlayerOwner = player;
 
+        Debug.Log("VelikostK: " + armyHexUnit.unitsInArmy.Count);
     }
     public DataHexUnit(MainHexUnit mainHexUnit, ArmyHexUnit armyHexUnit)
     {
@@ -43,6 +57,7 @@ public class DataHexUnit
     const float travelSpeed = 4f;
     const float rotationSpeed = 180f;
 
+    [SerializeField]
     Player playerOwner;
     public Player PlayerOwner
     {
@@ -52,6 +67,7 @@ public class DataHexUnit
         }
         set
         {
+            playerOwner = value;/*
             if (playerOwner == null)
             {
                 for (int i = 0; i < CivGameManagerSingleton.Instance.players.Length; i++)
@@ -77,7 +93,7 @@ public class DataHexUnit
                         CivGameManagerSingleton.Instance.players[i].AddArmy(mainHexUnit.gameObject);
                     }
                 }
-            }
+            }*/
         }
     }
 

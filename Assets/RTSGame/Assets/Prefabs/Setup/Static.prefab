@@ -1,0 +1,156 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2629341117366212049
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6157432285830138890}
+  - component: {fileID: 1405316308528693120}
+  - component: {fileID: 8038943611429719163}
+  - component: {fileID: 5675016692370163130}
+  - component: {fileID: 6113986868395129245}
+  - component: {fileID: 5987026002388658482}
+  m_Layer: 0
+  m_Name: Static
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 2147483647
+  m_IsActive: 1
+--- !u!4 &6157432285830138890
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2629341117366212049}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1405316308528693120
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2629341117366212049}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c080264f78e4f914b9ca798593b5efc4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uiUnitsListScript: {fileID: 0}
+  friendlySpawnPoint: {fileID: 0}
+  enemySpawnPoint: {fileID: 0}
+  factions:
+  - flag: {fileID: 21300000, guid: b4441d8b881ef3941af282bfab0b8e59, type: 3}
+    name: Germany
+    factionUnits:
+    - {fileID: 3732860937607188000, guid: 44f5c866006b00744ba373096c241b3f, type: 3}
+    - {fileID: 3732860937607188000, guid: b7769c2b9035a4d4b9af6f3fa9f8c511, type: 3}
+    - {fileID: 3732860937607188000, guid: 46170860cb7b24e469e2b5ccf17f3456, type: 3}
+    - {fileID: 3732860937607188000, guid: 7c4d424fae113c347a43ca8a81931744, type: 3}
+    - {fileID: 3732860937607188000, guid: 0930d3ad2e35a3842ab9598d63d34655, type: 3}
+    - {fileID: 3732860937607188000, guid: b6a244dfe6727824698b0f800bd24976, type: 3}
+    - {fileID: 5316014186243513651, guid: d2215a3749269d44aae82076ea60e68f, type: 3}
+    - {fileID: 1818386584855238394, guid: 43891c91ccde40c4dacff21ec33dba66, type: 3}
+    color: {r: 0, g: 0, b: 0, a: 0}
+  - flag: {fileID: 21300000, guid: 126303b75e8d1b34fb14f8fc2b7dd590, type: 3}
+    name: Nazi
+    factionUnits:
+    - {fileID: 3732860937607188000, guid: 44f5c866006b00744ba373096c241b3f, type: 3}
+    - {fileID: 3732860937607188000, guid: b7769c2b9035a4d4b9af6f3fa9f8c511, type: 3}
+    - {fileID: 3732860937607188000, guid: 46170860cb7b24e469e2b5ccf17f3456, type: 3}
+    - {fileID: 3732860937607188000, guid: 7c4d424fae113c347a43ca8a81931744, type: 3}
+    - {fileID: 3732860937607188000, guid: 0930d3ad2e35a3842ab9598d63d34655, type: 3}
+    - {fileID: 3732860937607188000, guid: b6a244dfe6727824698b0f800bd24976, type: 3}
+    - {fileID: 5316014186243513651, guid: d2215a3749269d44aae82076ea60e68f, type: 3}
+    - {fileID: 1818386584855238394, guid: 43891c91ccde40c4dacff21ec33dba66, type: 3}
+    color: {r: 0, g: 0, b: 0, a: 0}
+  EnableAi: 0
+--- !u!114 &8038943611429719163
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2629341117366212049}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea8b3d6a47e5500488414c0ac72ddadf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  listOfUnits:
+  - {fileID: 3732860937607188000, guid: 44f5c866006b00744ba373096c241b3f, type: 3}
+  - {fileID: 3732860937607188000, guid: b7769c2b9035a4d4b9af6f3fa9f8c511, type: 3}
+  - {fileID: 3732860937607188000, guid: 46170860cb7b24e469e2b5ccf17f3456, type: 3}
+  - {fileID: 3732860937607188000, guid: 7c4d424fae113c347a43ca8a81931744, type: 3}
+  - {fileID: 3732860937607188000, guid: 0930d3ad2e35a3842ab9598d63d34655, type: 3}
+  - {fileID: 3732860937607188000, guid: b6a244dfe6727824698b0f800bd24976, type: 3}
+  - {fileID: 5316014186243513651, guid: d2215a3749269d44aae82076ea60e68f, type: 3}
+  - {fileID: 1818386584855238394, guid: 43891c91ccde40c4dacff21ec33dba66, type: 3}
+--- !u!114 &5675016692370163130
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2629341117366212049}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89c09c739ffcbb7498a3c4ba798257ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  multiplierScore: 1
+  multiplierMoney: 1
+  gainMoneyFromZone: 1
+  gainMoney: 1
+  endText: {fileID: 3641000850209622490, guid: 9e91fa0071609844faadae56f9999b47, type: 3}
+  canvas: {fileID: 0}
+  left: {fileID: 0}
+  right: {fileID: 0}
+  money: {fileID: 0}
+  leftIcon: {fileID: 0}
+  rightIcon: {fileID: 0}
+--- !u!114 &6113986868395129245
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2629341117366212049}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab627653436509f409ce3323186259c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonPrefab: {fileID: 0}
+--- !u!114 &5987026002388658482
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2629341117366212049}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 780b5da3f7cbf6e4cb783fde3ea53714, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  panelOfUnits: {fileID: 0}
+  unitButtonPrefab: {fileID: 4514020315093082818, guid: 70367e878fe89c54dac4feefc7fb429c, type: 3}
+  uiUnitStatsPanel: {fileID: 0}
+  uiUnitStatsPanelPrefab: {fileID: 5130927016013236699, guid: 72faa6ac1a695e64f84cbef0cf545cb0, type: 3}
+  uiUnitsInfoPanel: {fileID: 0}
+  uiUnitsInfoPanelPrefab: {fileID: 4514020315093082818, guid: fd0ecd40841c0b54ab9e4b8588c71ec1, type: 3}
+  uiShop: {fileID: 0}
+  uiShopButtonPrefab: {fileID: 2242729918584018838, guid: 744cd3da4219ce44eb69f7eb0cd91b3e, type: 3}

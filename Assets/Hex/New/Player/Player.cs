@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.Burst.Intrinsics;
 using UnityEngine;
 
+[Serializable]
 public class Player
 {
     public FactionsInCiv faction; // Frakce hr·Ëe

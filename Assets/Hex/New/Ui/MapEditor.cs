@@ -98,7 +98,7 @@ public class MapEditor : MonoBehaviour
             {
                 isDrag = false;
             }
-            if(UiManager.editMode == EditMode.Edit) EditCell(currentCell, dm);
+            if(UiManagerRTS.editMode == EditMode.Edit) EditCell(currentCell, dm);
             
 
             previousCell = currentCell;

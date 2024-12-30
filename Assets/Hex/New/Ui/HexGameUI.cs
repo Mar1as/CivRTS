@@ -32,7 +32,7 @@ public class HexGameUI : MonoBehaviour
     {
         if (!EventSystem.current.IsPointerOverGameObject())
         {
-            if (UiManager.editMode != EditMode.Game) return;
+            if (UiManagerRTS.editMode != EditMode.Game) return;
             if (Input.GetMouseButtonDown(0))
             {
                 LeftClickHandler();
@@ -96,31 +96,43 @@ public class HexGameUI : MonoBehaviour
 
             if (selectedUnit)
             {
-                // Získání všech sousedù aktuální buòky
-                MainHexCell[] neighbors = currentCell.brainHexCell.GetAllNeighbors();
-
-                foreach (MainHexCell neighbor in neighbors)
+                bool isEnemyOnCell = currentCell.dataHexCell.Unit != null;
+                if (isEnemyOnCell)
                 {
-                    // Kontrola, zda na sousední buòce je jednotka nepøítele
-                    if (neighbor.dataHexCell.Unit != null &&
-                        neighbor.dataHexCell.Unit.dataHexUnit.PlayerOwner != selectedUnit.dataHexUnit.PlayerOwner)
+                    MainHexCell[] neighborsEnemys = currentCell.brainHexCell.GetAllNeighbors();
+                    foreach (MainHexCell neighbor in neighborsEnemys)
                     {
-                        // Útok na nepøítele
-                        Debug.Log("Útok na nepøítele!");
-                        selectedUnit.Attack(neighbor.dataHexCell.Unit);
-                        return; // Po útoku pøerušíme další akce
-                    }
-                }
+                        Debug.Log(neighbor.dataHexCell.Unit);
+                        // Kontrola, zda na sousední buòce je jednotka nepøítele
+                        if (neighbor.dataHexCell.Unit != null &&
+                            neighbor.dataHexCell.Unit == selectedUnit)
+                        {
+                            if (selectedUnit.dataHexUnit.PlayerOwner != currentCell.dataHexCell.Unit.dataHexUnit.PlayerOwner)
+                            {
+                                // Útok na nepøítele
+                                Debug.Log("Útok na nepøítele!");
+                                selectedUnit.Attack(neighbor.dataHexCell.Unit);
+                                return; // Po útoku pøerušíme další akce
+                            }
+                            else
+                            {
+                                Debug.Log("Povídání");
+                                return;
+                            }
+                            
+                        }
 
+                    }
+
+                }
                 // Pokud není žádný nepøítel, jednotka se pohybuje
                 Debug.Log("Pohyb jednotky.");
                 DoMove();
             }
         }
-        catch (System.Exception)
+        catch (System.Exception ex)
         {
-            return;
-            //throw;
+            Debug.Log("V píèi: " + ex);
         }
     }
 
@@ -162,7 +174,6 @@ public class HexGameUI : MonoBehaviour
                 bool unitOnCell = currentCell.dataHexCell.Unit != null;
                 Player selectedUnitPlayer = selectedUnit.dataHexUnit.PlayerOwner;
                 Player destinationUnitPlayer = unitOnCell ? currentCell.dataHexCell.Unit.dataHexUnit.PlayerOwner : null;
-                Debug.Log("OIDSJOI");
                 UnitAtDestination unitAtD = UnitAtDestination.None;
                 if (unitOnCell)
                 {
@@ -239,6 +250,7 @@ public class HexGameUI : MonoBehaviour
 
     void OnBuildingButtonClick(BuildingData building)
     {
+        if (building.type == BuildingType.Army) newArmy.unitsInArmy.Clear();
         selectedBuilding = building;
         Debug.Log($"Selected building: {building.buildingName}");
     }
@@ -294,7 +306,7 @@ public class HexGameUI : MonoBehaviour
 
     void UpdateArmyPanel(Player player)
     {
-        
+
         foreach (Transform child in armyShopPanel.transform)
         {
             Destroy(child.gameObject);
@@ -344,6 +356,7 @@ public class HexGameUI : MonoBehaviour
     void AddUnit(GameObject unit)
     {
         newArmy.AddUnit(unit);
+        Debug.Log("X " + newArmy.unitsInArmy.Count);
         OnArmyUpdated.Invoke();
     }
     void RemoveUnit(GameObject unit)
@@ -366,8 +379,15 @@ public class HexGameUI : MonoBehaviour
     }
     public void ButtonConfirm()
     {
-        selectedBuilding.army = newArmy;
-        newArmy.unitsInArmy.Clear();
+        ArmyHexUnit arm = newArmy.Clone();
+        arm.unitsInArmy = newArmy.unitsInArmy;
+        Debug.Log("2X " + newArmy.unitsInArmy.Count);
+
+        selectedBuilding.army = arm;
+        Debug.Log("3X " + selectedBuilding.army.unitsInArmy.Count);
+
+        Debug.Log("4X " + selectedBuilding.army.unitsInArmy.Count);
+
         armyParent.active = false;
         Debug.Log(selectedCity.dataCity.Location);
         selectedCity.dataCity.Production.productionQueue.AddToQueue(selectedBuilding, selectedCity.dataCity.Location);

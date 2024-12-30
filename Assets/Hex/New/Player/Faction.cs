@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+[Serializable]
 [CreateAssetMenu(fileName = "NewFaction", menuName = "Game/Faction")]
 public class FactionsInCiv : ScriptableObject
 {
