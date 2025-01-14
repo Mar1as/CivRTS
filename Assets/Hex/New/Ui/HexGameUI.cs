@@ -16,17 +16,30 @@ public class HexGameUI : MonoBehaviour
     MainHexUnit selectedUnit;
     MainCity selectedCity;
     BuildingData selectedBuilding;
-
+    
     [SerializeField]
-    GameObject buildingShopPanel, armyShopPanel, productionPanel;
+    GameObject cityShopPanel, armyShopPanel, productionPanel;
     [SerializeField]
     GameObject buildingShopButtonPrefab, armyShopButtonPrefab, productionButtonPrefab;
     [SerializeField]
     GameObject armyParent;
 
+    //UI
+    [SerializeField]
+    GameObject cityUiHolder;
+    [SerializeField]
+    Image levelImg;
+    [SerializeField]
+    TextMeshProUGUI levelText, populationText, productionText, foodText;
+
     public event System.Action OnArmyUpdated;
 
     List<GameObject> army = new List<GameObject>();
+
+    private void Start()
+    {
+        cityUiHolder.SetActive(false);
+    }
 
     void Update()
     {
@@ -202,6 +215,7 @@ public class HexGameUI : MonoBehaviour
     #region BuildingMenu
     void SelectCity(MainHexCell currentCell)
     {
+        cityUiHolder.SetActive(true);
         ButtonCancel();
         Player player = currentCell.dataHexCell.city.dataCity.playerOwner;
         selectedCity = currentCell.dataHexCell.city;
@@ -209,10 +223,18 @@ public class HexGameUI : MonoBehaviour
         selectedCity.dataCity.Production.productionQueue.OnQueueUpdated += () => UpdateProductionPanel(player);
         UpdateShopPanel(player);
         UpdateProductionPanel(player);
+        UpdateStatsPanel(
+                    level: $"{selectedCity.dataCity.Stats.level}",
+                    population: $"{selectedCity.dataCity.Stats.CalculatePopulation()}",
+                    production: $"{selectedCity.dataCity.Stats.CalculateProduction()}",
+                    food: $"{selectedCity.dataCity.Stats.CalculateFood()}",
+                    levelProgress: (float)selectedCity.dataCity.Stats.levelProgress / selectedCity.dataCity.Stats.levelUpRequirement
+                );
     }
 
     void UnselectCity()
     {
+        cityUiHolder.SetActive(false);
         ButtonCancel();
         selectedCity = null;
         selectedBuilding = null;
@@ -222,16 +244,16 @@ public class HexGameUI : MonoBehaviour
 
     void UpdateShopPanel(Player player)
     {
-        foreach (Transform child in buildingShopPanel.transform)
+        foreach (Transform child in cityShopPanel.transform)
         {
             Destroy(child.gameObject);
         }
         if (player == null) return;
         foreach (var building in player.faction.availableBuildings)
         {
-            GameObject buttonObj = Instantiate(buildingShopButtonPrefab, buildingShopPanel.transform);
+            GameObject buttonObj = Instantiate(buildingShopButtonPrefab, cityShopPanel.transform);
             Button button = buttonObj.GetComponent<Button>();
-            Image image = buttonObj.GetComponentInChildren<Image>(); // Najde Image v potomcích
+            Image image = buttonObj.GetComponentsInChildren<Image>().LastOrDefault(); // Najde Image v potomcích
             TextMeshProUGUI text = buttonObj.GetComponentInChildren<TextMeshProUGUI>(); // Najde TextMeshProUGUI v potomcích
 
             if (image != null)
@@ -245,6 +267,24 @@ public class HexGameUI : MonoBehaviour
             }
 
             button.onClick.AddListener(() => OnBuildingButtonClick(building));
+        }
+    }
+
+    void UpdateStatsPanel(
+    string level = null,
+    string population = null,
+    string production = null,
+    string food = null,
+    float? levelProgress = null)
+    {
+        levelText.text = !string.IsNullOrWhiteSpace(level) ? level : "";
+        populationText.text = !string.IsNullOrWhiteSpace(population) ? population : "";
+        productionText.text = !string.IsNullOrWhiteSpace(production) ? production : "";
+        foodText.text = !string.IsNullOrWhiteSpace(food) ? food : "";
+        if (levelProgress.HasValue)
+        {
+            levelImg.fillAmount = levelProgress.Value;
+            levelImg.color = levelProgress >= 0 ? Color.green : Color.red;
         }
     }
 
@@ -262,7 +302,7 @@ public class HexGameUI : MonoBehaviour
         {
             //armyTask = new ProductionTask(selectedBuilding, location);
             armyParent.active = true;
-            newArmy = new ArmyHexUnit();
+            newArmy = new DataHexUnitArmy();
             UpdateArmyPanel(player);
         }
         else
@@ -302,7 +342,7 @@ public class HexGameUI : MonoBehaviour
     }
 
     ProductionTask armyTask;
-    ArmyHexUnit newArmy = new ArmyHexUnit();
+    DataHexUnitArmy newArmy = new DataHexUnitArmy();
 
     void UpdateArmyPanel(Player player)
     {
@@ -379,7 +419,7 @@ public class HexGameUI : MonoBehaviour
     }
     public void ButtonConfirm()
     {
-        ArmyHexUnit arm = newArmy.Clone();
+        DataHexUnitArmy arm = newArmy.Clone();
         arm.unitsInArmy = newArmy.unitsInArmy;
         Debug.Log("2X " + newArmy.unitsInArmy.Count);
 

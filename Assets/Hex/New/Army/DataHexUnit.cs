@@ -11,8 +11,8 @@ public class DataHexUnit
 {
     public MainHexUnit mainHexUnit { get; private set; }
     [SerializeField]
-    public ArmyHexUnit ArmyHexUnit { get; set; }
-    public ArmyHexUnit armyHexUnit
+    public DataHexUnitArmy ArmyHexUnit { get; set; }
+    public DataHexUnitArmy armyHexUnit
     {
         get
         {
@@ -28,12 +28,12 @@ public class DataHexUnit
     public DataHexUnit(MainHexUnit mainHexUnit)
     {
         this.mainHexUnit = mainHexUnit;
-        armyHexUnit = new ArmyHexUnit(mainHexUnit);
+        armyHexUnit = new DataHexUnitArmy(mainHexUnit);
         CivGameManagerSingleton.Instance.allUnits.Add(mainHexUnit);
         PlayerOwner = CivGameManagerSingleton.Instance.players[(int)Random.Range(0,CivGameManagerSingleton.Instance.players.Length)];
 
     }
-    public DataHexUnit(MainHexUnit mainHexUnit, Player player, ArmyHexUnit army)
+    public DataHexUnit(MainHexUnit mainHexUnit, Player player, DataHexUnitArmy army)
     {
         Debug.Log(mainHexUnit);
         Debug.Log(this.mainHexUnit);
@@ -45,7 +45,7 @@ public class DataHexUnit
 
         Debug.Log("VelikostK: " + armyHexUnit.unitsInArmy.Count);
     }
-    public DataHexUnit(MainHexUnit mainHexUnit, ArmyHexUnit armyHexUnit)
+    public DataHexUnit(MainHexUnit mainHexUnit, DataHexUnitArmy armyHexUnit)
     {
         this.mainHexUnit = mainHexUnit;
         this.armyHexUnit = armyHexUnit;

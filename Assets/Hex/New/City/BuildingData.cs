@@ -16,7 +16,7 @@ public class BuildingData : ScriptableObject
     public int productionBonus = 0; // Bonus k produkci
     public int populationBonus = 0; // Bonus k populaci
 
-    public ArmyHexUnit army;
+    public DataHexUnitArmy army;
 
     public Sprite Icon
     {

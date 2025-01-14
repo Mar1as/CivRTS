@@ -141,6 +141,10 @@ public class DataHexCell
             {
                 return;
             }
+            if (value == null)
+            {
+                city.Destroy();
+            }
             city = value;
         }
     }

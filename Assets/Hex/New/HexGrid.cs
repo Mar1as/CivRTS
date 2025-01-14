@@ -405,7 +405,7 @@ public class HexGrid : MonoBehaviour
         newUnit.dataHexUnit.Location = location;
         newUnit.dataHexUnit.Orientation = orientation;
     }
-    public void AddUnit(MainHexUnit unit, MainHexCell location, float orientation, ArmyHexUnit army, Player player)
+    public void AddUnit(MainHexUnit unit, MainHexCell location, float orientation, DataHexUnitArmy army, Player player)
     {
         Debug.Log("Velikost: " + army.unitsInArmy.Count);
         MainHexUnit newUnit = MainHexUnit.Instantiate(unit);

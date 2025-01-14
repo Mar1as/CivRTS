@@ -23,3 +23,4 @@ MonoBehaviour:
   - {fileID: 11400000, guid: ecdfac6d010a27a4c94d1f9db7a95bc9, type: 2}
   factionColor: {r: 0.745283, g: 0, b: 0, a: 0}
   description: Kok
+  cityNamesFile: {fileID: 4900000, guid: 74635cb81628d1c4dac2930a3f5619aa, type: 3}

@@ -7,6 +7,25 @@ public class DataCity
     
     private MainCity mainCity { get; set; }
 
+    private string name;
+    public string Name
+    {
+        get
+        {
+            return name;
+        }
+        set
+        {
+            if (!string.IsNullOrEmpty(name))
+            {
+                name = value;
+                //CivGameManagerSingleton.Instance.usedCityNames.Add(name);
+                return;
+            }
+
+            name = value;
+        }
+    }
     public StatsCity Stats { get; private set; }
     public ProductionCity Production { get; private set; }
 
@@ -40,7 +59,8 @@ public class DataCity
     {
         AddBordersOnCreation();
         FindNextExpansion();
-
+        Name = playerOwner.faction.GetRandomCityName();
+        Debug.Log(name);
         if (Location != null)
         {
             Location.dataHexCell.chunk.Refresh();
@@ -113,7 +133,7 @@ public class DataCity
     {
         if (cell == null || !CellsInBorder.Contains(cell)) return;
 
-        CellsInBorder.Remove(cell);
+        //CellsInBorder.Remove(cell);
         cell.dataHexCell.city = null;
         cell.dataHexCell.wallsScript.Walled = false;
     }
@@ -126,6 +146,8 @@ public class DataCity
     {
         nextCellToConquer = null;
 
+        List<MainHexCell> validCells = new List<MainHexCell>();
+
         foreach (var cell in CellsInBorder)
         {
             foreach (HexDirection direction in System.Enum.GetValues(typeof(HexDirection)))
@@ -135,11 +157,15 @@ public class DataCity
                 {
                     if (cell.brainHexCell.GetEdgeType(neighbor) != HexEdgeType.Cliff)
                     {
-                        nextCellToConquer = neighbor;
-                        return;
+                        validCells.Add(neighbor);
                     }
                 }
             }
+        }
+
+        if (validCells.Count > 0)
+        {
+            nextCellToConquer = validCells[UnityEngine.Random.Range(0, validCells.Count)];
         }
     }
 

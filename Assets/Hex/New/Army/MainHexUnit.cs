@@ -38,7 +38,7 @@ public class MainHexUnit : MonoBehaviour
             dataHexUnit = new DataHexUnit(this);
         }
     }
-    public void Inicilizace(Player player, ArmyHexUnit army)
+    public void Inicilizace(Player player, DataHexUnitArmy army)
     {
         if (dataHexUnit == null)
         {

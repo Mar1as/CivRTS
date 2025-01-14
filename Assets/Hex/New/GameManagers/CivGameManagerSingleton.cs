@@ -18,7 +18,6 @@ public class CivGameManagerSingleton
                 instance = new CivGameManagerSingleton();
                 instance.allUnits = new List<MainHexUnit>();
                 instance.allCities = new List<MainCity>();
-
             }
             //else Debug.Log("Players count: " + instance.players.Length); nefunguje
             return instance;
@@ -31,6 +30,8 @@ public class CivGameManagerSingleton
     public Player[] players;
     public HexGrid hexGrid;
     public SceneSwap sceneSwap;
+
+    public List<string> usedCityNames;
 
     /*public List<Player> AddPlayers()
     {

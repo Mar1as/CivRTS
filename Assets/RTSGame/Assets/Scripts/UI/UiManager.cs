@@ -46,7 +46,7 @@ public class ArmyUiShop : MonoBehaviour
 
     TeamsConstructor player;
 
-    ArmyHexUnit army;
+    DataHexUnitArmy army;
 
     public ArmyUiShop(TeamsConstructor player)
     {

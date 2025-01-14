@@ -214,9 +214,9 @@ public class TeamsConstructor : MonoBehaviour
     }
 
     #region Army
-    public ArmyHexUnit Army;
+    public DataHexUnitArmy Army;
 
-    public ArmyHexUnit army
+    public DataHexUnitArmy army
     {
         get { return Army; }
         set

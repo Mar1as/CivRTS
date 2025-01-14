@@ -8,7 +8,7 @@ public class ManagerRTS : MonoBehaviour
     List<PlayerRTS> players = new List<PlayerRTS>();
 
     [SerializeField]
-    public ArmyHexUnit temporaryArmy;
+    public DataHexUnitArmy temporaryArmy;
 
     void Start()
     {

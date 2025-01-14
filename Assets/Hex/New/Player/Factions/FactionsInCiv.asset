@@ -23,3 +23,4 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f29bb0c1576e9294b9d29dc6200788c4, type: 2}
   factionColor: {r: 0.18867922, g: 0.18867922, b: 0.18867922, a: 0}
   description: Lol
+  cityNamesFile: {fileID: 4900000, guid: 45cb83b6c879f9649979a118d698bdf2, type: 3}

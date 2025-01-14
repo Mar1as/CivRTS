@@ -3,11 +3,11 @@ using UnityEngine;
 public class StatsCity
 {
     private MainCity mainCity;
-    private int level = 1;
-    private int levelProgress = 0;
-    private int levelUpRequirement = 5;
+    public int level { get; private set; } = 1;
+    public int levelProgress { get; private set; } = 0;
+    public int levelUpRequirement { get; private set; } = 5;
 
-    public float ProductionModifier { get; private set; } = 1.0f;
+    public float productionModifier { get; private set; } = 1.0f;
 
     public StatsCity(MainCity mainHexUnit)
     {
@@ -73,6 +73,6 @@ public class StatsCity
 
     public string GetStatsSummary()
     {
-        return $"Level: {level}, Progress: {levelProgress}/{levelUpRequirement}, Population: {CalculatePopulation()}, Food: {CalculateFood()}, Production: {CalculateProduction()}";
+        return $"Level: {level}, LevelUp: {levelProgress}/{levelUpRequirement}, Population: {CalculatePopulation()}, Food: {CalculateFood()}, Production: {CalculateProduction()}";
     }
 }

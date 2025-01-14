@@ -4,14 +4,14 @@ using UnityEngine;
 public class PlayerRTS
 {
     FactionsInCiv faction;
-    public ArmyHexUnit army { get; private set; }
+    public DataHexUnitArmy army { get; private set; }
     GameObject spawnPoint;
 
     List<GameObject> allAliveUnits = new List<GameObject>();
     List<GameObject> allSelectedUnits = new List<GameObject>();
 
 
-    public PlayerRTS(FactionsInCiv faction, ArmyHexUnit army)
+    public PlayerRTS(FactionsInCiv faction, DataHexUnitArmy army)
     {
         this.faction = faction;
         this.army = army;

@@ -7,11 +7,21 @@ public class UiManagerRTS : MonoBehaviour
     [SerializeField]
     private MapEditor mapEditor;
 
+    [SerializeField]
+    bool Game = false;
+
     private int[] editSetup = new int[1];
     private bool[] editorToggles = new bool[6];
     private OptionalToggle[] toggleModes = new OptionalToggle[3];
     static public EditMode editMode = EditMode.Edit;
 
+    private void Start()
+    {
+        if (Game) EnableGameUi();
+        else EnableEditUi();
+
+        UpdateAllCitiesBar();
+    }
     public void EnableGameUi()
     {
         SaveEditorState();
@@ -79,6 +89,15 @@ public class UiManagerRTS : MonoBehaviour
         mapEditor.riverMode = toggleModes[0];
         mapEditor.roadMode = toggleModes[1];
         mapEditor.walledMode = toggleModes[2];
+    }
+
+    public static void UpdateAllCitiesBar()
+    {
+        MainHexCell[] hexes = CivGameManagerSingleton.Instance.hexagons;
+        for (int i = 0; i < hexes.Length; i++)
+        {
+            hexes[i].UpdateBarText();
+        }
     }
 }
 

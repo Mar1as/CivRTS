@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-//[System.Serializable]
+[System.Serializable]
 public class MainCity
 {
     [SerializeField]
@@ -13,14 +13,19 @@ public class MainCity
     {
 
     }
-    private void OnDestroy()
+    public void Destroy()
     {
-        //dataCity.SelfDestruct();
+        dataCity.SelfDestruct();
         Debug.Log("City destroyed");
+        
+        dataCity.Location.barText.ChangeText();
+        CivGameManagerSingleton.Instance.allCities.Remove(this);
     }
     public MainCity(MainHexCell cell, Player player)
     {
         CivGameManagerSingleton.Instance.allCities.Add(this);
         dataCity = new DataCity(cell, this, player);
+
+        UiManagerRTS.UpdateAllCitiesBar();
     }
 }

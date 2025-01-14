@@ -32,9 +32,9 @@ public class SceneSwap : MonoBehaviour
 public class PassInformation
 {
     public Player player { get; private set; }
-    public ArmyHexUnit army { get; private set; }
+    public DataHexUnitArmy army { get; private set; }
 
-    public PassInformation(Player player, ArmyHexUnit army)
+    public PassInformation(Player player, DataHexUnitArmy army)
     {
         this.player = player;
         this.army = army;

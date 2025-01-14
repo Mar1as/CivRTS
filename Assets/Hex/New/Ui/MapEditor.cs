@@ -222,8 +222,17 @@ public class MapEditor : MonoBehaviour
         }
         if (applySpecialIndex && md == DrawMode.Put)
         {
-            cell.dataHexCell.featuresHexCell.SpecialIndex = activeSpecialIndex;
-            cell.dataHexCell.City = new MainCity(cell, CivGameManagerSingleton.Instance.players[selectedPlayerIndex]);
+            if (activeSpecialIndex > 0 && cell.dataHexCell.featuresHexCell.SpecialIndex < 1 && cell.dataHexCell.city == null) //Vytvoøit mìsto
+            {
+                cell.dataHexCell.featuresHexCell.SpecialIndex = activeSpecialIndex;
+                cell.dataHexCell.City = new MainCity(cell, CivGameManagerSingleton.Instance.players[selectedPlayerIndex]);
+            }
+            else if (activeSpecialIndex < 1 && cell.dataHexCell.featuresHexCell.SpecialIndex > 0) //Vymazat mìsto
+            {
+                cell.dataHexCell.featuresHexCell.SpecialIndex = activeSpecialIndex;
+                cell.dataHexCell.City = null;
+            }
+
         }
 
         if (applyUrbanLevel)
@@ -290,7 +299,7 @@ public class MapEditor : MonoBehaviour
         if (cell && !cell.dataHexCell.Unit)
         {
             CivGameManagerSingleton.Instance.hexGrid.AddUnit(
-                        CivGameManagerSingleton.Instance.players[selectedPlayerIndex].faction.armyUnitStyle[0].GetComponent<MainHexUnit>(), cell, Random.Range(0f, 360f), new ArmyHexUnit(), CivGameManagerSingleton.Instance.players[selectedPlayerIndex]
+                        CivGameManagerSingleton.Instance.players[selectedPlayerIndex].faction.armyUnitStyle[0].GetComponent<MainHexUnit>(), cell, Random.Range(0f, 360f), new DataHexUnitArmy(), CivGameManagerSingleton.Instance.players[selectedPlayerIndex]
                     );
         }
     }
@@ -342,6 +351,10 @@ public class MapEditor : MonoBehaviour
     {
         Debug.Log("Tah");
         CivGameManagerSingleton.Instance.allCities.ForEach(city => city.dataCity.Turn());
+
+        //UI
+
+        UiManagerRTS.UpdateAllCitiesBar();
     }
 }
 

@@ -2,26 +2,26 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public class ArmyHexUnit
+public class DataHexUnitArmy
 {
     MainHexUnit mainHexUnit;
 
     [SerializeField]
     public List<GameObject> unitsInArmy = new List<GameObject>();
 
-    public ArmyHexUnit()
+    public DataHexUnitArmy()
     {
         
     }
 
-    public ArmyHexUnit(MainHexUnit mainHexUnit)
+    public DataHexUnitArmy(MainHexUnit mainHexUnit)
     {
         this.mainHexUnit = mainHexUnit;
     }
 
-    public ArmyHexUnit Clone()
+    public DataHexUnitArmy Clone()
     {
-        ArmyHexUnit clonedArmy = new ArmyHexUnit();
+        DataHexUnitArmy clonedArmy = new DataHexUnitArmy();
         foreach (var unit in unitsInArmy)
         {
             clonedArmy.unitsInArmy.Add(unit);
