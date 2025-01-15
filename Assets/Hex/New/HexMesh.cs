@@ -6,8 +6,8 @@ using System;
 public class HexMesh : MonoBehaviour
 {
 
-    [NonSerialized] List<Vector3> vertices;
-    [NonSerialized] List<Color> colors;
+    [NonSerialized] List<Vector3> vertices, cellIndices;
+    [NonSerialized] List<Color> cellWeights;
     [NonSerialized] List<int> triangles;
     [NonSerialized] List<Vector2> uvs;
 
@@ -52,16 +52,16 @@ public class HexMesh : MonoBehaviour
 
     public void AddTriangleColor(Color color)
     {
-        colors.Add(color);
-        colors.Add(color);
-        colors.Add(color);
+        cellWeights.Add(color);
+        cellWeights.Add(color);
+        cellWeights.Add(color);
     }
 
     public void AddTriangleColor(Color c1, Color c2, Color c3)
     {
-        colors.Add(c1);
-        colors.Add(c2);
-        colors.Add(c3);
+        cellWeights.Add(c1);
+        cellWeights.Add(c2);
+        cellWeights.Add(c3);
     }
 
     public void AddQuad(Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4)
@@ -96,18 +96,18 @@ public class HexMesh : MonoBehaviour
 
     public void AddQuadColor(Color c1, Color c2)
     {
-        colors.Add(c1);
-        colors.Add(c1);
-        colors.Add(c2);
-        colors.Add(c2);
+        cellWeights.Add(c1);
+        cellWeights.Add(c1);
+        cellWeights.Add(c2);
+        cellWeights.Add(c2);
     }
 
     public void AddQuadColor(Color c1, Color c2, Color c3, Color c4)
     {
-        colors.Add(c1);
-        colors.Add(c2);
-        colors.Add(c3);
-        colors.Add(c4);
+        cellWeights.Add(c1);
+        cellWeights.Add(c2);
+        cellWeights.Add(c3);
+        cellWeights.Add(c4);
     }
 
     public void AddTriangleUV(Vector2 uv1, Vector2 uv2, Vector2 uv3)
@@ -139,8 +139,13 @@ public class HexMesh : MonoBehaviour
         ListPool<Vector3>.Add(vertices);
         if (useColors)
         {
-            hexMesh.SetColors(colors);
-            ListPool<Color>.Add(colors);
+            hexMesh.SetColors(cellWeights);
+            ListPool<Color>.Add(cellWeights);
+
+            hexMesh.SetColors(cellWeights);
+            ListPool<Color>.Add(cellWeights);
+            hexMesh.SetUVs(2, cellIndices);
+            ListPool<Vector3>.Add(cellIndices);
         }
         if (useUVCoordinates)
         {
@@ -162,7 +167,8 @@ public class HexMesh : MonoBehaviour
         vertices = ListPool<Vector3>.Get();
         if (useColors)
         {
-            colors = ListPool<Color>.Get();
+            cellWeights = ListPool<Color>.Get();
+            cellIndices = ListPool<Vector3>.Get();
         }
         if (useUVCoordinates)
         {

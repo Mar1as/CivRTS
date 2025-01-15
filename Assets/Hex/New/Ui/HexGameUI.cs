@@ -34,11 +34,15 @@ public class HexGameUI : MonoBehaviour
 
     public event System.Action OnArmyUpdated;
 
+    public event System.Action OnTurn;
+
     List<GameObject> army = new List<GameObject>();
 
     private void Start()
     {
         cityUiHolder.SetActive(false);
+
+        OnTurn += () => UpdateStatsPanel();
     }
 
     void Update()
