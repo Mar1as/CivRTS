@@ -7,6 +7,10 @@ public class HexGridChunk : MonoBehaviour
 {
     MainHexCell[] cells;
 
+    static Color color1 = new Color(1f, 0f, 0f);
+    static Color color2 = new Color(0f, 1f, 0f);
+    static Color color3 = new Color(0f, 0f, 1f);
+
     public HexMesh terrain, rivers, roads, water;
     public HexFeatureManager features;
 
@@ -191,7 +195,10 @@ public class HexGridChunk : MonoBehaviour
         }
         else
         {
-            TriangulateEdgeStrip(e1, cell.dataHexCell.Color, e2, neighbor.dataHexCell.Color, hasRoad);
+            TriangulateEdgeStrip(
+                e1, color1, cell.dataHexCell.TerrainTypeIndex,
+                e2, color2, neighbor.dataHexCell.TerrainTypeIndex, hasRoad
+            );
         }
 
         features.AddWall(e1, cell, e2, neighbor, hasRiver, hasRoad);
@@ -296,7 +303,12 @@ public class HexGridChunk : MonoBehaviour
         else
         {
             terrain.AddTriangle(bottom, left, right);
-            terrain.AddTriangleColor(bottomCell.dataHexCell.Color, leftCell.dataHexCell.Color, rightCell.dataHexCell.Color);
+            terrain.AddTriangleColor(color1, color2, color3);
+            Vector3 types;
+            types.x = bottomCell.dataHexCell.TerrainTypeIndex;
+            types.y = leftCell.dataHexCell.TerrainTypeIndex;
+            types.z = rightCell.dataHexCell.TerrainTypeIndex;
+            terrain.AddTriangleTerrainTypes(types);
         }
 
         features.AddWall(bottom, bottomCell, left, leftCell, right, rightCell);
@@ -308,20 +320,22 @@ public class HexGridChunk : MonoBehaviour
         bool hasRoad)
     {
         EdgeVertices e2 = EdgeVertices.TerraceLerp(begin, end, 1);
-        Color c2 = HexMetrics.TerraceLerp(beginCell.dataHexCell.Color, endCell.dataHexCell.Color, 1);
+        Color c2 = HexMetrics.TerraceLerp(color1, color2, 1);
+        float t1 = beginCell.dataHexCell.TerrainTypeIndex;
+        float t2 = endCell.dataHexCell.TerrainTypeIndex;
 
-        TriangulateEdgeStrip(begin, beginCell.dataHexCell.Color, e2, c2, hasRoad);
+        TriangulateEdgeStrip(begin, color1, t1, e2, c2, t2, hasRoad);
 
         for (int i = 2; i < HexMetrics.terraceSteps; i++)
         {
             EdgeVertices e1 = e2;
             Color c1 = c2;
             e2 = EdgeVertices.TerraceLerp(begin, end, i);
-            c2 = HexMetrics.TerraceLerp(beginCell.dataHexCell.Color, endCell.dataHexCell.Color, i);
-            TriangulateEdgeStrip(e1, c1, e2, c2, hasRoad);
+            c2 = HexMetrics.TerraceLerp(color1, color2, i);
+            TriangulateEdgeStrip(e1, c1, t1, e2, c2, t2,hasRoad);
         }
 
-        TriangulateEdgeStrip(e2, c2, end, endCell.dataHexCell.Color, hasRoad);
+        TriangulateEdgeStrip(e2, c2, t1, end, color2, t2, hasRoad);
     }
 
     void TriangulateCornerTerraces(
@@ -332,11 +346,16 @@ public class HexGridChunk : MonoBehaviour
     {
         Vector3 v3 = HexMetrics.TerraceLerp(begin, left, 1);
         Vector3 v4 = HexMetrics.TerraceLerp(begin, right, 1);
-        Color c3 = HexMetrics.TerraceLerp(beginCell.dataHexCell.Color, leftCell.dataHexCell.Color, 1);
-        Color c4 = HexMetrics.TerraceLerp(beginCell.dataHexCell.Color, rightCell.dataHexCell.Color, 1);
+        Color c3 = HexMetrics.TerraceLerp(color1, color2, 1);
+        Color c4 = HexMetrics.TerraceLerp(color1, color3, 1);
+        Vector3 types;
+        types.x = beginCell.dataHexCell.TerrainTypeIndex;
+        types.y = leftCell.dataHexCell.TerrainTypeIndex;
+        types.z = rightCell.dataHexCell.TerrainTypeIndex;
 
         terrain.AddTriangle(begin, v3, v4);
         terrain.AddTriangleColor(beginCell.dataHexCell.Color, c3, c4);
+        terrain.AddTriangleTerrainTypes(types);
 
         for (int i = 2; i < HexMetrics.terraceSteps; i++)
         {
@@ -346,14 +365,16 @@ public class HexGridChunk : MonoBehaviour
             Color c2 = c4;
             v3 = HexMetrics.TerraceLerp(begin, left, i);
             v4 = HexMetrics.TerraceLerp(begin, right, i);
-            c3 = HexMetrics.TerraceLerp(beginCell.dataHexCell.Color, leftCell.dataHexCell.Color, i);
-            c4 = HexMetrics.TerraceLerp(beginCell.dataHexCell.Color, rightCell.dataHexCell.Color, i);
+            c3 = HexMetrics.TerraceLerp(color1, color2, i);
+            c4 = HexMetrics.TerraceLerp(color1, color3, i);
             terrain.AddQuad(v1, v2, v3, v4);
             terrain.AddQuadColor(c1, c2, c3, c4);
+            terrain.AddQuadTerrainTypes(types);
         }
 
         terrain.AddQuad(v3, v4, left, right);
-        terrain.AddQuadColor(c3, c4, leftCell.dataHexCell.Color, rightCell.dataHexCell.Color);
+        terrain.AddQuadColor(c3, c4, color2, color3);
+        terrain.AddQuadTerrainTypes(types);
     }
 
     void TriangulateCornerTerracesCliff(
@@ -368,22 +389,27 @@ public class HexGridChunk : MonoBehaviour
             b = -b;
         }
         Vector3 boundary = Vector3.Lerp(HexMetrics.Perturb(begin), HexMetrics.Perturb(right), b);
-        Color boundaryColor = Color.Lerp(beginCell.dataHexCell.Color, rightCell.dataHexCell.Color, b);
+        Color boundaryColor = Color.Lerp(color1, color3, b);
+        Vector3 types;
+        types.x = beginCell.dataHexCell.TerrainTypeIndex;
+        types.y = leftCell.dataHexCell.TerrainTypeIndex;
+        types.z = rightCell.dataHexCell.TerrainTypeIndex;
 
         TriangulateBoundaryTriangle(
-            begin, beginCell, left, leftCell, boundary, boundaryColor
+            begin, color1, left, color2, boundary, boundaryColor, types
         );
 
         if (leftCell.brainHexCell.GetEdgeType(rightCell) == HexEdgeType.Slope)
         {
             TriangulateBoundaryTriangle(
-                left, leftCell, right, rightCell, boundary, boundaryColor
+                left, color2, right, color3, boundary, boundaryColor, types
             );
         }
         else
         {
             terrain.AddTriangleUnperturbed(HexMetrics.Perturb(left), HexMetrics.Perturb(right), boundary);
-            terrain.AddTriangleColor(leftCell.dataHexCell.Color, rightCell.dataHexCell.Color, boundaryColor);
+            terrain.AddTriangleColor(color2, color3, boundaryColor);
+            terrain.AddTriangleTerrainTypes(types);
         }
     }
 
@@ -399,66 +425,82 @@ public class HexGridChunk : MonoBehaviour
             b = -b;
         }
         Vector3 boundary = Vector3.Lerp(HexMetrics.Perturb(begin), HexMetrics.Perturb(left), b);
-        Color boundaryColor = Color.Lerp(beginCell.dataHexCell.Color, leftCell.dataHexCell.Color, b);
+        Color boundaryColor = Color.Lerp(color1, color3, b);
+        Vector3 types;
+        types.x = beginCell.dataHexCell.TerrainTypeIndex;
+        types.y = leftCell.dataHexCell.TerrainTypeIndex;
+        types.z = rightCell.dataHexCell.TerrainTypeIndex;
 
         TriangulateBoundaryTriangle(
-            right, rightCell, begin, beginCell, boundary, boundaryColor
+            right, color3, begin, color1, boundary, boundaryColor, types
         );
 
         if (leftCell.brainHexCell.GetEdgeType(rightCell) == HexEdgeType.Slope)
         {
             TriangulateBoundaryTriangle(
-                left, leftCell, right, rightCell, boundary, boundaryColor
+                left, color2, right, color3, boundary, boundaryColor, types
             );
         }
         else
         {
             terrain.AddTriangleUnperturbed(HexMetrics.Perturb(left), HexMetrics.Perturb(right), boundary);
-            terrain.AddTriangleColor(leftCell.dataHexCell.Color, rightCell.dataHexCell.Color, boundaryColor);
+            terrain.AddTriangleColor(color2, color3, boundaryColor);
+            terrain.AddTriangleTerrainTypes(types);
         }
     }
 
     void TriangulateBoundaryTriangle(
-        Vector3 begin, MainHexCell beginCell,
-        Vector3 left, MainHexCell leftCell,
-        Vector3 boundary, Color boundaryColor
+        Vector3 begin, Color beginColor,
+        Vector3 left, Color leftColor,
+        Vector3 boundary, Color boundaryColor, Vector3 types
     )
     {
         Vector3 v2 = HexMetrics.Perturb(HexMetrics.TerraceLerp(begin, left, 1));
-        Color c2 = HexMetrics.TerraceLerp(beginCell.dataHexCell.Color, leftCell.dataHexCell.Color, 1);
+        Color c2 = HexMetrics.TerraceLerp(beginColor, leftColor, 1);
 
         terrain.AddTriangleUnperturbed(HexMetrics.Perturb(begin), v2, boundary);
-        terrain.AddTriangleColor(beginCell.dataHexCell.Color, c2, boundaryColor);
+        terrain.AddTriangleColor(beginColor, c2, boundaryColor);
+        terrain.AddTriangleTerrainTypes(types);
 
         for (int i = 2; i < HexMetrics.terraceSteps; i++)
         {
             Vector3 v1 = v2;
             Color c1 = c2;
             v2 = HexMetrics.Perturb(HexMetrics.TerraceLerp(begin, left, i));
-            c2 = HexMetrics.TerraceLerp(beginCell.dataHexCell.Color, leftCell.dataHexCell.Color, i);
+            c2 = HexMetrics.TerraceLerp(beginColor, leftColor, i);
             terrain.AddTriangleUnperturbed(v1, v2, boundary);
             terrain.AddTriangleColor(c1, c2, boundaryColor);
+            terrain.AddTriangleTerrainTypes(types);
         }
 
         terrain.AddTriangleUnperturbed(v2, HexMetrics.Perturb(left), boundary);
-        terrain.AddTriangleColor(c2, leftCell.dataHexCell.Color, boundaryColor);
+        terrain.AddTriangleColor(c2, leftColor, boundaryColor);
+        terrain.AddTriangleTerrainTypes(types);
     }
 
-    void TriangulateEdgeFan(Vector3 center, EdgeVertices edge, Color color)
+    void TriangulateEdgeFan(Vector3 center, EdgeVertices edge, float type)
     {
         terrain.AddTriangle(center, edge.v1, edge.v2);
-        terrain.AddTriangleColor(color);
         terrain.AddTriangle(center, edge.v2, edge.v3);
-        terrain.AddTriangleColor(color);
         terrain.AddTriangle(center, edge.v3, edge.v4);
-        terrain.AddTriangleColor(color);
         terrain.AddTriangle(center, edge.v4, edge.v5);
-        terrain.AddTriangleColor(color);
+
+        terrain.AddTriangleColor(color1);
+        terrain.AddTriangleColor(color1);
+        terrain.AddTriangleColor(color1);
+        terrain.AddTriangleColor(color1);
+
+        Vector3 types;
+        types.x = types.y = types.z = type;
+        terrain.AddTriangleTerrainTypes(types);
+        terrain.AddTriangleTerrainTypes(types);
+        terrain.AddTriangleTerrainTypes(types);
+        terrain.AddTriangleTerrainTypes(types);
     }
 
     void TriangulateEdgeStrip(
-        EdgeVertices e1, Color c1,
-        EdgeVertices e2, Color c2,
+        EdgeVertices e1, Color c1, float type1,
+        EdgeVertices e2, Color c2, float type2,
         bool hasRoad = false)
     {
         terrain.AddQuad(e1.v1, e1.v2, e2.v1, e2.v2);
@@ -469,6 +511,14 @@ public class HexGridChunk : MonoBehaviour
         terrain.AddQuadColor(c1, c2);
         terrain.AddQuad(e1.v4, e1.v5, e2.v4, e2.v5);
         terrain.AddQuadColor(c1, c2);
+
+        Vector3 types;
+        types.x = types.z = type1;
+        types.y = type2;
+        terrain.AddQuadTerrainTypes(types);
+        terrain.AddQuadTerrainTypes(types);
+        terrain.AddQuadTerrainTypes(types);
+        terrain.AddQuadTerrainTypes(types);
 
         if (hasRoad)
         {
@@ -519,16 +569,27 @@ public class HexGridChunk : MonoBehaviour
 
         m.v3.y = center.y = e.v3.y;
 
-        TriangulateEdgeStrip(m, cell.dataHexCell.Color, e, cell.dataHexCell.Color);
+        TriangulateEdgeStrip(
+            m, color1, cell.dataHexCell.TerrainTypeIndex,
+            e, color1, cell.dataHexCell.TerrainTypeIndex
+        );
 
         terrain.AddTriangle(centerL, m.v1, m.v2);
-        terrain.AddTriangleColor(cell.dataHexCell.Color);
         terrain.AddQuad(centerL, center, m.v2, m.v3);
-        terrain.AddQuadColor(cell.dataHexCell.Color, cell.dataHexCell.Color);
         terrain.AddQuad(center, centerR, m.v3, m.v4);
-        terrain.AddQuadColor(cell.dataHexCell.Color, cell.dataHexCell.Color);
         terrain.AddTriangle(centerR, m.v4, m.v5);
-        terrain.AddTriangleColor(cell.dataHexCell.Color);
+
+        terrain.AddTriangleColor(color1);
+        terrain.AddQuadColor(color1, color1);
+        terrain.AddQuadColor(color1, color1);
+        terrain.AddTriangleColor(color1);
+
+        Vector3 types;
+        types.x = types.y = types.z = cell.dataHexCell.TerrainTypeIndex;
+        terrain.AddTriangleTerrainTypes(types);
+        terrain.AddQuadTerrainTypes(types);
+        terrain.AddQuadTerrainTypes(types);
+        terrain.AddTriangleTerrainTypes(types);
 
         if (!cell.dataHexCell.waterScript.IsUnderwater)
         {
@@ -549,8 +610,12 @@ public class HexGridChunk : MonoBehaviour
 
         m.v3.y = e.v3.y;
 
-        TriangulateEdgeStrip(m, cell.dataHexCell.Color, e, cell.dataHexCell.Color);
-        TriangulateEdgeFan(center, m, cell.dataHexCell.Color);
+        TriangulateEdgeStrip(
+            m, color1, cell.dataHexCell.TerrainTypeIndex,
+            e, color1, cell.dataHexCell.TerrainTypeIndex
+        );
+        
+        TriangulateEdgeFan(center, m, cell.dataHexCell.TerrainTypeIndex);
         if (!cell.dataHexCell.waterScript.IsUnderwater)
         {
             bool reversed = cell.dataHexCell.river.HasIncomingRiver;
@@ -614,8 +679,11 @@ public class HexGridChunk : MonoBehaviour
             Vector3.Lerp(center, e.v5, 0.5f)
         );
 
-        TriangulateEdgeStrip(m, cell.dataHexCell.Color, e, cell.dataHexCell.Color);
-        TriangulateEdgeFan(center, m, cell.dataHexCell.Color);
+        TriangulateEdgeStrip(
+            m, color1, cell.dataHexCell.TerrainTypeIndex,
+            e, color1, cell.dataHexCell.TerrainTypeIndex
+        );
+        TriangulateEdgeFan(center, m, cell.dataHexCell.TerrainTypeIndex);
 
         if (!cell.dataHexCell.waterScript.IsUnderwater && !cell.dataHexCell.roadScript.HasRoadThroughEdge(direction))
         {
@@ -685,7 +753,7 @@ public class HexGridChunk : MonoBehaviour
     void TriangulateWithoutRiver(
         HexDirection direction, MainHexCell cell, Vector3 center, EdgeVertices e)
     {
-        TriangulateEdgeFan(center, e, cell.dataHexCell.Color);
+        TriangulateEdgeFan(center, e, cell.dataHexCell.TerrainTypeIndex);
 
         if (cell.dataHexCell.roadScript.HasRoads)
         {

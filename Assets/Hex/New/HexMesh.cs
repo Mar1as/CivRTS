@@ -15,6 +15,7 @@ public class HexMesh : MonoBehaviour
     MeshCollider meshCollider;
 
     public bool useCollider, useColors, useUVCoordinates;
+    public bool useTerrainTypes;
 
     void Awake()
     {
@@ -141,16 +142,16 @@ public class HexMesh : MonoBehaviour
         {
             hexMesh.SetColors(cellWeights);
             ListPool<Color>.Add(cellWeights);
-
-            hexMesh.SetColors(cellWeights);
-            ListPool<Color>.Add(cellWeights);
-            hexMesh.SetUVs(2, cellIndices);
-            ListPool<Vector3>.Add(cellIndices);
         }
         if (useUVCoordinates)
         {
             hexMesh.SetUVs(0, uvs);
             ListPool<Vector2>.Add(uvs);
+        }
+        if (useTerrainTypes)
+        {
+            hexMesh.SetUVs(2, cellIndices);
+            ListPool<Vector3>.Add(cellIndices);
         }
         hexMesh.SetTriangles(triangles, 0);
         ListPool<int>.Add(triangles);
@@ -168,14 +169,31 @@ public class HexMesh : MonoBehaviour
         if (useColors)
         {
             cellWeights = ListPool<Color>.Get();
-            cellIndices = ListPool<Vector3>.Get();
+            //cellIndices = ListPool<Vector3>.Get();
         }
         if (useUVCoordinates)
         {
             uvs = ListPool<Vector2>.Get();
         }
+        if (useTerrainTypes)
+        {
+            cellIndices = ListPool<Vector3>.Get();
+        }
         triangles = ListPool<int>.Get();
     }
 
-    
+    public void AddTriangleTerrainTypes(Vector3 types)
+    {
+        cellIndices.Add(types);
+        cellIndices.Add(types);
+        cellIndices.Add(types);
+    }
+
+    public void AddQuadTerrainTypes(Vector3 types)
+    {
+        cellIndices.Add(types);
+        cellIndices.Add(types);
+        cellIndices.Add(types);
+        cellIndices.Add(types);
+    }
 }
