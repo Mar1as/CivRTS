@@ -102,6 +102,7 @@ MonoBehaviour:
   useCollider: 0
   useColors: 0
   useUVCoordinates: 0
+  useTerrainTypes: 0
 --- !u!1 &3458056071139070119
 GameObject:
   m_ObjectHideFlags: 0
@@ -204,6 +205,7 @@ MonoBehaviour:
   useCollider: 0
   useColors: 0
   useUVCoordinates: 1
+  useTerrainTypes: 0
 --- !u!1 &5085792030377772756
 GameObject:
   m_ObjectHideFlags: 0
@@ -519,6 +521,7 @@ MonoBehaviour:
   useCollider: 0
   useColors: 0
   useUVCoordinates: 1
+  useTerrainTypes: 0
 --- !u!1 &6856303532309286047
 GameObject:
   m_ObjectHideFlags: 0
@@ -621,6 +624,7 @@ MonoBehaviour:
   useCollider: 0
   useColors: 0
   useUVCoordinates: 1
+  useTerrainTypes: 0
 --- !u!1 &7458482673785970300
 GameObject:
   m_ObjectHideFlags: 0
@@ -721,5 +725,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   useCollider: 1
-  useColors: 1
+  useColors: 0
   useUVCoordinates: 0
+  useTerrainTypes: 1
