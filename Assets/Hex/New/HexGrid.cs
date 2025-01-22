@@ -137,7 +137,7 @@ public class HexGrid : MonoBehaviour
         TextMeshProUGUI label = Instantiate(cellLabelPrefab);
         //label.rectTransform.SetParent(gridCanvas.transform, false);
         label.rectTransform.anchoredPosition = new Vector2(position.x, position.z);
-        label.text = cell.dataHexCell.coordinates.ToStringOnSeparateLines();
+        //label.text = cell.dataHexCell.coordinates.ToStringOnSeparateLines();
 
         cell.dataHexCell.uiRect = label.rectTransform;
         cell.dataHexCell.Elevation = 0;

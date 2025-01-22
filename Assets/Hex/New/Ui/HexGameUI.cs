@@ -291,7 +291,7 @@ public class HexGameUI : MonoBehaviour
 
     void OnBuildingButtonClick(BuildingData building)
     {
-        if (building.type == BuildingType.Army) newArmy.unitsInArmy.Clear();
+        if (building.type == BuildingType.Army) newArmy = new DataHexUnitArmy();
         selectedBuilding = building;
         Debug.Log($"Selected building: {building.buildingName}");
     }
@@ -396,9 +396,12 @@ public class HexGameUI : MonoBehaviour
 
     void AddUnit(GameObject unit)
     {
-        newArmy.AddUnit(unit);
-        Debug.Log("X " + newArmy.unitsInArmy.Count);
-        OnArmyUpdated.Invoke();
+        if(selectedCity.dataCity.Stats.CalculatePopulation() > newArmy.unitsInArmy.Count)
+        {
+            newArmy.AddUnit(unit);
+            Debug.Log("X " + newArmy.unitsInArmy.Count);
+            OnArmyUpdated.Invoke();
+        }
     }
     void RemoveUnit(GameObject unit)
     {
@@ -415,7 +418,7 @@ public class HexGameUI : MonoBehaviour
     #region Buttons
     public void ButtonCancel()
     {
-        newArmy.unitsInArmy.Clear();
+        newArmy = new DataHexUnitArmy();
         armyParent.active = false;
     }
     public void ButtonConfirm()
@@ -431,6 +434,7 @@ public class HexGameUI : MonoBehaviour
 
         armyParent.active = false;
         Debug.Log(selectedCity.dataCity.Location);
+        
         selectedCity.dataCity.Production.productionQueue.AddToQueue(selectedBuilding, selectedCity.dataCity.Location);
     }
     #endregion

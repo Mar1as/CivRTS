@@ -30,6 +30,7 @@ public class BuildingData : ScriptableObject
     
 }
 
+
 public enum BuildingType
 {
     Army,
