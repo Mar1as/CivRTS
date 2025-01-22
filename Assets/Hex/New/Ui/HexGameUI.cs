@@ -100,7 +100,7 @@ public class HexGameUI : MonoBehaviour
         }
         catch (System.Exception ex)
         {
-            Debug.Log("V píèi: " + ex);
+            Debug.Log("Problém: " + ex);
         }
 
     }
@@ -120,16 +120,14 @@ public class HexGameUI : MonoBehaviour
                     foreach (MainHexCell neighbor in neighborsEnemys)
                     {
                         Debug.Log(neighbor.dataHexCell.Unit);
-                        // Kontrola, zda na sousední buòce je jednotka nepøítele
                         if (neighbor.dataHexCell.Unit != null &&
                             neighbor.dataHexCell.Unit == selectedUnit)
                         {
                             if (selectedUnit.dataHexUnit.PlayerOwner != currentCell.dataHexCell.Unit.dataHexUnit.PlayerOwner)
                             {
-                                // Útok na nepøítele
                                 Debug.Log("Útok na nepøítele!");
                                 selectedUnit.Attack(neighbor.dataHexCell.Unit);
-                                return; // Po útoku pøerušíme další akce
+                                return; 
                             }
                             else
                             {
@@ -142,7 +140,6 @@ public class HexGameUI : MonoBehaviour
                     }
 
                 }
-                // Pokud není žádný nepøítel, jednotka se pohybuje
                 Debug.Log("Pohyb jednotky.");
                 DoMove();
             }
@@ -257,17 +254,17 @@ public class HexGameUI : MonoBehaviour
         {
             GameObject buttonObj = Instantiate(buildingShopButtonPrefab, cityShopPanel.transform);
             Button button = buttonObj.GetComponent<Button>();
-            Image image = buttonObj.GetComponentsInChildren<Image>().LastOrDefault(); // Najde Image v potomcích
-            TextMeshProUGUI text = buttonObj.GetComponentInChildren<TextMeshProUGUI>(); // Najde TextMeshProUGUI v potomcích
+            Image image = buttonObj.GetComponentsInChildren<Image>().LastOrDefault(); 
+            TextMeshProUGUI text = buttonObj.GetComponentInChildren<TextMeshProUGUI>(); 
 
             if (image != null)
             {
-                image.sprite = building.Icon; // Nastaví ikonu budovy
+                image.sprite = building.Icon; 
             }
 
             if (text != null)
             {
-                text.text = building.buildingName; // Nastaví název budovy
+                text.text = building.buildingName; 
             }
 
             button.onClick.AddListener(() => OnBuildingButtonClick(building));
@@ -328,17 +325,17 @@ public class HexGameUI : MonoBehaviour
             BuildingData building = buildingTask.Building;
             GameObject buttonObj = Instantiate(productionButtonPrefab, productionPanel.transform);
             Button button = buttonObj.GetComponent<Button>();
-            Image image = buttonObj.GetComponentInChildren<Image>(); // Najde Image v potomcích
-            TextMeshProUGUI text = buttonObj.GetComponentInChildren<TextMeshProUGUI>(); // Najde TextMeshProUGUI v potomcích
+            Image image = buttonObj.GetComponentInChildren<Image>();
+            TextMeshProUGUI text = buttonObj.GetComponentInChildren<TextMeshProUGUI>();
 
             if (image != null)
             {
-                image.sprite = building.Icon; // Nastaví ikonu budovy
+                image.sprite = building.Icon;
             }
 
             if (text != null)
             {
-                text.text = building.buildingName; // Nastaví název budovy
+                text.text = building.buildingName; 
             }
 
             button.onClick.AddListener(() => RemoveBuilding(buildingTask));
@@ -380,14 +377,14 @@ public class HexGameUI : MonoBehaviour
         {
             GameObject buttonObj = Instantiate(armyShopButtonPrefab, armyShopPanel.transform);
             Button[] buttons = buttonObj.GetComponentsInChildren<Button>();
-            Image image = buttonObj.GetComponentInChildren<Image>(); // Najde Image v potomcích
-            TextMeshProUGUI text = buttonObj.GetComponentInChildren<TextMeshProUGUI>(); // Najde TextMeshProUGUI v potomcích
+            Image image = buttonObj.GetComponentInChildren<Image>();
+            TextMeshProUGUI text = buttonObj.GetComponentInChildren<TextMeshProUGUI>(); 
             buttons[0].onClick.AddListener(() => AddUnit(unit));
             buttons[1].onClick.AddListener(() => RemoveUnit(unit));
 
             if (image != null)
             {
-                //image.sprite = unit.Icon; // Nastaví ikonu budovy
+                //image.sprite = unit.Icon;
             }
 
             if (text != null)

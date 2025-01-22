@@ -126,17 +126,7 @@
         }
     ],
     "m_GroupDatas": [],
-    "m_StickyNoteDatas": [
-        {
-            "m_Id": "a855c5c16b5c49c792f66d70b4c483f8"
-        },
-        {
-            "m_Id": "57e42011e8744d62bb0f514399d5d58c"
-        },
-        {
-            "m_Id": "949d32ca8c3b44e280309a456cd74bb6"
-        }
-    ],
+    "m_StickyNoteDatas": [],
     "m_Edges": [
         {
             "m_OutputSlot": {
@@ -1746,26 +1736,6 @@
 
 {
     "m_SGVersion": 0,
-    "m_Type": "UnityEditor.ShaderGraph.StickyNoteData",
-    "m_ObjectId": "57e42011e8744d62bb0f514399d5d58c",
-    "m_Title": "Cell Indices",
-    "m_Content": "Cell terrain indices are stored in UV2 xyz.\n",
-    "m_TextSize": 0,
-    "m_Theme": 0,
-    "m_Position": {
-        "serializedVersion": "2",
-        "x": -242.0,
-        "y": -35.5,
-        "width": 200.0,
-        "height": 61.7391357421875
-    },
-    "m_Group": {
-        "m_Id": ""
-    }
-}
-
-{
-    "m_SGVersion": 0,
     "m_Type": "UnityEditor.ShaderGraph.BlockNode",
     "m_ObjectId": "5948a162bd2b4b7ab5e54e3414eb13a5",
     "m_Group": {
@@ -2463,26 +2433,6 @@
 
 {
     "m_SGVersion": 0,
-    "m_Type": "UnityEditor.ShaderGraph.StickyNoteData",
-    "m_ObjectId": "949d32ca8c3b44e280309a456cd74bb6",
-    "m_Title": "Cell Weights",
-    "m_Content": "Cell weights are stored in vertex color xyz.",
-    "m_TextSize": 0,
-    "m_Theme": 0,
-    "m_Position": {
-        "serializedVersion": "2",
-        "x": -240.5,
-        "y": 87.5,
-        "width": 200.0,
-        "height": 100.0
-    },
-    "m_Group": {
-        "m_Id": ""
-    }
-}
-
-{
-    "m_SGVersion": 0,
     "m_Type": "UnityEditor.ShaderGraph.Vector3MaterialSlot",
     "m_ObjectId": "994f0cae28ba410099bffe9555d501af",
     "m_Id": 0,
@@ -2594,26 +2544,6 @@
     "m_TextureArray": {
         "m_SerializedTexture": "{\"textureArray\":{\"instanceID\":0}}",
         "m_Guid": ""
-    }
-}
-
-{
-    "m_SGVersion": 0,
-    "m_Type": "UnityEditor.ShaderGraph.StickyNoteData",
-    "m_ObjectId": "a855c5c16b5c49c792f66d70b4c483f8",
-    "m_Title": "Exploration",
-    "m_Content": "Exploration state is used to interpolate from hidden (0) to visible (1).\n\nHidden state mimics unlit skybox ground color, via setting Ambient Occlusion and Specular Color to zero, Emission to Background Color, and fading out Base Color.\n",
-    "m_TextSize": 0,
-    "m_Theme": 0,
-    "m_Position": {
-        "serializedVersion": "2",
-        "x": 478.5,
-        "y": 680.0,
-        "width": 200.0,
-        "height": 160.0
-    },
-    "m_Group": {
-        "m_Id": ""
     }
 }
 
