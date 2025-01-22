@@ -15,9 +15,11 @@ MonoBehaviour:
   buildingName: Army
   description: 
   productionCost: 1
-  iconBase: {fileID: 0}
+  iconBase: {fileID: 21300000, guid: d8d49cced7f46aa468eb7631118ab5d7, type: 3}
   model: {fileID: 1369767088007361447, guid: c81e5ce50be758d4b8ec256a66f66c33, type: 3}
   type: 0
   foodBonus: 0
   productionBonus: 0
   populationBonus: 0
+  army:
+    unitsInArmy: []

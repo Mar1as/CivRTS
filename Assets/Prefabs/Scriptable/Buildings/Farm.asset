@@ -15,9 +15,11 @@ MonoBehaviour:
   buildingName: Farm
   description: 
   productionCost: 1
-  iconBase: {fileID: 0}
+  iconBase: {fileID: 21300000, guid: 531df469c0b1fa3419768bc8101f9aea, type: 3}
   model: {fileID: 7205072116775645164, guid: 3009915e6c3aaa644a9d924e2aa35332, type: 3}
   type: 1
   foodBonus: 1
   productionBonus: 0
   populationBonus: 0
+  army:
+    unitsInArmy: []

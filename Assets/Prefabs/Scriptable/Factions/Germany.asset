@@ -10,13 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 91e8e454af167e24489df1a88fc96661, type: 3}
-  m_Name: FactionsInCiv
+  m_Name: Germany
   m_EditorClassIdentifier: 
   factionName: Germany
   armyUnitStyle:
   - {fileID: 1369767088007361447, guid: c81e5ce50be758d4b8ec256a66f66c33, type: 3}
   availableUnits:
-  - {fileID: 2616612572522683862, guid: 80a5bcd7e43e80741a32ed07260bdee1, type: 3}
+  - {fileID: 11400000, guid: 4f742ac34d6d65e4e89f26254f8b2095, type: 2}
+  - {fileID: 11400000, guid: 2fa42332ccdf8314e8ebea339880e893, type: 2}
+  - {fileID: 11400000, guid: f556612977f9c5e44a23cf7fb1adc5c6, type: 2}
+  - {fileID: 11400000, guid: c98a09c3276c36f47ad94870bd633a17, type: 2}
+  - {fileID: 11400000, guid: d3acab5ac747b9b4a82042ddb650a7fc, type: 2}
+  - {fileID: 11400000, guid: 96b91410f81f8344bba63cee45da1251, type: 2}
+  - {fileID: 11400000, guid: c31684f181893af459ca109f20f0c45e, type: 2}
+  - {fileID: 11400000, guid: bb650ac1ca6698a40a8537b87c16c514, type: 2}
   availableBuildings:
   - {fileID: 11400000, guid: 83bcad57b497a8044a575fd8b18f2529, type: 2}
   - {fileID: 11400000, guid: ecdfac6d010a27a4c94d1f9db7a95bc9, type: 2}

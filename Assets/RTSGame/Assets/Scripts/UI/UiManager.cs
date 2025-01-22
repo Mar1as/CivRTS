@@ -75,13 +75,13 @@ public class ArmyUiShop : MonoBehaviour
         {
             int count = army.unitsInArmy.Count(u => u == unit);
 
-            if (unitCount.ContainsKey(unit))
+            if (unitCount.ContainsKey(unit.unitPrefab))
             {
-                unitCount[unit] += count;
+                unitCount[unit.unitPrefab] += count;
             }
             else
             {
-                unitCount[unit] = count;
+                unitCount[unit.unitPrefab] = count;
             }
         }
 

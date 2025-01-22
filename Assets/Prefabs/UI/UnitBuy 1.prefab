@@ -8,6 +8,60 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 10384123513019096, guid: 2d8121144df2cae43bf23c9949bfedf7,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 10384123513019096, guid: 2d8121144df2cae43bf23c9949bfedf7,
+        type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 2e2613ad9e791704abe2a8dbe4a2bdf0,
+        type: 2}
+    - target: {fileID: 10384123513019096, guid: 2d8121144df2cae43bf23c9949bfedf7,
+        type: 3}
+      propertyPath: m_fontSizeBase
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 10384123513019096, guid: 2d8121144df2cae43bf23c9949bfedf7,
+        type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: -3180169451206940267, guid: 2e2613ad9e791704abe2a8dbe4a2bdf0,
+        type: 2}
+    - target: {fileID: 10384123513019096, guid: 2d8121144df2cae43bf23c9949bfedf7,
+        type: 3}
+      propertyPath: m_enableAutoSizing
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 10384123513019096, guid: 2d8121144df2cae43bf23c9949bfedf7,
+        type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3312375600830687800, guid: 2d8121144df2cae43bf23c9949bfedf7,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 9.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3312375600830687800, guid: 2d8121144df2cae43bf23c9949bfedf7,
+        type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 2e2613ad9e791704abe2a8dbe4a2bdf0,
+        type: 2}
+    - target: {fileID: 3312375600830687800, guid: 2d8121144df2cae43bf23c9949bfedf7,
+        type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: -3180169451206940267, guid: 2e2613ad9e791704abe2a8dbe4a2bdf0,
+        type: 2}
+    - target: {fileID: 3312375600830687800, guid: 2d8121144df2cae43bf23c9949bfedf7,
+        type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6068248988862133358, guid: 2d8121144df2cae43bf23c9949bfedf7,
         type: 3}
       propertyPath: m_Pivot.x
@@ -112,6 +166,54 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: UnitBuy 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8432282746138231986, guid: 2d8121144df2cae43bf23c9949bfedf7,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 8432282746138231986, guid: 2d8121144df2cae43bf23c9949bfedf7,
+        type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 2e2613ad9e791704abe2a8dbe4a2bdf0,
+        type: 2}
+    - target: {fileID: 8432282746138231986, guid: 2d8121144df2cae43bf23c9949bfedf7,
+        type: 3}
+      propertyPath: m_fontSizeBase
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 8432282746138231986, guid: 2d8121144df2cae43bf23c9949bfedf7,
+        type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: -3180169451206940267, guid: 2e2613ad9e791704abe2a8dbe4a2bdf0,
+        type: 2}
+    - target: {fileID: 8432282746138231986, guid: 2d8121144df2cae43bf23c9949bfedf7,
+        type: 3}
+      propertyPath: m_enableAutoSizing
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8432282746138231986, guid: 2d8121144df2cae43bf23c9949bfedf7,
+        type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8815382918624954334, guid: 2d8121144df2cae43bf23c9949bfedf7,
+        type: 3}
+      propertyPath: m_Type
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8815382918624954334, guid: 2d8121144df2cae43bf23c9949bfedf7,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 94bf075edf8e0a846be91fc00c055847,
+        type: 3}
+    - target: {fileID: 8815382918624954334, guid: 2d8121144df2cae43bf23c9949bfedf7,
+        type: 3}
+      propertyPath: m_PreserveAspect
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

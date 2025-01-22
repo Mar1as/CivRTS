@@ -30,13 +30,15 @@ public class HexGameUI : MonoBehaviour
     [SerializeField]
     Image levelImg;
     [SerializeField]
-    TextMeshProUGUI levelText, populationText, productionText, foodText;
+    TextMeshProUGUI levelText, populationText, productionText, foodText, buildButtonText;
 
     public event System.Action OnArmyUpdated;
 
     public event System.Action OnTurn;
 
     List<GameObject> army = new List<GameObject>();
+
+    float costOfArmy = 0;
 
     private void Start()
     {
@@ -146,7 +148,7 @@ public class HexGameUI : MonoBehaviour
         }
         catch (System.Exception ex)
         {
-            Debug.Log("V píèi: " + ex);
+            Debug.Log("Jáj: " + ex);
         }
     }
 
@@ -325,7 +327,7 @@ public class HexGameUI : MonoBehaviour
             BuildingData building = buildingTask.Building;
             GameObject buttonObj = Instantiate(productionButtonPrefab, productionPanel.transform);
             Button button = buttonObj.GetComponent<Button>();
-            Image image = buttonObj.GetComponentInChildren<Image>();
+            Image image = buttonObj.GetComponentsInChildren<Image>().LastOrDefault();
             TextMeshProUGUI text = buttonObj.GetComponentInChildren<TextMeshProUGUI>();
 
             if (image != null)
@@ -347,7 +349,7 @@ public class HexGameUI : MonoBehaviour
 
     void UpdateArmyPanel(Player player)
     {
-
+        buildButtonText.text = "Build " + newArmy.CostOfArmy();
         foreach (Transform child in armyShopPanel.transform)
         {
             Destroy(child.gameObject);
@@ -357,7 +359,7 @@ public class HexGameUI : MonoBehaviour
             return;
         }
 
-        Dictionary<GameObject, int> unitCount = new Dictionary<GameObject, int>();
+        Dictionary<UnitData, int> unitCount = new Dictionary<UnitData, int>();
 
         foreach (var unit in player.faction.availableUnits)
         {
@@ -384,7 +386,8 @@ public class HexGameUI : MonoBehaviour
 
             if (image != null)
             {
-                //image.sprite = unit.Icon;
+                Debug.Log(image.name);
+                image.sprite = unit.Icon;
             }
 
             if (text != null)
@@ -394,7 +397,7 @@ public class HexGameUI : MonoBehaviour
         }
     }
 
-    void AddUnit(GameObject unit)
+    void AddUnit(UnitData unit)
     {
         if(selectedCity.dataCity.Stats.CalculatePopulation() > newArmy.unitsInArmy.Count)
         {
@@ -403,7 +406,7 @@ public class HexGameUI : MonoBehaviour
             OnArmyUpdated.Invoke();
         }
     }
-    void RemoveUnit(GameObject unit)
+    void RemoveUnit(UnitData unit)
     {
         newArmy.RemoveUnit(unit);
         OnArmyUpdated.Invoke();
@@ -434,7 +437,7 @@ public class HexGameUI : MonoBehaviour
 
         armyParent.active = false;
         Debug.Log(selectedCity.dataCity.Location);
-        
+        selectedBuilding.productionCost = arm.CostOfArmy();
         selectedCity.dataCity.Production.productionQueue.AddToQueue(selectedBuilding, selectedCity.dataCity.Location);
     }
     #endregion

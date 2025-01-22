@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class Kamera : MonoBehaviour
 {
@@ -66,7 +67,7 @@ public class Kamera : MonoBehaviour
         if (cam == null) return;
 
         float scroll = Input.mouseScrollDelta.y * decelerationFactor;
-        if (scroll != 0f)
+        if (scroll != 0f && !EventSystem.current.IsPointerOverGameObject())
         {
             Vector3 position = transform.position;
             position.y -= scroll * zoomSpeed;
