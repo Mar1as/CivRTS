@@ -5,7 +5,7 @@ public class UnitData : ScriptableObject
 {
     public GameObject unitPrefab;
     public float productionCost;
-    public Sprite icon
+    public Sprite Icon
     {
         get
         {
@@ -14,7 +14,7 @@ public class UnitData : ScriptableObject
             else return null;
         }
     }
-    public string name
+    public string Name
     {
         get
         {

@@ -15,9 +15,11 @@ MonoBehaviour:
   buildingName: Urban
   description: 
   productionCost: 2
-  iconBase: {fileID: 0}
+  iconBase: {fileID: 21300000, guid: ead737f05292dbb4a8207b9185ff074d, type: 3}
   model: {fileID: 7205072116775645164, guid: f6dc81699ec8d8e45b334f4a5844d7c0, type: 3}
   type: 2
   foodBonus: 0
   productionBonus: 1
   populationBonus: 1
+  army:
+    unitsInArmy: []
