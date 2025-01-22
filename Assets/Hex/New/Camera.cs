@@ -8,6 +8,7 @@ public class Kamera : MonoBehaviour
     [SerializeField] float speed = 5f;
     [SerializeField] float decelerationFactor = 0.9f;
 
+
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
