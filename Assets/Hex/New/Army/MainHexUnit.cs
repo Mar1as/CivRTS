@@ -4,6 +4,7 @@ using System.IO;
 using UnityEngine;
 using System.Linq;
 using static UnityEditor.FilePathAttribute;
+using TMPro;
 
 [System.Serializable]
 public class MainHexUnit : MonoBehaviour
@@ -11,16 +12,20 @@ public class MainHexUnit : MonoBehaviour
     [SerializeField]
     public DataHexUnit dataHexUnit;
 
+    [SerializeField]
+    BarText text;
+
     private void Start()
     {
         Inicilizace();
 
-        Debug.Log("KONECC " + dataHexUnit.armyHexUnit.unitsInArmy.Count);
+        Debug.Log("KOKOT " + dataHexUnit.armyHexUnit.unitsInArmy.Count);
+        ChangeColorOfModel();
     }
     private void Update()
     {
         Debug.Log("KONECC " + dataHexUnit.armyHexUnit.unitsInArmy.Count);
-
+        text.ChangeText(dataHexUnit.armyHexUnit.unitsInArmy.Count.ToString());
     }
     void OnEnable()
     {
@@ -28,6 +33,7 @@ public class MainHexUnit : MonoBehaviour
         {
             transform.localPosition = dataHexUnit.Location.dataHexCell.Position;
         }
+        ChangeColorOfModel();
     }
 
     public void Inicilizace()
@@ -86,6 +92,9 @@ public class MainHexUnit : MonoBehaviour
         );
     }
 
+    #endregion
+
+
     internal void Attack(MainHexUnit unit)
     {
         Debug.Log("ATTACK " + dataHexUnit.armyHexUnit.unitsInArmy.Count);
@@ -94,5 +103,18 @@ public class MainHexUnit : MonoBehaviour
 
         CivGameManagerSingleton.Instance.sceneSwap.LoadScene(1);
     }
-    #endregion
+
+    void ChangeColorOfModel()
+    {
+        Debug.Log("Change1");
+        if (dataHexUnit.PlayerOwner.faction)
+        {
+            Debug.Log("Change2");
+            MeshRenderer[] models = GetComponentsInChildren<MeshRenderer>();
+            foreach (MeshRenderer model in models)
+            {
+                model.material.color = dataHexUnit.PlayerOwner.faction.factionColor;
+            }
+        }
+    }
 }

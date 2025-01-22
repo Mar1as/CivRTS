@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public class DataCity
+public class DataCity : ITurnable
 {
     
     private MainCity mainCity { get; set; }

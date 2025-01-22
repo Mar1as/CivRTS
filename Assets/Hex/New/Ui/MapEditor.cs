@@ -350,6 +350,7 @@ public class MapEditor : MonoBehaviour
     public void Turn()
     {
         Debug.Log("Tah");
+        CivGameManagerSingleton.Instance.allUnits.ForEach(unit => unit.dataHexUnit.Turn());
         CivGameManagerSingleton.Instance.allCities.ForEach(city => city.dataCity.Turn());
 
         //UI

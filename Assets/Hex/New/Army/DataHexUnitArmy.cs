@@ -4,19 +4,12 @@ using UnityEngine;
 [System.Serializable]
 public class DataHexUnitArmy
 {
-    MainHexUnit mainHexUnit;
-
     [SerializeField]
     public List<GameObject> unitsInArmy = new List<GameObject>();
 
     public DataHexUnitArmy()
     {
         
-    }
-
-    public DataHexUnitArmy(MainHexUnit mainHexUnit)
-    {
-        this.mainHexUnit = mainHexUnit;
     }
 
     public DataHexUnitArmy Clone()
