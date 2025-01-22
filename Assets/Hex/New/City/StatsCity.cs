@@ -28,22 +28,22 @@ public class StatsCity
         {
             population += (cell.dataHexCell.featuresHexCell.UrbanLevel + cell.dataHexCell.featuresHexCell.FarmLevel) / 2;
         }
-        return population;
+        return population + level;
     }
 
     public int CalculateFood()
     {
-        int food = 10;
+        int food = 0;
         foreach (var cell in mainCity.dataCity.CellsInBorder)
         {
-            food += cell.dataHexCell.featuresHexCell.FarmLevel * 2;
+            food += cell.dataHexCell.featuresHexCell.FarmLevel * 3;
         }
-        return food + 1;
+        return food + 4;
     }
 
     public int CalculateProduction()
     {
-        int production = 10;
+        int production = 0;
         foreach (var cell in mainCity.dataCity.CellsInBorder)
         {
             production += cell.dataHexCell.featuresHexCell.UrbanLevel;

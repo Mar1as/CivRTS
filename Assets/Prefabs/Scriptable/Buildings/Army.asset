@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41516b68a9987a346a28d48ad31e76a5, type: 3}
+  m_Name: Army
+  m_EditorClassIdentifier: 
+  buildingName: Army
+  description: 
+  productionCost: 1
+  iconBase: {fileID: 0}
+  model: {fileID: 1369767088007361447, guid: c81e5ce50be758d4b8ec256a66f66c33, type: 3}
+  type: 0
+  foodBonus: 0
+  productionBonus: 0
+  populationBonus: 0

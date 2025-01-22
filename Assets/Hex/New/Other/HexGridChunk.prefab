@@ -102,8 +102,6 @@ MonoBehaviour:
   useCollider: 0
   useColors: 0
   useUVCoordinates: 0
-  useUV2Coordinates: 0
-  useTerrainTypes: 0
 --- !u!1 &3458056071139070119
 GameObject:
   m_ObjectHideFlags: 0
@@ -206,8 +204,6 @@ MonoBehaviour:
   useCollider: 0
   useColors: 0
   useUVCoordinates: 1
-  useUV2Coordinates: 0
-  useTerrainTypes: 0
 --- !u!1 &5085792030377772756
 GameObject:
   m_ObjectHideFlags: 0
@@ -263,8 +259,6 @@ MonoBehaviour:
   rivers: {fileID: 21384597897793604}
   roads: {fileID: 4248922745059486038}
   water: {fileID: 2568298213313084316}
-  waterShore: {fileID: 0}
-  estuaries: {fileID: 0}
   features: {fileID: 1747009256113724835}
 --- !u!1 &5122507453563823456
 GameObject:
@@ -525,8 +519,6 @@ MonoBehaviour:
   useCollider: 0
   useColors: 0
   useUVCoordinates: 1
-  useUV2Coordinates: 0
-  useTerrainTypes: 0
 --- !u!1 &6856303532309286047
 GameObject:
   m_ObjectHideFlags: 0
@@ -629,8 +621,6 @@ MonoBehaviour:
   useCollider: 0
   useColors: 0
   useUVCoordinates: 1
-  useUV2Coordinates: 0
-  useTerrainTypes: 0
 --- !u!1 &7458482673785970300
 GameObject:
   m_ObjectHideFlags: 0
@@ -696,7 +686,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a3fc4c3603be7214e92e1cd7257bcaab, type: 2}
+  - {fileID: 2100000, guid: bbd81eb58ae0b0b4a8e9f584a4cf9691, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -733,5 +723,3 @@ MonoBehaviour:
   useCollider: 1
   useColors: 1
   useUVCoordinates: 1
-  useUV2Coordinates: 1
-  useTerrainTypes: 1
