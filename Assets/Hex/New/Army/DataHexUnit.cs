@@ -7,7 +7,7 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 
 [System.Serializable]
-public class DataHexUnit
+public class DataHexUnit : ITurnable
 {
     public MainHexUnit mainHexUnit { get; private set; }
     [SerializeField]
@@ -28,7 +28,7 @@ public class DataHexUnit
     public DataHexUnit(MainHexUnit mainHexUnit)
     {
         this.mainHexUnit = mainHexUnit;
-        armyHexUnit = new DataHexUnitArmy(mainHexUnit);
+        armyHexUnit = new DataHexUnitArmy();
         CivGameManagerSingleton.Instance.allUnits.Add(mainHexUnit);
         PlayerOwner = CivGameManagerSingleton.Instance.players[(int)Random.Range(0,CivGameManagerSingleton.Instance.players.Length)];
 
@@ -225,6 +225,11 @@ public class DataHexUnit
             orientation = mainHexUnit.transform.localRotation.eulerAngles.y;
         }
         
+    }
+
+    public void Turn()
+    {
+
     }
 }
 
