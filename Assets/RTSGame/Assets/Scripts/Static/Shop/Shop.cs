@@ -58,7 +58,7 @@ public class Shop : MonoBehaviour
             }
         }
     }
-    public void ShopingByListUnits(string tag, int indexOfUnit, List<GameObject> koupitelne) //kdo zavolal funkci, co chce koupit, kde se to nachází
+    public void ShopingByListUnits(string tag, int indexOfUnit = 0, List<GameObject> koupitelne = null, GameObject unitGm = null) //kdo zavolal funkci, co chce koupit, kde se to nachází
     {
 
         for (int i = 0; i < Teams.listOfPlayers.Count; i++) //projdu všechny týmy
@@ -66,7 +66,17 @@ public class Shop : MonoBehaviour
             if (Teams.listOfPlayers[i].tag == tag) //zjistím kdo zavolal funkci
             {
                 TeamsConstructor player = Teams.listOfPlayers[i]; //zjistím kdo zavolal funkci
-                GameObject prefabUnit = koupitelne[indexOfUnit]; //zjistím co chce koupit
+
+                GameObject prefabUnit;
+                if (koupitelne != null)
+                {
+                    prefabUnit = koupitelne[indexOfUnit]; //zjistím co chce koupit
+
+                }
+                else
+                {
+                    prefabUnit = unitGm; //zjistím co chce koupit
+                }
                 UnitStats prefabUnitStats = prefabUnit.GetComponent<UnitStats>();   //zjistím co chce koupit
 
 

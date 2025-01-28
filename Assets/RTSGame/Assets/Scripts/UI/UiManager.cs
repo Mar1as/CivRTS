@@ -17,15 +17,16 @@ public class UiManager
 
     TeamsConstructor player;
 
-    public UiManager(TeamsConstructor player)
+    public UiManager(TeamsConstructor player, DataHexUnitArmy army)
     {
         uiShowInfoAboutBattalion = new UiShowInfoAboutBattalion();
         if (player.army != null)
         {
             armyUiShop = new ArmyUiShop(player);
         }
-        uiShop = new UiShop(player);
+        uiShop = new UiShop(player, army);
     }
+
 
     public void CreateShop(List<GameObject> listFactions)
     {
@@ -33,7 +34,7 @@ public class UiManager
         {
             armyUiShop.UpdateShop();
         }
-        else uiShop.CreateShop(listFactions);
+        //else uiShop.CreateShop(listFactions);
     }
 
 }

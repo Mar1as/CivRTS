@@ -115,36 +115,37 @@ public class HexGameUI : MonoBehaviour
 
             if (selectedUnit)
             {
-                bool isEnemyOnCell = currentCell.dataHexCell.Unit != null;
-                if (isEnemyOnCell)
+                MainHexUnit unitOnCell = currentCell.dataHexCell.Unit;
+                if(unitOnCell)
                 {
-                    MainHexCell[] neighborsEnemys = currentCell.brainHexCell.GetAllNeighbors();
-                    foreach (MainHexCell neighbor in neighborsEnemys)
+                    MainHexCell[] neighbors = selectedUnit.dataHexUnit.Location.brainHexCell.GetAllNeighbors();
+
+                    foreach (MainHexCell neighbor in neighbors)
                     {
-                        Debug.Log(neighbor.dataHexCell.Unit);
-                        if (neighbor.dataHexCell.Unit != null &&
-                            neighbor.dataHexCell.Unit == selectedUnit)
+                        var neighborUnit = neighbor.dataHexCell.Unit;
+
+                        if (neighborUnit == unitOnCell)
                         {
-                            if (selectedUnit.dataHexUnit.PlayerOwner != currentCell.dataHexCell.Unit.dataHexUnit.PlayerOwner)
+                            if (neighborUnit != selectedUnit &&
+                                neighborUnit.dataHexUnit.PlayerOwner != selectedUnit.dataHexUnit.PlayerOwner)
                             {
                                 Debug.Log("Útok na nepøítele!");
-                                selectedUnit.Attack(neighbor.dataHexCell.Unit);
-                                return; 
+                                selectedUnit.Attack(selectedUnit, neighborUnit);
+                                return;
                             }
-                            else
+                            else if (neighborUnit == selectedUnit)
                             {
                                 Debug.Log("Povídání");
                                 return;
                             }
-                            
                         }
-
                     }
-
                 }
+
                 Debug.Log("Pohyb jednotky.");
                 DoMove();
             }
+
         }
         catch (System.Exception ex)
         {
@@ -218,6 +219,7 @@ public class HexGameUI : MonoBehaviour
     #region BuildingMenu
     void SelectCity(MainHexCell currentCell)
     {
+        newArmy = new DataHexUnitArmy();
         cityUiHolder.SetActive(true);
         ButtonCancel();
         Player player = currentCell.dataHexCell.city.dataCity.playerOwner;
@@ -294,7 +296,7 @@ public class HexGameUI : MonoBehaviour
     void OnBuildingButtonClick(BuildingData building)
     {
         if (building.type == BuildingType.Army) newArmy = new DataHexUnitArmy();
-        selectedBuilding = building;
+        selectedBuilding = Instantiate(building);
         Debug.Log($"Selected building: {building.buildingName}");
     }
 
@@ -426,19 +428,15 @@ public class HexGameUI : MonoBehaviour
     }
     public void ButtonConfirm()
     {
-        DataHexUnitArmy arm = newArmy.Clone();
-        arm.unitsInArmy = newArmy.unitsInArmy;
-        Debug.Log("2X " + newArmy.unitsInArmy.Count);
-
-        selectedBuilding.army = arm;
-        Debug.Log("3X " + selectedBuilding.army.unitsInArmy.Count);
-
-        Debug.Log("4X " + selectedBuilding.army.unitsInArmy.Count);
+        selectedBuilding.army = newArmy;
+        Debug.Log("Army2: " + selectedBuilding.army.unitsInArmy[0].name);
 
         armyParent.active = false;
         Debug.Log(selectedCity.dataCity.Location);
-        selectedBuilding.productionCost = arm.CostOfArmy();
+        selectedBuilding.productionCost = newArmy.CostOfArmy();
         selectedCity.dataCity.Production.productionQueue.AddToQueue(selectedBuilding, selectedCity.dataCity.Location);
+
+        newArmy = new DataHexUnitArmy();
     }
     #endregion
 }

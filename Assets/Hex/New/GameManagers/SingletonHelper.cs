@@ -9,6 +9,7 @@ public class SingletonHelper : MonoBehaviour
     private void Awake()
     {
         AddPlayers();
+        Debug.Log("COŽE?");
     }
 
     void AddPlayers()
@@ -16,7 +17,15 @@ public class SingletonHelper : MonoBehaviour
         CivGameManagerSingleton.Instance.players = new Player[numberOfPlayers];
         for (int i = 0; i < numberOfPlayers; i++)
         {
-            CivGameManagerSingleton.Instance.players[i] = new Player(factions[i]);
+            Debug.Log("LOL2 " + i);
+
+            if (i == 0)
+            {
+                CivGameManagerSingleton.Instance.players[i] = new Player(factions[i], false);
+            }
+            else CivGameManagerSingleton.Instance.players[i] = new Player(factions[i], true);
+
+            Debug.Log("LOL" + i);
         }
     }
 }

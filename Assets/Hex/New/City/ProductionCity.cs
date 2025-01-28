@@ -49,7 +49,6 @@ public class ProductionQueue
 
     public void AddToQueue(BuildingData building, MainHexCell location)
     {
-        Debug.Log("X5 " + building.army.unitsInArmy.Count);
 
         queue.Enqueue(new ProductionTask(building, location));
         OnQueueUpdated?.Invoke();
@@ -110,8 +109,6 @@ public class ProductionQueue
 
     private void CompleteCurrentTask()
     {
-        Debug.Log("X6 " + currentTask.Building.army.unitsInArmy.Count);
-
         Debug.Log($"Completed production of {currentTask.Building.buildingName} at {currentTask.Location}");
         switch (currentTask.Building.type)
         {
@@ -125,7 +122,7 @@ public class ProductionQueue
                 MainHexCell cell = currentTask.Location;
                 if (cell && !cell.dataHexCell.Unit)
                 {
-                    Debug.Log("Velikost 1: " + currentTask.Building.army.unitsInArmy.Count);
+                    Debug.Log("Velikost 1: " + currentTask.Building.army.unitsInArmy[0].name);
                     CivGameManagerSingleton.Instance.hexGrid.AddUnit(
                         mainCity.dataCity.playerOwner.faction.armyUnitStyle[0].GetComponent<MainHexUnit>(), currentTask.Location, Random.Range(0f, 360f), currentTask.Building.army, mainCity.dataCity.playerOwner
                     );

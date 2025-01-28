@@ -67,15 +67,22 @@ public class CameraSelectUnits : MonoBehaviour
     {
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
-
-        if (Physics.Raycast(ray, out hit, Mathf.Infinity, friendlyLayerMask))
-            select.ClickOnUnit(hit.collider.transform.root.gameObject);
-        
-        else if (!EventSystem.current.IsPointerOverGameObject())
+        try
         {
-            foreach (GameObject item in listAllPlayerUnits)
-                select.DeselectUnit(item);
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, friendlyLayerMask))
+                select.ClickOnUnit(hit.collider.transform.root.gameObject);
+
+            else if (!EventSystem.current.IsPointerOverGameObject())
+            {
+                foreach (GameObject item in listAllPlayerUnits)
+                    select.DeselectUnit(item);
+            }
         }
+        catch (Exception e)
+        {
+            Debug.Log(e.Message);
+        }
+
     }
 
     void UpdateSelectionBox()

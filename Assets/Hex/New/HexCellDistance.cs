@@ -38,7 +38,7 @@ public class HexCellDistance
         set
         {
             distance = value;
-            UpdateDistanceLabel();
+            //UpdateDistanceLabel();
         }
     }
 
