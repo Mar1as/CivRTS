@@ -18,6 +18,8 @@ public class Teams : MonoBehaviour
     [SerializeField] List<Wave> waves; 
 
 
+
+
     int moneyToGive = 100;
 
     public static List<TeamsConstructor> listOfPlayers = new List<TeamsConstructor>();
@@ -32,9 +34,8 @@ public class Teams : MonoBehaviour
             if (LoadMenu.chosenFactions.Count > 0) factions = LoadMenu.chosenFactions;
         }
 
-        friendlyPlayer = new TeamsConstructor(
-        friendlySpawnPoint, new List<GameObject>(), "FriendlyPlayer", moneyToGive, Color.green, uiUnitsListScript, factions[0]);
-        enemyPlayer = new TeamsConstructor(enemySpawnPoint,new List<GameObject>(), "EnemyPlayer", moneyToGive, Color.red, factions[1], EnableAi, waves);
+        CreatePlayers();
+
         listOfPlayers.Add(friendlyPlayer);
         listOfPlayers.Add(enemyPlayer);
         GetUnits();
@@ -143,5 +144,26 @@ public class Teams : MonoBehaviour
                 break;
             }
         }
+    }
+
+    void CreatePlayers()
+    {
+        PassInformation fp = SceneSwap.passInfo[0];
+        PassInformation ep = SceneSwap.passInfo[1];
+        Debug.Log($"FP: {fp.player.faction} {fp.player.ai} {fp.army.unitsInArmy[0].name}");
+        Debug.Log($"EP: {ep.player.faction} {ep.player.ai} {ep.army.unitsInArmy[0].name}");
+
+        if (fp.player.ai == true)
+        {
+            fp = SceneSwap.passInfo[1];
+            Debug.Log($"FP: {fp.player.faction} {fp.player.ai}");
+            ep = SceneSwap.passInfo[0];
+        }
+
+        
+
+        friendlyPlayer = new TeamsConstructor(fp,
+        friendlySpawnPoint, new List<GameObject>(), "FriendlyPlayer", moneyToGive, Color.green, uiUnitsListScript, factions[0]); //Hr·Ë
+        enemyPlayer = new TeamsConstructor(ep, enemySpawnPoint, new List<GameObject>(), "EnemyPlayer", moneyToGive, Color.red, factions[1], EnableAi, waves); //AI
     }
 }

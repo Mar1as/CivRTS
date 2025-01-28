@@ -16339,6 +16339,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 455bb3f20ca45db49a8279b559d779a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  scenes:
+  - Battle
 --- !u!1 &2107603218
 GameObject:
   m_ObjectHideFlags: 0

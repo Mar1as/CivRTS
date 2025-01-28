@@ -333,27 +333,32 @@ public class HexGrid : MonoBehaviour
             }
         }
         //fromCell.dataHexCell.uiRect.GetComponent<TextMeshProUGUI>().text += " START";
-        //toCell.dataHexCell.uiRect.GetComponent<TextMeshProUGUI>().text += " END";
+        toCell.dataHexCell.uiRect.GetComponent<TextMeshProUGUI>().text += $"CURRENT";
 
         return false;
     }
 
     void ShowPath(int speed)
     {
+        int[] turns;
         if (currentPathExists)
         {
             MainHexCell current = currentPathTo;
             while (current != currentPathFrom)
             {
                 int turn = (current.dataHexCell.hexCellDistance.Distance - 1) / speed;
-                current.dataHexCell.uiRect.GetComponent<TextMeshProUGUI>().text += turn.ToString() + " Path";
+                //current.dataHexCell.uiRect.GetComponent<TextMeshProUGUI>().text += turn.ToString() + " Path";
                 //current.SetLabel(turn.ToString());
                 //current.EnableHighlight(Color.white);
                 current = current.dataHexCell.hexCellDistance.PathFrom;
+                Debug.Log(turn);
+                
             }
         }
-        currentPathFrom.dataHexCell.uiRect.GetComponent<TextMeshProUGUI>().text += " Start";
-        currentPathTo.dataHexCell.uiRect.GetComponent<TextMeshProUGUI>().text += " End";
+        int lastTurn = (currentPathTo.dataHexCell.hexCellDistance.Distance - 1) / speed;
+        Debug.Log("Turn " + lastTurn);
+        //currentPathFrom.dataHexCell.uiRect.GetComponent<TextMeshProUGUI>().text += " Start";
+        currentPathTo.dataHexCell.uiRect.GetComponent<TextMeshProUGUI>().text += lastTurn;
         //currentPathFrom.EnableHighlight(Color.blue);
         //currentPathTo.EnableHighlight(Color.red);
     }
@@ -365,20 +370,20 @@ public class HexGrid : MonoBehaviour
             MainHexCell current = currentPathTo;
             while (current != currentPathFrom)
             {
-                current.dataHexCell.uiRect.GetComponent<TextMeshProUGUI>().text = current.dataHexCell.coordinates.ToStringOnSeparateLines();
+                current.dataHexCell.uiRect.GetComponent<TextMeshProUGUI>().text = "";//current.dataHexCell.coordinates.ToStringOnSeparateLines();
                 //current.SetLabel(null);
                 //current.DisableHighlight();
                 current = current.dataHexCell.hexCellDistance.PathFrom;
             }
-            current.dataHexCell.uiRect.GetComponent<TextMeshProUGUI>().text = current.dataHexCell.coordinates.ToStringOnSeparateLines();
+            current.dataHexCell.uiRect.GetComponent<TextMeshProUGUI>().text = "";//current.dataHexCell.coordinates.ToStringOnSeparateLines();
             //current.DisableHighlight();
             currentPathExists = false;
         }
         else if (currentPathFrom)
         {
-            currentPathFrom.dataHexCell.uiRect.GetComponent<TextMeshProUGUI>().text = currentPathFrom.dataHexCell.coordinates.ToStringOnSeparateLines();
+            currentPathFrom.dataHexCell.uiRect.GetComponent<TextMeshProUGUI>().text = "";//currentPathFrom.dataHexCell.coordinates.ToStringOnSeparateLines();
             //currentPathFrom.DisableHighlight();
-            currentPathTo.dataHexCell.uiRect.GetComponent<TextMeshProUGUI>().text = currentPathTo.dataHexCell.coordinates.ToStringOnSeparateLines();
+            currentPathTo.dataHexCell.uiRect.GetComponent<TextMeshProUGUI>().text = "";//currentPathTo.dataHexCell.coordinates.ToStringOnSeparateLines();
             //currentPathTo.DisableHighlight();
         }
         currentPathFrom = currentPathTo = null;

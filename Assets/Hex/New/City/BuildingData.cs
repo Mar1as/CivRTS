@@ -27,7 +27,6 @@ public class BuildingData : ScriptableObject
         set { iconBase = value; }
     }
 
-    
 }
 
 

@@ -10,91 +10,102 @@ public class UiShop : MonoBehaviour
     GameObject uiShopButtonPrefab;
 
     List<GameObject> prefabList;
-    List<GameObject> factionList;
 
     TeamsConstructor player;
+    DataHexUnitArmy army;
 
-    public UiShop(TeamsConstructor player)
+    public UiShop(TeamsConstructor player, DataHexUnitArmy army)
     {
         prefabList = new List<GameObject>();
 
         uiShop = UIUnitListStatic.Instance.uiShop;
         uiShopButtonPrefab = UIUnitListStatic.Instance.uiShopButtonPrefab;
 
-        factionList = new List<GameObject>();
-
         this.player = player;
+        this.army = army;
     }
 
-    public void CreateShop(List<GameObject> listFactions)
+    public void CreateShop()
     {
-        factionList = listFactions;
-
-        for (int i = 0; i < listFactions.Count; i++)
-        {
-            GameObject item = listFactions[i];
-            item.GetComponent<UnitStats>().costCur = item.GetComponent<UnitStats>().cost;
-        }
         CreatePrefabs();
     }
 
     void CreatePrefabs()
     {
-        for (int i = 0; i < 12; i++)
+        foreach (var unitData in army.unitSupply.Keys)
         {
             GameObject prefab = GameObject.Instantiate(uiShopButtonPrefab, uiShop.transform);
 
-            if (i < factionList.Count)
+            UnitStats unitStats = unitData.unitPrefab.GetComponent<UnitStats>();
+            TextMeshProUGUI[] textArray = prefab.GetComponentsInChildren<TextMeshProUGUI>();
+            Image[] images = prefab.GetComponentsInChildren<Image>();
+            Image sprite = null;
+
+            foreach (var img in images)
             {
-                UnitStats unit = factionList[i].GetComponent<UnitStats>();
-
-                TextMeshProUGUI[] textArray = prefab.GetComponentsInChildren<TextMeshProUGUI>();
-                Image[] images = prefab.GetComponentsInChildren<Image>();
-                Image sprite = null;
-
-                foreach (var img in images)
+                if (img.gameObject != prefab)
                 {
-                    if (img.gameObject != prefab)
-                    {
-                        sprite = img;
-                        break;
-                    }
+                    sprite = img;
+                    break;
                 }
-
-                if (textArray.Length >= 2)
-                {
-                    textArray[0].text = unit.jmeno;
-                    textArray[1].text = unit.costCur.ToString();
-                }
-
-                if (sprite != null)
-                {
-                    sprite.sprite = unit.icon;
-                }
-
-                int currentIndex = i;
-                prefab.GetComponent<UnityEngine.UI.Button>().onClick.AddListener(() => ClickToBuy(currentIndex));
             }
+
+            if (textArray.Length >= 2)
+            {
+                textArray[0].text = unitStats.jmeno;
+                textArray[1].text = $"Cena: {unitStats.costCur} | Zásoba: {army.unitSupply[unitData]}";
+            }
+
+            if (sprite != null)
+            {
+                sprite.sprite = unitStats.icon;
+            }
+
+            prefab.GetComponent<UnityEngine.UI.Button>().onClick.AddListener(() => ClickToBuy(unitData));
 
             prefabList.Add(prefab);
         }
     }
 
-    void ClickToBuy(int index)
+    void ClickToBuy(UnitData unitData)
     {
-        Debug.Log($"{player.tag} {index} {factionList.Count}");
-        Shop.Instance.ShopingByListUnits(player.tag, index, factionList);
+        if (army.CanBuyUnit(unitData))
+        {
+            army.RemoveUnit(unitData); // Odebrání jednotky ze zásoby
+            Shop.Instance.ShopingByListUnits(player.tag, unitGm: unitData.unitPrefab);
 
-        UpdatePrefab(index);
+            UpdatePrefab(unitData);
+        }
+        else
+        {
+            Debug.Log("Jednotka není dostupná.");
+        }
     }
 
-    void UpdatePrefab(int index)
+    void UpdatePrefab(UnitData unitData)
     {
-        UnitStats unit = factionList[index].GetComponent<UnitStats>();
-        GameObject prefab = prefabList[index];
+        int index = GetPrefabIndex(unitData);
+        if (index == -1) return;
 
+        GameObject prefab = prefabList[index];
         TextMeshProUGUI[] textArray = prefab.GetComponentsInChildren<TextMeshProUGUI>();
 
-        textArray[1].text = unit.costCur.ToString();
+        int remainingSupply = army.unitSupply.ContainsKey(unitData) ? army.unitSupply[unitData] : 0;
+        textArray[1].text = $"Cena: {unitData.productionCost} | Zásoba: {remainingSupply}";
+
+        prefab.GetComponent<UnityEngine.UI.Button>().interactable = remainingSupply > 0;
+    }
+
+    int GetPrefabIndex(UnitData unitData)
+    {
+        for (int i = 0; i < prefabList.Count; i++)
+        {
+            UnitStats unitStats = prefabList[i].GetComponentInChildren<UnitStats>();
+            if (unitStats != null && unitStats.jmeno == unitData.name)
+            {
+                return i;
+            }
+        }
+        return -1;
     }
 }

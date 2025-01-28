@@ -5,6 +5,7 @@ using UnityEngine;
 using System.Linq;
 using static UnityEditor.FilePathAttribute;
 using TMPro;
+using Unity.VisualScripting;
 
 [System.Serializable]
 public class MainHexUnit : MonoBehaviour
@@ -19,13 +20,13 @@ public class MainHexUnit : MonoBehaviour
     {
         Inicilizace();
 
-        Debug.Log("KOKOT " + dataHexUnit.armyHexUnit.unitsInArmy.Count);
         ChangeColorOfModel();
     }
     private void Update()
     {
-        Debug.Log("KONECC " + dataHexUnit.armyHexUnit.unitsInArmy.Count);
         text.ChangeText(dataHexUnit.armyHexUnit.unitsInArmy.Count.ToString());
+
+        Debug.Log($"ARMY: {dataHexUnit.PlayerOwner.faction.name} {dataHexUnit.armyHexUnit.unitsInArmy[0].name}");
     }
     void OnEnable()
     {
@@ -95,13 +96,19 @@ public class MainHexUnit : MonoBehaviour
     #endregion
 
 
-    internal void Attack(MainHexUnit unit)
+    internal void Attack(MainHexUnit attUnit, MainHexUnit defUnit)
     {
+        Debug.Log($"att: {attUnit.dataHexUnit.PlayerOwner.faction.name} {attUnit.dataHexUnit.armyHexUnit.unitsInArmy[0].name}");
+        Debug.Log($"def: {defUnit.dataHexUnit.PlayerOwner.faction.name} {defUnit.dataHexUnit.armyHexUnit.unitsInArmy[0].name}");
+        
+        
         Debug.Log("ATTACK " + dataHexUnit.armyHexUnit.unitsInArmy.Count);
-        SceneSwap.passInfo[0] = new PassInformation(dataHexUnit.PlayerOwner, dataHexUnit.armyHexUnit);
-        SceneSwap.passInfo[1] = new PassInformation(unit.dataHexUnit.PlayerOwner, unit.dataHexUnit.armyHexUnit);
+        SceneSwap.passInfo[0] = new PassInformation(attUnit.dataHexUnit.PlayerOwner, attUnit.dataHexUnit.armyHexUnit, PlayerStateInBattle.Attacker);
+        SceneSwap.passInfo[1] = new PassInformation(defUnit.dataHexUnit.PlayerOwner, defUnit.dataHexUnit.armyHexUnit, PlayerStateInBattle.Defender);
 
-        CivGameManagerSingleton.Instance.sceneSwap.LoadScene(1);
+        
+
+        CivGameManagerSingleton.Instance.sceneSwap.LoadScene(0,true);
     }
 
     void ChangeColorOfModel()

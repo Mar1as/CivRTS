@@ -17,6 +17,8 @@ public class TeamsConstructor : MonoBehaviour
     List<Battalions> ListBattalions = new List<Battalions>();
     public Faction playerFaction;
 
+    PassInformation infoFromCiv;
+
     public string tag;
     public LayerMask layerMask;
     public int money;
@@ -26,6 +28,7 @@ public class TeamsConstructor : MonoBehaviour
 
     public EnemyAi ai = null;
 
+    bool isAi = false;
 
     public List<GameObject> listUnits
     {
@@ -77,17 +80,19 @@ public class TeamsConstructor : MonoBehaviour
 
     }
 
-    public TeamsConstructor(GameObject spawnPointGM, List<GameObject> listUnits, string tag, int money, Color color, Faction playerFaction, bool enable, List<Wave> waves) //AI konstruktor
+    public TeamsConstructor(PassInformation infoFromCiv, GameObject spawnPointGM, List<GameObject> listUnits, string tag, int money, Color color, Faction playerFaction, bool enable, List<Wave> waves) //AI konstruktor
     {
-        
+        this.infoFromCiv = infoFromCiv;
+        isAi = true;
         this.spawnPointVector = spawnPointGM.transform.position;
         this.listUnits = listUnits;
         this.tag = tag;
         this.money = money;
         layerMask = LayerMask.GetMask(tag);
         score = 0;
-        controledZones = 0; 
-        teamColor = color;
+        controledZones = 0;
+        teamColor = infoFromCiv.player.faction.factionColor;
+        playerFaction.factionUnits = UnitsFromCiv(infoFromCiv).ToList();
         this.playerFaction = playerFaction;
         factionShopUnits = playerFaction.factionUnits;
         if (enable && waves.Count <= 0)
@@ -102,12 +107,13 @@ public class TeamsConstructor : MonoBehaviour
             money = -10000;
             this.waves = waves;
         }
-        
 
+        Debug.Log($"AI: {infoFromCiv.player.faction} {infoFromCiv.player.ai} {infoFromCiv.army.unitsInArmy[0].name}");
     }
 
-    public TeamsConstructor(GameObject spawnPointGM, List<GameObject> listUnits, string tag, int money, Color color, UiUnitsList uiUnitsListScript, Faction playerFaction)//Hráèský konstruktor kterému se pøidává UI
+    public TeamsConstructor(PassInformation infoFromCiv, GameObject spawnPointGM, List<GameObject> listUnits, string tag, int money, Color color, UiUnitsList uiUnitsListScript, Faction playerFaction)//Hráèský konstruktor kterému se pøidává UI
     {
+        this.infoFromCiv = infoFromCiv;
         //uiUnitsList = GetUiUnitsListScript(Ui);
         this.spawnPointVector = spawnPointGM.transform.position;
         this.listUnits = listUnits;
@@ -116,12 +122,16 @@ public class TeamsConstructor : MonoBehaviour
         layerMask = LayerMask.GetMask(tag);
         score = 0;
         controledZones = 0;
-        teamColor = color;
+        teamColor = infoFromCiv.player.faction.factionColor;
+        playerFaction.factionUnits = UnitsFromCiv(infoFromCiv).ToList();
         this.playerFaction = playerFaction;
         factionShopUnits = playerFaction.factionUnits;
         uiUnitsListCreateButton = new UIUnitListCreateButton(listUnits, listSelectedUnits, listBattalions, Input.GetKey(KeyCode.LeftShift));
-        if(uiManager == null) uiManager = new UiManager(this);
-        uiManager.uiShop.CreateShop(factionShopUnits);
+        if(uiManager == null) uiManager = new UiManager(this, infoFromCiv.army);
+        uiManager.uiShop.CreateShop();
+
+        Debug.Log($"Player: {infoFromCiv.player.faction} {infoFromCiv.player.ai} {infoFromCiv.army.unitsInArmy[0].name}");
+
     }
 
     UiUnitsList GetUiUnitsListScript(GameObject Ui)
@@ -226,7 +236,7 @@ public class TeamsConstructor : MonoBehaviour
             {
                 if (uiManager == null)
                 {
-                    uiManager = new UiManager(this);
+                    uiManager = new UiManager(this, infoFromCiv.army);
                 }
                 uiManager.armyUiShop = new ArmyUiShop(this);
                 Debug.Log("JUP");
@@ -235,7 +245,19 @@ public class TeamsConstructor : MonoBehaviour
         }
     }
 
+    GameObject[] UnitsFromCiv(PassInformation index)
+    {
+        GameObject[] units = new GameObject[index.army.unitsInArmy.Count()];
+        for (int i = 0; i < index.army.unitsInArmy.Count(); i++)
+        {
+            units[i] = index.army.unitsInArmy[i].unitPrefab;
+        }
+        return units;
+    }
+
     #endregion
+
+
 }
 
 class DestinationsXd

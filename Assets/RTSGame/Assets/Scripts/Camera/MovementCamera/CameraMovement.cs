@@ -4,43 +4,49 @@ using UnityEngine;
 
 public class CameraMovement : MonoBehaviour
 {
-    Rigidbody rb;
+    private Rigidbody rb;
 
-    [SerializeField] private int rychlost = 10000;
-    [SerializeField] private int sensitivita = 100;
-    [SerializeField] float delka = 2f;
+    [SerializeField] private float rychlostWASD = 10000f;
+    [SerializeField] private float rychlostVysky = 50f;
+
+    [SerializeField] private float sensitivita = 100f;
+    [SerializeField] private float delka = 2f;
     private Vector2 rot;
 
-    [SerializeField] LayerMask terrain;
+    [SerializeField] private LayerMask terrain;
+
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
     }
+
     private void Update()
     {
         Movement();
         MouseRotate();
         Height();
     }
+
     void Movement()
     {
         float horizMove = Input.GetAxis("Horizontal");
         float vertikMove = Input.GetAxis("Vertical");
 
-        Vector3 move = new Vector3(horizMove, 0, vertikMove) * rychlost * ReturnCameraSpeed();
-        var globalMove = transform.TransformDirection(move);
+        Vector3 move = new Vector3(horizMove, 0, vertikMove) * rychlostWASD * ReturnCameraSpeed();
+        Vector3 globalMove = transform.TransformDirection(move);
 
         rb.linearVelocity = new Vector3(globalMove.x, rb.linearVelocity.y, globalMove.z);
     }
 
     void Height()
     {
-        Vector3 move = new Vector3(0, -Input.mouseScrollDelta.y, 0) * rychlost;
-        if (move.y > delka)
-        {
-            //Debug.Log("Move.y " + move.y);
-        }
-        rb.linearVelocity = new Vector3(rb.linearVelocity.x, move.y, rb.linearVelocity.z);
+        // Získání vstupu koleèka myši pro zmìnu výšky
+        float scroll = -Input.mouseScrollDelta.y * rychlostVysky * Time.deltaTime;
+
+        // Aplikace zmìny výšky
+        rb.linearVelocity = new Vector3(rb.linearVelocity.x, scroll, rb.linearVelocity.z);
+
+        // Kontrola, zda kamera není pod terénem
         CheckGround();
     }
 
@@ -48,42 +54,34 @@ public class CameraMovement : MonoBehaviour
     {
         if (Input.GetMouseButton(2) || Input.GetKey(KeyCode.LeftAlt))
         {
-            rot.x += Input.GetAxis("Mouse X") * sensitivita;
-            rot.y += Input.GetAxis("Mouse Y") * sensitivita;
-            if (rot.y > 0)
-            {
-                rot.y = 0;
-            }
-            if (rot.y < -90)
-            {
-                rot.y = -90;
-            }
+            rot.x += Input.GetAxis("Mouse X") * sensitivita * Time.deltaTime;
+            rot.y += Input.GetAxis("Mouse Y") * sensitivita * Time.deltaTime;
+
+            // Omezení rotace na vertikální ose
+            rot.y = Mathf.Clamp(rot.y, -90f, 0f);
+
             transform.rotation = Quaternion.Euler(-rot.y, rot.x, 0);
         }
-
     }
 
     void CheckGround()
     {
         Ray ray = new Ray(transform.position, Vector3.down);
-
         RaycastHit hit;
 
         if (Physics.Raycast(ray, out hit, delka, terrain))
         {
-            gameObject.transform.position = new Vector3(gameObject.transform.position.x, hit.point.y + delka, gameObject.transform.position.z);
+            // Udržení kamery nad terénem
+            float targetHeight = hit.point.y + delka;
+            if (transform.position.y < targetHeight)
+            {
+                transform.position = new Vector3(transform.position.x, targetHeight, transform.position.z);
+            }
         }
     }
 
     int ReturnCameraSpeed()
     {
-        if (Input.GetKey(KeyCode.LeftShift))
-        {
-            return 2;
-        }
-        else
-        {
-            return 1;
-        }
+        return Input.GetKey(KeyCode.LeftShift) ? 2 : 1;
     }
 }
