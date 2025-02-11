@@ -162,13 +162,22 @@ public class HexGameUI : MonoBehaviour
     #region UnitMovement
     bool UpdateCurrentCell()
     {
-        MainHexCell cell = hexGrid.GetCell(Camera.main.ScreenPointToRay(Input.mousePosition));
-        if (cell != currentCell)
+        try
         {
-            currentCell = cell;
-            return true;
+            MainHexCell cell = hexGrid.GetCell(Camera.main.ScreenPointToRay(Input.mousePosition));
+            if (cell != currentCell)
+            {
+                currentCell = cell;
+                return true;
+            }
+            return false;
         }
-        return false;
+        catch (System.Exception e )
+        {
+            Debug.Log("Problém: " + e);
+            return false;
+        }
+        
     }
 
     MainHexUnit SelectUnit()
@@ -318,13 +327,41 @@ public class HexGameUI : MonoBehaviour
 
     void UpdateProductionPanel(Player player)
     {
-        //Debug.Log(selectedCity.dataCity.Production.productionQueue.queue.Count  + " kokotko ");
+        // Vyèistit starý obsah UI panelu
         foreach (Transform child in productionPanel.transform)
         {
             Destroy(child.gameObject);
         }
+
         if (player == null) return;
-        foreach (var buildingTask in selectedCity.dataCity.Production.productionQueue.queue)
+
+        // Získání fronty produkce mìsta
+        ProductionQueue productionQueue = selectedCity.dataCity.Production.productionQueue;
+
+        // Pokud je aktivní výroba, zobrazíme ji jako první
+        if (productionQueue.currentTask != null)
+        {
+            BuildingData currentBuilding = productionQueue.currentTask.Building;
+            GameObject currentTaskObj = Instantiate(productionButtonPrefab, productionPanel.transform);
+            Button currentTaskButton = currentTaskObj.GetComponent<Button>();
+            Image currentTaskImage = currentTaskObj.GetComponentsInChildren<Image>().LastOrDefault();
+            TextMeshProUGUI currentTaskText = currentTaskObj.GetComponentInChildren<TextMeshProUGUI>();
+
+            if (currentTaskImage != null)
+            {
+                currentTaskImage.sprite = currentBuilding.Icon;
+            }
+
+            if (currentTaskText != null)
+            {
+                currentTaskText.text = $"(Producing) {currentBuilding.buildingName}";
+            }
+
+            currentTaskButton.interactable = false; // Nelze ruènì odstranit aktivní úkol
+        }
+
+        // Zobrazit zbývající frontu produkce
+        foreach (var buildingTask in productionQueue.queue)
         {
             BuildingData building = buildingTask.Building;
             GameObject buttonObj = Instantiate(productionButtonPrefab, productionPanel.transform);
@@ -339,7 +376,7 @@ public class HexGameUI : MonoBehaviour
 
             if (text != null)
             {
-                text.text = building.buildingName; 
+                text.text = building.buildingName;
             }
 
             button.onClick.AddListener(() => RemoveBuilding(buildingTask));

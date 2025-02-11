@@ -17,6 +17,7 @@ public class ProductionCity
     public void ProduceBuilding(BuildingData building, MainHexCell location)
     {
         Debug.Log("ProduceXD");
+        if (location == mainCity.dataCity.Location) return;
         productionQueue.AddToQueue(building, location);
     }
 
@@ -37,7 +38,7 @@ public class ProductionQueue
     MainCity mainCity;
 
     public Queue<ProductionTask> queue = new Queue<ProductionTask>();
-    private ProductionTask currentTask;
+    public ProductionTask currentTask;
     private int remainingProduction;
 
     public event System.Action OnQueueUpdated;
@@ -49,7 +50,7 @@ public class ProductionQueue
 
     public void AddToQueue(BuildingData building, MainHexCell location)
     {
-
+        Debug.Log("ADDED");
         queue.Enqueue(new ProductionTask(building, location));
         OnQueueUpdated?.Invoke();
         if (currentTask == null)
@@ -122,7 +123,6 @@ public class ProductionQueue
                 MainHexCell cell = currentTask.Location;
                 if (cell && !cell.dataHexCell.Unit)
                 {
-                    Debug.Log("Velikost 1: " + currentTask.Building.army.unitsInArmy[0].name);
                     CivGameManagerSingleton.Instance.hexGrid.AddUnit(
                         mainCity.dataCity.playerOwner.faction.armyUnitStyle[0].GetComponent<MainHexUnit>(), currentTask.Location, Random.Range(0f, 360f), currentTask.Building.army, mainCity.dataCity.playerOwner
                     );

@@ -423,6 +423,8 @@ public class HexGrid : MonoBehaviour
         newUnit.dataHexUnit.Location = location;
         newUnit.dataHexUnit.Orientation = orientation;
         Debug.Log("Velikost: " + newUnit.dataHexUnit.armyHexUnit.unitsInArmy.Count);
+
+        player.Armies.Add(unit.gameObject);
     }
 
     public void RemoveUnit(MainHexUnit unit)

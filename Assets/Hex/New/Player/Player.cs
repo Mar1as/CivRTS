@@ -7,7 +7,7 @@ using UnityEngine;
 public class Player
 {
     public FactionsInCiv faction; // Frakce hr·Ëe
-    private List<GameObject> Armies = new List<GameObject>();
+    public List<GameObject> Armies = new List<GameObject>();
     public bool ai { get; private set; } = false;
 
     public Player(FactionsInCiv faction, bool ai = false)

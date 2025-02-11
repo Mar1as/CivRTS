@@ -46,7 +46,11 @@ public class Orders
             var behaviour = listSelectedUnits[i].GetComponent<UnitBehaviour>();
             behaviour.attackingBool = false;
             var navAgent = stats.agent;
-            if (navAgent != null) navAgent.destination = ReturnFormation(i);
+            if (navAgent != null)
+            {
+                navAgent.SetDestination(ReturnFormation(i));
+                Debug.Log("AGENT");
+            }
         }
         Debug.Log("Move3");
         og.DestroyListPrefabs();
@@ -56,6 +60,7 @@ public class Orders
     {
         int vybranaPozice = i;
         Vector3 vec = listSquareFormation[vybranaPozice];
+        Debug.Log("Lokace: " + vec);
         return vec;
     }
 

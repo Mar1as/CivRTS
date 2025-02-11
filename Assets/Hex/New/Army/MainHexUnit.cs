@@ -25,8 +25,6 @@ public class MainHexUnit : MonoBehaviour
     private void Update()
     {
         text.ChangeText(dataHexUnit.armyHexUnit.unitsInArmy.Count.ToString());
-
-        Debug.Log($"ARMY: {dataHexUnit.PlayerOwner.faction.name} {dataHexUnit.armyHexUnit.unitsInArmy[0].name}");
     }
     void OnEnable()
     {
@@ -98,8 +96,8 @@ public class MainHexUnit : MonoBehaviour
 
     internal void Attack(MainHexUnit attUnit, MainHexUnit defUnit)
     {
-        Debug.Log($"att: {attUnit.dataHexUnit.PlayerOwner.faction.name} {attUnit.dataHexUnit.armyHexUnit.unitsInArmy[0].name}");
-        Debug.Log($"def: {defUnit.dataHexUnit.PlayerOwner.faction.name} {defUnit.dataHexUnit.armyHexUnit.unitsInArmy[0].name}");
+        //Debug.Log($"att: {attUnit.dataHexUnit.PlayerOwner.faction.name} {attUnit.dataHexUnit.armyHexUnit.unitsInArmy[0].name}");
+        //Debug.Log($"def: {defUnit.dataHexUnit.PlayerOwner.faction.name} {defUnit.dataHexUnit.armyHexUnit.unitsInArmy[0].name}");
         
         
         Debug.Log("ATTACK " + dataHexUnit.armyHexUnit.unitsInArmy.Count);

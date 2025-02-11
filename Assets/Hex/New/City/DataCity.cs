@@ -170,4 +170,11 @@ public class DataCity : ITurnable
     }
 
     #endregion
+
+    public MainHexCell GetRandomOwnedProvince()
+    {
+        if (CellsInBorder.Count == 0) return null;
+
+        return CellsInBorder[UnityEngine.Random.Range(0, CellsInBorder.Count)];
+    }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.Build;
 using UnityEditor.SearchService;
@@ -31,51 +32,25 @@ public class SceneSwap : MonoBehaviour
 
     public void LoadScene(int sceneId, bool loadBattle)
     {
+        //sceneId = 1; //Debug
         if (loadBattle)
         {
-            // Uloží aktuální scénu kampanì, pokud není již uložena
             if (campaignScene == default)
             {
                 campaignScene = SceneManager.GetActiveScene();
-                // Uloží všechny GameObjecty v kampani
                 campaignGameObjects = GetAllGameObjectsInScene(campaignScene);
             }
 
-            // Vypne všechny GameObjecty v kampani
             SetActiveForAllGameObjects(campaignGameObjects, false);
 
-            // Naète scénu bitvy v additivním režimu
-            SceneManager.LoadScene(scenes[sceneId], LoadSceneMode.Additive);
-
-            // Nastaví novou scénu jako aktivní
-            Scene battleScene = SceneManager.GetSceneByName(scenes[sceneId]);
-            SceneManager.SetActiveScene(battleScene);
-
-            // Odstraní scénu kampanì
-            SceneManager.UnloadSceneAsync(campaignScene.name);
+            // Spustí korutinu pro naètení bitvy
+            StartCoroutine(LoadBattleScene(sceneId));
         }
         else
         {
-            // Zpìt do kampanì: naète uloženou scénu kampanì
             if (campaignScene != default)
             {
-                // Kontrola, zda scéna kampanì již není naètena
-                if (!SceneManager.GetSceneByName(campaignScene.name).isLoaded)
-                {
-                    SceneManager.LoadScene(campaignScene.name, LoadSceneMode.Additive);
-                }
-
-                // Zapne všechny GameObjecty v kampani
-                SetActiveForAllGameObjects(campaignGameObjects, true);
-
-                // Nastaví kampanì jako aktivní
-                SceneManager.SetActiveScene(campaignScene);
-
-                // Odstraní scénu bitvy
-                SceneManager.UnloadSceneAsync(scenes[sceneId]);
-
-                // Vyèistí uloženou scénu kampanì
-                campaignScene = default;
+                StartCoroutine(LoadCampaignScene(sceneId));
             }
             else
             {
@@ -83,6 +58,43 @@ public class SceneSwap : MonoBehaviour
             }
         }
     }
+
+    private IEnumerator LoadBattleScene(int sceneId)
+    {
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(scenes[sceneId], LoadSceneMode.Additive);
+
+        while (!asyncLoad.isDone)
+        {
+            yield return null; // Poèkáme na naètení scény
+        }
+
+        Scene battleScene = SceneManager.GetSceneByName(scenes[sceneId]);
+        if (battleScene.isLoaded)
+        {
+            SceneManager.SetActiveScene(battleScene);
+            SceneManager.UnloadSceneAsync(campaignScene.name);
+        }
+        else
+        {
+            Debug.LogError("Chyba: Scéna bitvy se nenaèetla správnì!");
+        }
+    }
+
+    private IEnumerator LoadCampaignScene(int sceneId)
+    {
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(campaignScene.name, LoadSceneMode.Additive);
+
+        while (!asyncLoad.isDone)
+        {
+            yield return null;
+        }
+
+        SetActiveForAllGameObjects(campaignGameObjects, true);
+        SceneManager.SetActiveScene(campaignScene);
+        SceneManager.UnloadSceneAsync(scenes[sceneId]);
+        campaignScene = default;
+    }
+
 
     // Funkce pro získání všech GameObjectù ve scénì
     private GameObject[] GetAllGameObjectsInScene(Scene scene)

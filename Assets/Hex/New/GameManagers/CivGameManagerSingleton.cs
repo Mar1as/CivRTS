@@ -42,4 +42,27 @@ public class CivGameManagerSingleton
         }
         return players;
     }*/
+
+    public void ProcessAITurns()
+    {
+        foreach (var player in players)
+        {
+            if (player.ai)
+            {
+                // Process city AI
+                foreach (var city in allCities)
+                {
+                    if (city.dataCity.playerOwner == player)
+                    {
+                        CityAI cityAI = new CityAI(city, player);
+                        cityAI.ProcessTurn();
+                    }
+                }
+
+                // Process army AI
+                ArmyAI armyAI = new ArmyAI(player);
+                armyAI.ProcessTurn();
+            }
+        }
+    }
 }

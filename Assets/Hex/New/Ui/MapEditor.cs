@@ -356,6 +356,8 @@ public class MapEditor : MonoBehaviour
         //UI
 
         UiManagerRTS.UpdateAllCitiesBar();
+
+        CivGameManagerSingleton.Instance.ProcessAITurns();
     }
 }
 

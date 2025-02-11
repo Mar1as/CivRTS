@@ -16341,6 +16341,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scenes:
   - Battle
+  - Battle 1
 --- !u!1 &2107603218
 GameObject:
   m_ObjectHideFlags: 0

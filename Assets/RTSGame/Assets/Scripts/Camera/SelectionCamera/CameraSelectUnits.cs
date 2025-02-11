@@ -101,6 +101,7 @@ public class CameraSelectUnits : MonoBehaviour
 
     void ReleaseSelectionBox()
     {
+        listSelectedUnits.Clear();
         selectionBox.gameObject.SetActive(false);
         Vector2 min = selectionBox.anchoredPosition - (selectionBox.sizeDelta / 2);
         Vector2 max = selectionBox.anchoredPosition + (selectionBox.sizeDelta / 2);
