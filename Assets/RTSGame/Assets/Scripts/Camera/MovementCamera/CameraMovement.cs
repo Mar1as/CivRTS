@@ -6,7 +6,7 @@ public class CameraMovement : MonoBehaviour
 {
     private Rigidbody rb;
 
-    [SerializeField] private float rychlostWASD = 10000f;
+    [SerializeField] private float rychlostWASD = 10f; // Snï¿½enï¿½ rychlost
     [SerializeField] private float rychlostVysky = 50f;
 
     [SerializeField] private float sensitivita = 100f;
@@ -15,6 +15,11 @@ public class CameraMovement : MonoBehaviour
 
     [SerializeField] private LayerMask terrain;
 
+    private Vector3 movementInput;
+    private float scrollInput;
+
+    float lastTargetHeight = float.MinValue;
+
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -22,31 +27,39 @@ public class CameraMovement : MonoBehaviour
 
     private void Update()
     {
-        Movement();
-        MouseRotate();
+        // ï¿½tenï¿½ vstupï¿½ v Update
+        movementInput = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+        scrollInput = -Input.mouseScrollDelta.y * rychlostVysky * Time.deltaTime;
+
+        //transform.position = new Vector3(transform.position.x, transform.position.y + scrollInput, transform.position.z);
         Height();
+
+        // Rotace kamery
+        MouseRotate();
+    }
+
+    private void FixedUpdate()
+    {
+        // Pohyb a zmï¿½na vï¿½ï¿½ky v FixedUpdate
+        Movement();
     }
 
     void Movement()
     {
-        float horizMove = Input.GetAxis("Horizontal");
-        float vertikMove = Input.GetAxis("Vertical");
-
-        Vector3 move = new Vector3(horizMove, 0, vertikMove) * rychlostWASD * ReturnCameraSpeed();
+        // Vï¿½poï¿½et pohybu
+        Vector3 move = movementInput * rychlostWASD * ReturnCameraSpeed();
         Vector3 globalMove = transform.TransformDirection(move);
 
+        // Aplikace pohybu
         rb.linearVelocity = new Vector3(globalMove.x, rb.linearVelocity.y, globalMove.z);
     }
 
     void Height()
     {
-        // Získání vstupu koleèka myši pro zmìnu výšky
-        float scroll = -Input.mouseScrollDelta.y * rychlostVysky * Time.deltaTime;
+        // Aplikace zmï¿½ny vï¿½ï¿½ky
+        transform.position = new Vector3(transform.position.x, transform.position.y + scrollInput, transform.position.z);
 
-        // Aplikace zmìny výšky
-        rb.linearVelocity = new Vector3(rb.linearVelocity.x, scroll, rb.linearVelocity.z);
-
-        // Kontrola, zda kamera není pod terénem
+        // Kontrola, zda kamera nenï¿½ pod terï¿½nem
         CheckGround();
     }
 
@@ -57,7 +70,7 @@ public class CameraMovement : MonoBehaviour
             rot.x += Input.GetAxis("Mouse X") * sensitivita * Time.deltaTime;
             rot.y += Input.GetAxis("Mouse Y") * sensitivita * Time.deltaTime;
 
-            // Omezení rotace na vertikální ose
+            // Omezenï¿½ rotace na vertikï¿½lnï¿½ ose
             rot.y = Mathf.Clamp(rot.y, -90f, 0f);
 
             transform.rotation = Quaternion.Euler(-rot.y, rot.x, 0);
@@ -69,15 +82,28 @@ public class CameraMovement : MonoBehaviour
         Ray ray = new Ray(transform.position, Vector3.down);
         RaycastHit hit;
 
-        if (Physics.Raycast(ray, out hit, delka, terrain))
+        if (Physics.Raycast(ray, out hit, int.MaxValue, terrain))
         {
-            // Udržení kamery nad terénem
+            // Udrï¿½enï¿½ kamery nad terï¿½nem
             float targetHeight = hit.point.y + delka;
             if (transform.position.y < targetHeight)
             {
                 transform.position = new Vector3(transform.position.x, targetHeight, transform.position.z);
             }
+
+            lastTargetHeight = targetHeight;
         }
+        else
+        {
+            if (lastTargetHeight != float.MinValue)
+            {
+                if (transform.position.y < lastTargetHeight)
+                {
+                    transform.position = new Vector3(transform.position.x, lastTargetHeight, transform.position.z);
+                }
+            }
+        }
+
     }
 
     int ReturnCameraSpeed()
