@@ -198,39 +198,57 @@ public class HexGrid : MonoBehaviour
 
     public void Save(BinaryWriter writer)
     {
+        Debug.Log($"Ukládání mapy. Poèet hexagonù: {CivGameManagerSingleton.Instance.hexagons.Length}");
         for (int i = 0; i < CivGameManagerSingleton.Instance.hexagons.Length; i++)
         {
             CivGameManagerSingleton.Instance.hexagons[i].dataHexCell.saveLoadHexCell.Save(writer);
         }
-
-        writer.Write(CivGameManagerSingleton.Instance.allUnits.Count);
-        for (int i = 0; i < CivGameManagerSingleton.Instance.allUnits.Count; i++)
-        {
-            CivGameManagerSingleton.Instance.allUnits[i].Save(writer);
-        }
+        Debug.Log("Ukládání dokonèeno.");
     }
 
     public void Load(BinaryReader reader)
     {
-        int header = reader.ReadInt32();
-        ClearPath();
-        ClearUnits();
+        try
+        {
+            Debug.Log("Naèítání mapy.");
+            int header = 0;
+            Debug.Log($"Naètený header: {header}");
+            ClearPath();
+            ClearUnits();
 
-        for (int i = 0; i < CivGameManagerSingleton.Instance.hexagons.Length; i++)
-        {
-            CivGameManagerSingleton.Instance.hexagons[i].dataHexCell.saveLoadHexCell.Load(reader);
-        }
-        for (int i = 0; i < chunks.Length; i++)
-        {
-            chunks[i].Refresh();
-        }
-        if (header >= 2)
-        {
-            int unitCount = reader.ReadInt32();
-            for (int i = 0; i < unitCount; i++)
+            for (int i = 0; i < CivGameManagerSingleton.Instance.hexagons.Length; i++)
             {
-                MainHexUnit.Load(reader, this);
+                Debug.Log(reader.BaseStream.Position);
+                Debug.Log(reader.BaseStream.Length);
+
+                if (reader.BaseStream.Position >= reader.BaseStream.Length)
+                {
+                    Debug.LogError("Nedostatek dat pro naètení hexagonu.");
+                    break;
+                }
+                Debug.Log($"Naèítání hexagonu {i}");
+                CivGameManagerSingleton.Instance.hexagons[i].dataHexCell.saveLoadHexCell.Load(reader);
             }
+
+            for (int i = 0; i < chunks.Length; i++)
+            {
+                chunks[i].Refresh();
+            }
+
+            if (header >= 2)
+            {
+                //int unitCount = reader.ReadInt32();
+                /*
+                for (int i = 0; i < unitCount; i++)
+                {
+                    MainHexUnit.Load(reader, this);
+                }*/
+            }
+            Debug.Log("Naèítání dokonèeno.");
+        }
+        catch (EndOfStreamException ex)
+        {
+            Debug.LogError($"Chyba pøi ètení dat: {ex.Message}");
         }
     }
 

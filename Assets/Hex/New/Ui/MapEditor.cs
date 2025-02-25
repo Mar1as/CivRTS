@@ -39,17 +39,17 @@ public class MapEditor : MonoBehaviour
                 return;
             }
             if (Input.GetMouseButton(0)) {
-				HandleInput(DrawMode.Draw);
-				return;
-			}
+                HandleInput(DrawMode.Draw);
+                return;
+            }
             if (Input.GetKeyDown(KeyCode.U)) {
                 if (Input.GetKey(KeyCode.LeftShift))
                 {
                     DestroyUnit();
                 }
                 else CreateUnit();
-				return;
-			}
+                return;
+            }
             try
             {
                 if (Input.GetKeyDown(KeyCode.F)) //FARMA
@@ -81,7 +81,7 @@ public class MapEditor : MonoBehaviour
         {
             previousCell = null;
         }
-		
+        
     }
 
     void HandleInput(DrawMode dm)
@@ -319,12 +319,13 @@ public class MapEditor : MonoBehaviour
     public void Save()
     {
         string path = Path.Combine(Application.persistentDataPath, "test.map");
+        Debug.Log(path);
         using (
             BinaryWriter writer =
                 new BinaryWriter(File.Open(path, FileMode.Create))
         )
         {
-            writer.Write(2);
+            //writer.Write(0);
             hexGrid.Save(writer);
         }
     }
@@ -334,15 +335,13 @@ public class MapEditor : MonoBehaviour
         string path = Path.Combine(Application.persistentDataPath, "test.map");
         using (BinaryReader reader = new BinaryReader(File.OpenRead(path)))
         {
-            int header = reader.ReadInt32();
-            if (header <= 2)
+            /*int header = reader.ReadInt32();
+            if (header <= 0)
             {
                 hexGrid.Load(reader);
-            }
-            else
-            {
-                Debug.LogWarning("Unknown map format " + header);
-            }
+            }*/
+
+            hexGrid.Load(reader);
         }
     }
     #endregion

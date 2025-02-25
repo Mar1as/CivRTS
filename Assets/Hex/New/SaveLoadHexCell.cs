@@ -6,7 +6,6 @@ public class SaveLoadHexCell
     MainHexCell mainHexCell;
     DataHexCell data { get => mainHexCell.dataHexCell;}
 
-    int kokot = 0;
     public SaveLoadHexCell(MainHexCell mainHexCell)
     {
         this.mainHexCell = mainHexCell;
@@ -27,81 +26,118 @@ public class SaveLoadHexCell
 
     public void Save(BinaryWriter writer)
     {
+        Debug.Log("Save: Zaèátek ukládání dat hexagonu.");
+
+        // Uložení typu terénu jako byte
         writer.Write((byte)data.TerrainTypeIndex);
+        Debug.Log($"1. Uložen TerrainTypeIndex: {data.TerrainTypeIndex}");
+
+        // Uložení výšky terénu jako byte
         writer.Write((byte)data.Elevation);
+        Debug.Log($"2. Uložena Elevation: {data.Elevation}");
+
+        // Uložení úrovnì vody jako byte
         writer.Write((byte)data.waterScript.WaterLevel);
+        Debug.Log($"3. Uložena WaterLevel: {data.waterScript.WaterLevel}");
+
+        // Uložení úrovnì urbanizace jako byte
         writer.Write((byte)data.featuresHexCell.UrbanLevel);
+        Debug.Log($"4. Uložena UrbanLevel: {data.featuresHexCell.UrbanLevel}");
+
+        // Uložení úrovnì farmy jako byte
         writer.Write((byte)data.featuresHexCell.FarmLevel);
+        Debug.Log($"5. Uložena FarmLevel: {data.featuresHexCell.FarmLevel}");
+
+        // Uložení úrovnì rostlin jako byte
         writer.Write((byte)data.featuresHexCell.PlantLevel);
+        Debug.Log($"6. Uložena PlantLevel: {data.featuresHexCell.PlantLevel}");
+
+        // Uložení speciálního indexu jako byte
+        writer.Write((byte)data.featuresHexCell.SpecialIndex);
+        Debug.Log($"7. Uložen SpecialIndex: {data.featuresHexCell.SpecialIndex}");
+
+        // Uložení informace o tom, zda je hexagon opevnìný (Walled) jako boolean
         writer.Write(data.wallsScript.Walled);
+        Debug.Log($"8. Uloženo Walled: {data.wallsScript.Walled}");
 
-        if (data.river.hasIncomingRiver)
-        {
-            writer.Write((byte)(data.river.incomingRiver + 128));
-        }
-        else
-        {
-            writer.Write((byte)0);
-        }
+        // Uložení informace o pøíchozí øece
+        writer.Write(data.river.hasIncomingRiver);
+        Debug.Log($"9. Uloženo hasIncomingRiver: {data.river.hasIncomingRiver}");
+        writer.Write((int)data.river.incomingRiver);
+        Debug.Log($"10. Uložen incomingRiver: {data.river.incomingRiver}");
 
-        if (data.river.hasOutgoingRiver)
-        {
-            writer.Write((byte)(data.river.outgoingRiver + 128));
-        }
-        else
-        {
-            writer.Write((byte)0);
-        }
+        // Uložení informace o odchozí øece
+        writer.Write(data.river.hasOutgoingRiver);
+        Debug.Log($"11. Uloženo hasOutgoingRiver: {data.river.hasOutgoingRiver}");
+        writer.Write((int)data.river.outgoingRiver);
+        Debug.Log($"12. Uložen outgoingRiver: {data.river.outgoingRiver}");
 
-        int roadFlags = 0;
+        // Uložení informací o silnicích
         for (int i = 0; i < data.roadScript.roads.Length; i++)
         {
-            if (data.roadScript.roads[i])
-            {
-                roadFlags |= 1 << i;
-            }
+            writer.Write(data.roadScript.roads[i]);
+            Debug.Log($"13.{i}. Uložena silnice [{i}]: {data.roadScript.roads[i]}");
         }
-        writer.Write((byte)roadFlags);
+
+        Debug.Log("Save: Ukládání dat hexagonu dokonèeno.");
     }
 
     public void Load(BinaryReader reader)
     {
+        Debug.Log("Load: Zaèátek naèítání dat hexagonu.");
 
+        // Naètení typu terénu
         data.TerrainTypeIndex = reader.ReadByte();
+        Debug.Log($"1. Naèten TerrainTypeIndex: {data.TerrainTypeIndex}");
+
+        // Naètení výšky terénu
         data.Elevation = reader.ReadByte();
+        Debug.Log($"2. Naètena Elevation: {data.Elevation}");
         RefreshPosition();
+
+        // Naètení úrovnì vody
         data.waterScript.WaterLevel = reader.ReadByte();
+        Debug.Log($"3. Naètena WaterLevel: {data.waterScript.WaterLevel}");
+
+        // Naètení úrovnì urbanizace
         data.featuresHexCell.UrbanLevel = reader.ReadByte();
+        Debug.Log($"4. Naètena UrbanLevel: {data.featuresHexCell.UrbanLevel}");
+
+        // Naètení úrovnì farmy
         data.featuresHexCell.FarmLevel = reader.ReadByte();
+        Debug.Log($"5. Naètena FarmLevel: {data.featuresHexCell.FarmLevel}");
+
+        // Naètení úrovnì rostlin
         data.featuresHexCell.PlantLevel = reader.ReadByte();
+        Debug.Log($"6. Naètena PlantLevel: {data.featuresHexCell.PlantLevel}");
+
+        // Naètení speciálního indexu
+        data.featuresHexCell.SpecialIndex = reader.ReadByte();
+        Debug.Log($"7. Naèten SpecialIndex: {data.featuresHexCell.SpecialIndex}");
+
+        // Naètení informace o tom, zda je hexagon opevnìný (Walled)
         data.wallsScript.Walled = reader.ReadBoolean();
+        Debug.Log($"8. Naèteno Walled: {data.wallsScript.Walled}");
 
-        byte riverData = reader.ReadByte();
-        if (riverData >= 128)
-        {
-            data.river.hasIncomingRiver = true;
-            data.river.incomingRiver = (HexDirection)(riverData - 128);
-        }
-        else
-        {
-            data.river.hasIncomingRiver = false;
-        }
+        // Naètení informace o pøíchozí øece
+        data.river.hasIncomingRiver = reader.ReadBoolean();
+        Debug.Log($"9. Naèteno hasIncomingRiver: {data.river.hasIncomingRiver}");
+        data.river.incomingRiver = (HexDirection)reader.ReadInt32();
+        Debug.Log($"10. Naèten incomingRiver: {data.river.incomingRiver}");
 
-        riverData = reader.ReadByte();
-        if (riverData >= 128)
-        {
-            data.river.hasOutgoingRiver = true;
-            data.river.outgoingRiver = (HexDirection)(riverData - 128);
-        }
-        else
-        {
-            data.river.hasOutgoingRiver = false;
-        }
+        // Naètení informace o odchozí øece
+        data.river.hasOutgoingRiver = reader.ReadBoolean();
+        Debug.Log($"11. Naèteno hasOutgoingRiver: {data.river.hasOutgoingRiver}");
+        data.river.outgoingRiver = (HexDirection)reader.ReadInt32();
+        Debug.Log($"12. Naèten outgoingRiver: {data.river.outgoingRiver}");
 
-        int roadFlags = reader.ReadByte();
+        // Naètení informací o silnicích
         for (int i = 0; i < data.roadScript.roads.Length; i++)
         {
-            data.roadScript.roads[i] = (roadFlags & (1 << i)) != 0;
+            data.roadScript.roads[i] = reader.ReadBoolean();
+            Debug.Log($"13.{i}. Naètena silnice [{i}]: {data.roadScript.roads[i]}");
         }
+
+        Debug.Log("Load: Naèítání dat hexagonu dokonèeno.");
     }
 }
