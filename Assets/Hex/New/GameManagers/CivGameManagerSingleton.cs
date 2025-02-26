@@ -18,12 +18,17 @@ public class CivGameManagerSingleton
                 instance = new CivGameManagerSingleton();
                 instance.allUnits = new List<MainHexUnit>();
                 instance.allCities = new List<MainCity>();
+
+                instance.pocetVytvoreni++;
             }
             //else Debug.Log("Players count: " + instance.players.Length); nefunguje
             return instance;
         }
     }
 
+    public int pocetVytvoreni = 0;
+
+    public FactionsInCiv[] allFactions;
     public MainHexCell[] hexagons;
     public List<MainHexUnit> allUnits;
     public List<MainCity> allCities;

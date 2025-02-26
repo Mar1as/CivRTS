@@ -14,6 +14,11 @@ public class SingletonHelper : MonoBehaviour
 
     void AddPlayers()
     {
+        if (CivGameManagerSingleton.Instance.allFactions != null)
+        {
+            Debug.Log("CivGameManagerSingleton is not null");
+            return;
+        }
         CivGameManagerSingleton.Instance.players = new Player[numberOfPlayers];
         for (int i = 0; i < numberOfPlayers; i++)
         {
@@ -27,5 +32,7 @@ public class SingletonHelper : MonoBehaviour
 
             Debug.Log("LOL" + i);
         }
+
+        CivGameManagerSingleton.Instance.allFactions = factions;
     }
 }
