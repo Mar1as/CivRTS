@@ -5369,7 +5369,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 9.2
+  m_fontSize: 9.55
   m_fontSizeBase: 10
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -5506,7 +5506,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 8.6
+  m_fontSize: 12.95
   m_fontSizeBase: 10
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -6359,8 +6359,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7907229e71b85c42b96aa91dff801df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  DebugMode: 1
   GameUi: {fileID: 463575841}
   EditUi: {fileID: 1603650958}
+  ChangeUI: {fileID: 302077368}
   mapEditor: {fileID: 862243522}
   Game: 0
 --- !u!1 &878334231
@@ -8505,7 +8507,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 7.6
+  m_fontSize: 9.8
   m_fontSizeBase: 10
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -9006,7 +9008,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 9.25
+  m_fontSize: 9.8
   m_fontSizeBase: 10
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -9215,7 +9217,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 6.5
+  m_fontSize: 9.8
   m_fontSizeBase: 10
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -14023,8 +14025,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6f9e9818e7e38947bd126595ed32f1a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  chunkCountX: 2
-  chunkCountZ: 2
+  chunkCountX: 10
+  chunkCountZ: 10
   cellPrefab: {fileID: 9193845826885356441, guid: 9eb2caf15c9fb8b47b42a440dc2cd948,
     type: 3}
   cellLabelPrefab: {fileID: 7989777316484911146, guid: 6d4f7053a6af6364baa7a4aaf0b83a70,

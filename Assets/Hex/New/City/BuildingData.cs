@@ -22,7 +22,7 @@ public class BuildingData : ScriptableObject
     {
         get { 
             if(iconBase) return iconBase;
-            return Sprite.Create(AssetPreview.GetMiniThumbnail(model), new Rect(0, 0, 100, 100), new Vector2(0, 0));
+            return null;
         }
         set { iconBase = value; }
     }

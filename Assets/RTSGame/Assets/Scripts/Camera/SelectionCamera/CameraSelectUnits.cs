@@ -1,13 +1,8 @@
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.AI;
 using UnityEngine.EventSystems;
-using static UnityEditor.Progress;
 
 public class CameraSelectUnits : MonoBehaviour
 {

@@ -1,16 +1,8 @@
-using System;
-using System.Collections;
+
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
-using System.Numerics;
 using TMPro;
-using Unity.Loading;
-using Unity.Mathematics;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UIElements;
-using static UnityEditor.Searcher.SearcherWindow.Alignment;
 using Color = UnityEngine.Color;
 using Random = UnityEngine.Random;
 using Vector2 = UnityEngine.Vector2;
@@ -18,6 +10,8 @@ using Vector3 = UnityEngine.Vector3;
 
 public class HexGrid : MonoBehaviour
 {
+    public static bool loaded = false;
+
     public int chunkCountX = 4, chunkCountZ = 3;
     private int cellCountX = 6, cellCountZ = 6;
 
@@ -44,6 +38,8 @@ public class HexGrid : MonoBehaviour
         DataHexUnit.unitPrefab = unitPrefab;
         HexMetrics.colors = colors;
 
+        ChangeChunks();
+
         cellCountX = chunkCountX * HexMetrics.chunkSizeX;
         cellCountZ = chunkCountZ * HexMetrics.chunkSizeZ;
 
@@ -52,6 +48,8 @@ public class HexGrid : MonoBehaviour
 
         CivGameManagerSingleton.Instance.hexGrid = this;
         //RandomColor();
+
+        LoadMap();
     }
 
     void Start()
@@ -475,6 +473,31 @@ public class HexGrid : MonoBehaviour
         return path;
     }
     #endregion
+
+    void ChangeChunks()
+    {
+        if (MenuScripts.gameState == GameStates.Editor)
+        {
+            chunkCountX = (int)MenuScripts.chunks.x;
+            chunkCountZ = (int)MenuScripts.chunks.y;
+        }
+    }
+
+    void LoadMap()
+    {
+        if (MenuScripts.gameState == GameStates.Game && loaded == false)
+        {
+            string save = MenuScripts.saveFiles[MenuScripts.currentFileIndex];
+
+            using (BinaryReader reader = new BinaryReader(File.OpenRead(save)))
+            {
+                Debug.Log("Load");
+
+                Load(reader);
+            }
+            loaded = true;
+        }
+    }
 
     public MainHexCell GetCell(Ray ray)
     {

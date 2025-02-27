@@ -2,8 +2,10 @@ using UnityEngine;
 
 public class UiManagerRTS : MonoBehaviour
 {
+    [SerializeField] bool DebugMode = true;
+
     [SerializeField]
-    private GameObject GameUi, EditUi;
+    private GameObject GameUi, EditUi, ChangeUI;
     [SerializeField]
     private MapEditor mapEditor;
 
@@ -15,12 +17,15 @@ public class UiManagerRTS : MonoBehaviour
     private OptionalToggle[] toggleModes = new OptionalToggle[3];
     static public EditMode editMode = EditMode.Edit;
 
+
     private void Start()
     {
         if (Game) EnableGameUi();
         else EnableEditUi();
 
         UpdateAllCitiesBar();
+
+        GameOrEditor();
     }
     public void EnableGameUi()
     {
@@ -97,6 +102,26 @@ public class UiManagerRTS : MonoBehaviour
         for (int i = 0; i < hexes.Length; i++)
         {
             hexes[i].UpdateBarText();
+        }
+    }
+
+    void GameOrEditor()
+    {
+        //if (!DebugMode) return;
+
+        if (MenuScripts.gameState == GameStates.MainMenu) return;
+
+        ChangeUI.SetActive(false);
+
+        if (MenuScripts.gameState == GameStates.Game)
+        {
+            Game = true;
+            EnableGameUi();
+        }
+        else
+        {
+            Game = false;
+            EnableEditUi();
         }
     }
 }

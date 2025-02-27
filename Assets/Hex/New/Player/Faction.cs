@@ -11,6 +11,7 @@ public class FactionsInCiv : ScriptableObject
     public List<UnitData> availableUnits; // Seznam jednotek, které mùže frakce vyrábìt
     public List<BuildingData> availableBuildings; // Seznam budov, které mùže frakce vyrábìt
     public Color factionColor; // Barva frakce (pro vizuální odlišení)
+    public Sprite factionIcon; // Ikona frakce
 
     // Další vlastnosti, napøíklad bonusy nebo speciální schopnosti
     public string description;

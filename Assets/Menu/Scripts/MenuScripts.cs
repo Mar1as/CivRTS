@@ -2,12 +2,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using TMPro;
-using Unity.VisualScripting;
-using UnityEditor.UI;
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using static UnityEngine.GraphicsBuffer;
 
 public class MenuScripts : MonoBehaviour
 {
@@ -23,12 +22,26 @@ public class MenuScripts : MonoBehaviour
     [SerializeField] private GameObject panelForSaves;
     [SerializeField] private GameObject prefab;
     [SerializeField] private TMP_Dropdown dropDown;
+    [SerializeField] private Image factionImage;
     [SerializeField] private Button startGameButton;
+    
+    [Header("Create Map UI")]
+    [SerializeField] private Button createMap;
+    [SerializeField] private TMP_InputField widthInput, heightInput;
+    
 
+    [Header("Options UI")]
+    [SerializeField] private TMP_Dropdown optionsResolution;
+    [SerializeField] private AudioMixer audioMixer;
+
+    [Header("Static")]
+    public static GameStates gameState = GameStates.MainMenu;
+    public static Vector2 chunks;
 
     public static int currentFileIndex;
     public static int currentFactionIndex;
 
+    public static string[] saveFiles;
 
     int CurrentFileIndex
     {
@@ -41,11 +54,13 @@ public class MenuScripts : MonoBehaviour
         }
     }
 
-    public static string[] saveFiles;
 
     void Start()
     {
+        StartOptionsUI();
+
         CurrentFileIndex = int.MinValue;
+        currentFactionIndex = 0;
 
         UpdateSaves();
         UpdateFactions();
@@ -63,6 +78,7 @@ public class MenuScripts : MonoBehaviour
     void Update()
     {
         ClickedElsewhere();
+        UpdateCreateMapUI();
     }
 
     GameObject GMOverPointer()
@@ -181,6 +197,11 @@ public class MenuScripts : MonoBehaviour
         Application.Quit();
     }
 
+    void LoadLevel(string sceneName)
+    {
+        SceneManager.LoadScene(sceneName);
+    }
+
     #region Start Game UI
 
     void UpdateSaves()
@@ -207,6 +228,14 @@ public class MenuScripts : MonoBehaviour
         }    
     }
 
+    public void StartGame()
+    {
+        gameState = GameStates.Game;
+
+        LoadLevel("SampleScene");
+        //CivGameManagerSingleton.Instance.LoadGame(saveFiles[currentFileIndex]);
+    }
+
     private void UpdateFactions()
     {
         //dropDown.ClearOptions();
@@ -217,7 +246,7 @@ public class MenuScripts : MonoBehaviour
 
             Debug.Log(civ.factionName + " " + CivGameManagerSingleton.Instance.allFactions.Count());
 
-            dropDown.options.Add(new TMP_Dropdown.OptionData(civ.name));
+            dropDown.options.Add(new TMP_Dropdown.OptionData(civ.factionName));
 
             // Nastavení výchozí hodnoty
             //dropDown.value = 0; // První možnost je vybrána
@@ -225,7 +254,117 @@ public class MenuScripts : MonoBehaviour
             // Pøidání listeneru pro zmìnu hodnoty
             //dropDown.onValueChanged.AddListener(OnDropdownValueChanged);
         }
+
+        dropDown.onValueChanged.AddListener(ChangeDropDownIMG);
+
+        dropDown.RefreshShownValue();
+    }
+
+    void ChangeDropDownIMG(int index)
+    {
+        currentFactionIndex = dropDown.value;
+
+        factionImage.sprite = CivGameManagerSingleton.Instance.allFactions[currentFactionIndex].factionIcon;
+        factionImage.color = CivGameManagerSingleton.Instance.allFactions[currentFactionIndex].factionColor;
     }
 
     #endregion
+
+    #region Create Map UI
+
+    void UpdateCreateMapUI()
+    {
+        int width = int.Parse(widthInput.text);
+        int height = int.Parse(heightInput.text);
+        if (width > 0 && height > 0)
+        {
+            createMap.interactable = true;
+        }
+        else
+        {
+            createMap.interactable = false;
+        }
+    }
+
+    public void CreateMap()
+    {
+        int width = int.Parse(widthInput.text);
+        int height = int.Parse(heightInput.text);
+
+        if (createMap.interactable)
+        {
+            gameState = GameStates.Editor;
+            chunks = new Vector2(width, height);
+
+            LoadLevel("SampleScene");
+            //Create
+        }
+
+
+        //CivGameManagerSingleton.Instance.mapWidth = width;
+        //CivGameManagerSingleton.Instance.mapHeight = height;
+        //CivGameManagerSingleton.Instance.GenerateMap();
+    }
+
+    #endregion
+
+    #region Options UI
+
+    Resolution[] resolutions;
+
+    void StartOptionsUI()
+    {
+        resolutions = Screen.resolutions;
+
+        optionsResolution.ClearOptions();
+
+        List<string> options = new List<string>();
+
+        int currentResolutionIndex = 0;
+        foreach (var item in resolutions)
+        {
+            string option = item.width + " X " + item.height;
+            options.Add(option);
+
+            if (item.width == Screen.currentResolution.width && item.height == Screen.currentResolution.height)
+            {
+                currentResolutionIndex = resolutions.Length;
+            }
+        }
+
+        optionsResolution.AddOptions(options);
+        optionsResolution.value = currentResolutionIndex;
+        optionsResolution.RefreshShownValue(); 
+    }
+
+
+    public void SetVolume(float volume)
+    {
+        audioMixer.SetFloat("volume", volume);
+    }
+
+    public void SetGraphics(int qualityIndex)
+    {
+        QualitySettings.SetQualityLevel(qualityIndex);
+    }
+
+    public void SetFullscreen(bool isFullscreen)
+    {
+        Screen.fullScreen = isFullscreen;
+    }
+
+    public void SetResolution(int resolutionIndex)
+    {
+        Resolution resolution = resolutions[resolutionIndex];
+        Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
+    }
+
+    #endregion
+}
+
+public enum GameStates
+{
+    MainMenu,
+    Game,
+    Editor
 }
