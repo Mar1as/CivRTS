@@ -167,3 +167,5 @@ public class Teams : MonoBehaviour
         enemyPlayer = new TeamsConstructor(ep, enemySpawnPoint, new List<GameObject>(), "EnemyPlayer", moneyToGive, Color.red, factions[1], EnableAi, waves); //AI
     }
 }
+
+

@@ -1,4 +1,3 @@
-
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -19,6 +18,8 @@ public class CameraSelectUnits : MonoBehaviour
     Vector3 beginVector;
     Vector3 finalVector;
     TeamsConstructor player;
+
+    [SerializeField] private Vector3[] zoneForSelection = new Vector3[4]; // Zóna pro výbìr jednotek
 
     private void Start()
     {
@@ -60,6 +61,10 @@ public class CameraSelectUnits : MonoBehaviour
 
     public void ClickOnUnit()
     {
+        // Kontrola, zda je kurzor myši v zónì pro výbìr
+        if (!IsMousePositionInZone())
+            return;
+
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
         try
@@ -77,11 +82,14 @@ public class CameraSelectUnits : MonoBehaviour
         {
             Debug.Log(e.Message);
         }
-
     }
 
     void UpdateSelectionBox()
     {
+        // Kontrola, zda je kurzor myši v zónì pro výbìr
+        if (!IsMousePositionInZone())
+            return;
+
         if (!selectionBox.gameObject.activeInHierarchy)
         {
             startPosition = Input.mousePosition;
@@ -96,6 +104,13 @@ public class CameraSelectUnits : MonoBehaviour
 
     void ReleaseSelectionBox()
     {
+        // Kontrola, zda je kurzor myši v zónì pro výbìr
+        if (!IsMousePositionInZone())
+        {
+            selectionBox.gameObject.SetActive(false);
+            return;
+        }
+
         listSelectedUnits.Clear();
         selectionBox.gameObject.SetActive(false);
         Vector2 min = selectionBox.anchoredPosition - (selectionBox.sizeDelta / 2);
@@ -120,13 +135,22 @@ public class CameraSelectUnits : MonoBehaviour
 
     void GetBeginVector()
     {
+        // Kontrola, zda je kurzor myši v zónì pro výbìr
+        if (!IsMousePositionInZone())
+            return;
+
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit, Mathf.Infinity))
             beginVector = hit.point;
     }
+
     void UpdateFinalDest()
     {
+        // Kontrola, zda je kurzor myši v zónì pro výbìr
+        if (!IsMousePositionInZone())
+            return;
+
         if (listSelectedUnits.Count > 0)
         {
             Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
@@ -134,13 +158,17 @@ public class CameraSelectUnits : MonoBehaviour
             if (Physics.Raycast(ray, out hit, Mathf.Infinity))
                 finalVector = hit.point;
 
-            orders.GenerateObdelnikFormation(listSelectedUnits.Count, beginVector, finalVector); //Pouze pro UI
+            orders.GenerateObdelnikFormation(listSelectedUnits.Count, beginVector, finalVector); // Pouze pro UI
             orders.og.UpdateListPrefabs(beginVector, finalVector);
         }
     }
 
     void RightClick()
     {
+        // Kontrola, zda je kurzor myši v zónì pro výbìr
+        if (!IsMousePositionInZone())
+            return;
+
         orders.og.DestroyListPrefabs();
         if (listSelectedUnits.Count > 0)
         {
@@ -158,5 +186,30 @@ public class CameraSelectUnits : MonoBehaviour
         }
     }
 
-    
+    bool IsMousePositionInZone()
+    {
+        // Kontrola, zda je pozice kurzoru myši v zónì pro výbìr
+        if (zoneForSelection.Length < 4)
+        {
+            Debug.LogError("ZoneForSelection must have at least 4 points to define a zone.");
+            return true;
+        }
+
+        // Zóna je definována jako obdélník v XZ rovinì
+        float minX = Mathf.Min(zoneForSelection[0].x, zoneForSelection[1].x, zoneForSelection[2].x, zoneForSelection[3].x);
+        float maxX = Mathf.Max(zoneForSelection[0].x, zoneForSelection[1].x, zoneForSelection[2].x, zoneForSelection[3].x);
+        float minZ = Mathf.Min(zoneForSelection[0].z, zoneForSelection[1].z, zoneForSelection[2].z, zoneForSelection[3].z);
+        float maxZ = Mathf.Max(zoneForSelection[0].z, zoneForSelection[1].z, zoneForSelection[2].z, zoneForSelection[3].z);
+
+        // Pøevod pozice kurzoru myši na svìtové souøadnice
+        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+        {
+            Vector3 worldPos = hit.point;
+            return worldPos.x >= minX && worldPos.x <= maxX && worldPos.z >= minZ && worldPos.z <= maxZ;
+        }
+
+        return false;
+    }
 }
