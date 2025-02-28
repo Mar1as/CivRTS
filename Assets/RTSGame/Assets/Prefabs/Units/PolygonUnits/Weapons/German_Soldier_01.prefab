@@ -3230,7 +3230,7 @@ MonoBehaviour:
   skill: 100
   cost: 30
   armor: 0
-  costCur: 10
+  costCur: 37
   weapon: {fileID: 0}
   listWeapon: []
   agent: {fileID: 0}
@@ -3247,6 +3247,7 @@ MonoBehaviour:
   image: {fileID: 3747487040387927564}
   deathTimer: 5
   ragdoll: {fileID: 5095426589717097829}
+  die: 0
 --- !u!114 &299968262265458763
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3271,7 +3272,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 7568059432277018144}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 0.5
+  m_Radius: 2
   m_Speed: 3.5
   m_Acceleration: 8
   avoidancePriority: 50

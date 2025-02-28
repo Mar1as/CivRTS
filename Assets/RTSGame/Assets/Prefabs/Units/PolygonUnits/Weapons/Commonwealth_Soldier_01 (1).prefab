@@ -256,6 +256,7 @@ MonoBehaviour:
   image: {fileID: 6432060326962928524}
   deathTimer: 5
   ragdoll: {fileID: 659345537748739826}
+  die: 0
 --- !u!114 &4867784671501056740
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -280,7 +281,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 643815156680049125}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 0.5
+  m_Radius: 2
   m_Speed: 3.5
   m_Acceleration: 8
   avoidancePriority: 50
