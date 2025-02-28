@@ -95,6 +95,7 @@ public class TeamsConstructor : MonoBehaviour
         playerFaction.factionUnits = UnitsFromCiv(infoFromCiv).ToList();
         this.playerFaction = playerFaction;
         factionShopUnits = playerFaction.factionUnits;
+        /*
         if (enable && waves.Count <= 0)
         {
             ai = new EnemyAi(this);
@@ -106,7 +107,7 @@ public class TeamsConstructor : MonoBehaviour
         {
             money = -10000;
             this.waves = waves;
-        }
+        }*/
 
         Debug.Log($"AI: {infoFromCiv.player.faction} {infoFromCiv.player.ai} {infoFromCiv.army.unitsInArmy[0].name}");
     }
@@ -127,7 +128,7 @@ public class TeamsConstructor : MonoBehaviour
         this.playerFaction = playerFaction;
         factionShopUnits = playerFaction.factionUnits;
         uiUnitsListCreateButton = new UIUnitListCreateButton(listUnits, listSelectedUnits, listBattalions, Input.GetKey(KeyCode.LeftShift));
-        if(uiManager == null) uiManager = new UiManager(this, infoFromCiv.army);
+        if (uiManager == null) uiManager = new UiManager(this, infoFromCiv.army);
         uiManager.uiShop.CreateShop();
 
         Debug.Log($"Player: {infoFromCiv.player.faction} {infoFromCiv.player.ai} {infoFromCiv.army.unitsInArmy[0].name}");
@@ -161,66 +162,131 @@ public class TeamsConstructor : MonoBehaviour
     float delayMax = 30f;
     int currentWave = 0;
     List<DestinationsXd> dest = new List<DestinationsXd>();
+    
 
-    public void Updatos(List<Vector3> paths)
+    public void Updatos(List<PathWay> paths)
     {
-        if(waves.Count > 0)
+        if (paths == null || paths.Count == 0) return;
+
+        if (true)
         {
             Vector3 finalDest = AllFlags.Instance.flags[0].transform.position;
 
             if (delayCur < 0)
             {
-
                 delayCur = delayMax;
                 SpawnWave(paths);
             }
-            else delayCur -= Time.deltaTime;
+            else
+            {
+                delayCur -= Time.deltaTime;
+            }
 
+            // Aktualizace pohybu jednotek po cestì
             for (int i = 0; i < dest.Count; i++)
             {
                 DestinationsXd item = dest[i];
-                if (item.unit.IsDestroyed())
+                if (item.unit == null || item.unit.IsDestroyed())
                 {
-                    dest.Remove(item);
+                    dest.RemoveAt(i);
                     i--;
                 }
                 else
                 {
-                    if (Vector3.Distance(item.unit.transform.position, item.destination) < 1)
+                    // Kontrola vzdálenosti k aktuálnímu cíli
+                    if (Vector3.Distance(item.unit.transform.position, item.currentDestination) < 1f)
                     {
-                        dest.Remove(item);
-                        item.unit.gameObject.GetComponent<NavMeshAgent>().destination = finalDest;
+                        // Pøesun na další bod v cestì
+                        item.currentPathIndex++;
+
+                        if (item.currentPathIndex < item.pathWay.path.Count)
+                        {
+                            item.currentDestination = item.pathWay.path[item.currentPathIndex];
+                            item.unit.GetComponent<NavMeshAgent>().destination = item.currentDestination;
+                        }
+                        else
+                        {
+                            // Konec cesty - jednotka dosáhla finálního cíle
+                            dest.RemoveAt(i);
+                            i--;
+                            item.unit.GetComponent<NavMeshAgent>().destination = finalDest;
+                        }
                     }
                 }
             }
         }
     }
 
-    void SpawnWave(List<Vector3> paths)
+    void SpawnWave(List<PathWay> paths)
     {
         List<GameObject> newUnits = new List<GameObject>();
         Debug.Log("Spawn " + currentWave);
-        Vector3 finalDest = AllFlags.Instance.flags[0].transform.position;
 
-        if(currentWave == waves.Count) currentWave = waves.Count - 1;
-        foreach (WaweUnit item in waves[currentWave].units)
+        // Nákup jednotek pro tuto vlnu
+        List<GameObject> purchasedUnits = PurchaseWaveUnits();
+
+        foreach (GameObject unitPrefab in purchasedUnits)
         {
-            for (int i = 0; i < item.count; i++)
+            GameObject unit = Instantiate(unitPrefab, spawnPointVector, Quaternion.identity);
+            unit.layer = 7;
+            unit.tag = tag;
+            newUnits.Add(unit);
+
+            // Nastavení prvního cíle v cestì
+            NavMeshAgent agent = unit.GetComponent<NavMeshAgent>();
+            if (paths.Count > 0)
             {
-                item.unit.layer = 7;
-                item.unit.tag = tag;
-                GameObject unit = Instantiate(item.unit,spawnPointVector,Quaternion.identity);
-                newUnits.Add(unit);
+                // Náhodný výbìr cesty pro jednotku
+                PathWay selectedPath = paths[Random.Range(0, paths.Count)];
+                if (selectedPath.path.Count > 0)
+                {
+                    agent.destination = selectedPath.path[0];
+                    dest.Add(new DestinationsXd
+                    {
+                        unit = unit,
+                        currentPathIndex = 0,
+                        currentDestination = selectedPath.path[0],
+                        pathWay = selectedPath
+                    });
+                }
             }
-        }
-        foreach (GameObject item in newUnits)
-        {
-            Vector3 randomPath = paths[Random.Range(0, paths.Count)];
-            item.GetComponent<NavMeshAgent>().destination = randomPath;
-            dest.Add(new DestinationsXd { unit = item, destination = randomPath });
         }
 
         currentWave++;
+    }
+
+
+    List<GameObject> PurchaseWaveUnits()
+    {
+        List<GameObject> purchasedUnits = new List<GameObject>();
+        int maxUnitsToBuy = Random.Range(3, 10); // Náhodný poèet jednotek ve vlnì
+        int totalCost = 0;
+
+        for (int i = 0; i < maxUnitsToBuy; i++)
+        {
+            if (factionShopUnits.Count == 0)
+            {
+                Debug.LogWarning("AI nemá dostupné jednotky k nákupu.");
+                break;
+            }
+
+            // Náhodný výbìr jednotky
+            GameObject unitToBuy = factionShopUnits[Random.Range(0, factionShopUnits.Count)];
+            UnitStats unitStats = unitToBuy.GetComponent<UnitStats>();
+
+            if (unitStats == null || money < totalCost + unitStats.cost)
+            {
+                continue;
+            }
+
+            // Pøidání jednotky a odeètení nákladù
+            totalCost += unitStats.cost;
+            purchasedUnits.Add(unitToBuy);
+        }
+
+        money -= totalCost;
+        Debug.Log($"AI koupilo {purchasedUnits.Count} jednotek za {totalCost}");
+        return purchasedUnits;
     }
 
     #region Army
@@ -256,12 +322,32 @@ public class TeamsConstructor : MonoBehaviour
     }
 
     #endregion
-
-
 }
 
 class DestinationsXd
 {
     public GameObject unit;
-    public Vector3 destination;
+    public int currentPathIndex; // Sledujeme aktuální index v cestì
+    public Vector3 currentDestination;
+    public PathWay pathWay; // Reference na celou cestu
+}
+
+[System.Serializable]
+public class PathWay
+{
+    public List<Vector3> path; // Seznam bodù na cestì
+}
+
+[System.Serializable]
+public class WaweUnit
+{
+    public GameObject unit; // Prefab jednotky
+    public int count; // Poèet jednotek
+}
+
+[System.Serializable]
+public class Wave
+{
+    public List<WaweUnit> units; // Jednotky ve vlnì
+    public float cooldown; // Èekací doba pøed další vlnou
 }

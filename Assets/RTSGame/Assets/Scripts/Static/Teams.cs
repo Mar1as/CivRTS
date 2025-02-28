@@ -14,7 +14,7 @@ public class Teams : MonoBehaviour
     TeamsConstructor enemyPlayer;
     [Header("AI")]
     [SerializeField] bool EnableAi;
-    [SerializeField] List<Vector3> paths;
+    [SerializeField] List<PathWay> paths;
     [SerializeField] List<Wave> waves; 
 
 
@@ -164,7 +164,7 @@ public class Teams : MonoBehaviour
 
         friendlyPlayer = new TeamsConstructor(fp,
         friendlySpawnPoint, new List<GameObject>(), "FriendlyPlayer", moneyToGive, Color.green, uiUnitsListScript, factions[0]); //Hr·Ë
-        enemyPlayer = new TeamsConstructor(ep, enemySpawnPoint, new List<GameObject>(), "EnemyPlayer", moneyToGive, Color.red, factions[1], EnableAi, waves); //AI
+        enemyPlayer = new TeamsConstructor(ep, enemySpawnPoint, new List<GameObject>(), "EnemyPlayer", moneyToGive + 10000, Color.red, factions[1], EnableAi, waves); //AI
     }
 }
 
