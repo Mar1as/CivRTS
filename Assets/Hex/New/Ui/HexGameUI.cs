@@ -85,8 +85,14 @@ public class HexGameUI : MonoBehaviour
 
             if (!selectedUnit)
             {
-                Debug.Log("select unit");
-                selectedUnit = SelectUnit();
+                if (SelectUnit())
+                {
+                    Debug.Log("select unit");
+                    MainHexUnit unit = SelectUnit();
+                    if (unit.dataHexUnit.PlayerOwner != playeros) return;
+                    selectedUnit = unit;
+                }
+                
             }
             else if (selectedUnit)
             {
@@ -194,10 +200,7 @@ public class HexGameUI : MonoBehaviour
         UpdateCurrentCell();
         if (currentCell)
         {
-            if (currentCell.dataHexCell.Unit.dataHexUnit.PlayerOwner == playeros)
-            {
-                return currentCell.dataHexCell.Unit;
-            }
+            return currentCell.dataHexCell.Unit;
         }
         return null;
     }
@@ -240,11 +243,8 @@ public class HexGameUI : MonoBehaviour
     #region BuildingMenu
     void SelectCity(MainHexCell currentCell)
     {
-        if(currentCell.dataHexCell.city.dataCity.playerOwner != playeros)
-        {
-            Debug.Log("Not your city");
-            return;
-        }
+        if (!currentCell.dataHexCell.city.dataCity.playerOwner.Equals(playeros)) return;
+
         newArmy = new DataHexUnitArmy();
         cityUiHolder.SetActive(true);
         ButtonCancel();

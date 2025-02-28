@@ -1666,6 +1666,31 @@ PrefabInstance:
       propertyPath: terrain.m_Bits
       value: 64
       objectReference: {fileID: 0}
+    - target: {fileID: 8070454983047882653, guid: 34c50b38618fc7840a9d559e539593d3,
+        type: 3}
+      propertyPath: zoneForMovement.Array.data[1].x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8070454983047882653, guid: 34c50b38618fc7840a9d559e539593d3,
+        type: 3}
+      propertyPath: zoneForMovement.Array.data[1].z
+      value: 450
+      objectReference: {fileID: 0}
+    - target: {fileID: 8070454983047882653, guid: 34c50b38618fc7840a9d559e539593d3,
+        type: 3}
+      propertyPath: zoneForMovement.Array.data[2].x
+      value: 900
+      objectReference: {fileID: 0}
+    - target: {fileID: 8070454983047882653, guid: 34c50b38618fc7840a9d559e539593d3,
+        type: 3}
+      propertyPath: zoneForMovement.Array.data[2].z
+      value: 450
+      objectReference: {fileID: 0}
+    - target: {fileID: 8070454983047882653, guid: 34c50b38618fc7840a9d559e539593d3,
+        type: 3}
+      propertyPath: zoneForMovement.Array.data[3].x
+      value: 900
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2674,9 +2699,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a056d7e383d4b24e8ea009bb9b58220, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isAi: 0
-  isUsed: 0
-  state: 1
 --- !u!1001 &293049131
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3561,9 +3583,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a056d7e383d4b24e8ea009bb9b58220, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isAi: 0
-  isUsed: 0
-  state: 1
 --- !u!1001 &582695809
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -37019,22 +37038,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1b5b3a637b706d4099392a220a29a08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  objectiveGroups:
-  - objectives:
-    - {fileID: 525286148}
-    - {fileID: 1799841481}
-    owner: 1
-    isLocked: 1
-  - objectives:
-    - {fileID: 1634470383}
-    - {fileID: 869856409}
-    owner: 1
-    isLocked: 1
-  - objectives:
-    - {fileID: 2116399405}
-    - {fileID: 101354880}
-    owner: 1
-    isLocked: 1
 --- !u!1001 &1948784207
 PrefabInstance:
   m_ObjectHideFlags: 0
