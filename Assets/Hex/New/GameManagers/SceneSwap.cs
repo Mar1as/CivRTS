@@ -9,18 +9,19 @@ public class SceneSwap : MonoBehaviour
 {
     public static PassInformation[] passInfo = new PassInformation[2];
 
-    [SerializeField] string[] scenes;
-    static private Scene campaignScene;
-    private GameObject[] campaignGameObjects;
+    [SerializeField] string[] scenes; // Pole názvù scén
+    static private Scene campaignScene; // Uložená scéna kampanì
+    private GameObject[] campaignGameObjects; // Uložené GameObjects z kampanì
 
     private void Start()
     {
         CivGameManagerSingleton.Instance.sceneSwap = this;
-        DontDestroyOnLoad(this.gameObject);
+        DontDestroyOnLoad(this.gameObject); // Zachování tohoto objektu pøi pøechodu scén
     }
 
     private void Update()
     {
+        // Debug: Naètení scény bitvy po stisknutí klávesy V
         if (Input.GetKeyDown(KeyCode.V))
         {
             LoadScene(0, false);
@@ -29,22 +30,24 @@ public class SceneSwap : MonoBehaviour
 
     public void LoadScene(int sceneId, bool loadBattle)
     {
-        //sceneId = 1; //Debug
         if (loadBattle)
         {
+            // Uložení scény kampanì a jejích GameObjects
             if (campaignScene == default)
             {
                 campaignScene = SceneManager.GetActiveScene();
                 campaignGameObjects = GetAllGameObjectsInScene(campaignScene);
             }
 
+            // Deaktivace všech GameObjects v kampani
             SetActiveForAllGameObjects(campaignGameObjects, false);
 
-            // Spustí korutinu pro naètení bitvy
+            // Spustí korutinu pro naètení scény bitvy
             StartCoroutine(LoadBattleScene(sceneId));
         }
         else
         {
+            // Návrat do scény kampanì
             if (campaignScene != default)
             {
                 StartCoroutine(LoadCampaignScene(sceneId));
@@ -58,18 +61,20 @@ public class SceneSwap : MonoBehaviour
 
     private IEnumerator LoadBattleScene(int sceneId)
     {
+        // Asynchronní naètení scény bitvy
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(scenes[sceneId], LoadSceneMode.Additive);
 
+        // Èekání na dokonèení naètení
         while (!asyncLoad.isDone)
         {
-            yield return null; // Poèkáme na naètení scény
+            yield return null;
         }
 
+        // Nastavení scény bitvy jako aktivní
         Scene battleScene = SceneManager.GetSceneByName(scenes[sceneId]);
         if (battleScene.isLoaded)
         {
             SceneManager.SetActiveScene(battleScene);
-            SceneManager.UnloadSceneAsync(campaignScene.name);
         }
         else
         {
@@ -79,19 +84,24 @@ public class SceneSwap : MonoBehaviour
 
     private IEnumerator LoadCampaignScene(int sceneId)
     {
-        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(campaignScene.name, LoadSceneMode.Additive);
+        // Aktivace všech GameObjects v kampani
+        SetActiveForAllGameObjects(campaignGameObjects, true);
 
-        while (!asyncLoad.isDone)
+        // Nastavení scény kampanì jako aktivní
+        SceneManager.SetActiveScene(campaignScene);
+
+        // Uvolnìní scény bitvy
+        AsyncOperation asyncUnload = SceneManager.UnloadSceneAsync(scenes[sceneId]);
+
+        // Èekání na dokonèení uvolnìní
+        while (!asyncUnload.isDone)
         {
             yield return null;
         }
 
-        SetActiveForAllGameObjects(campaignGameObjects, true);
-        SceneManager.SetActiveScene(campaignScene);
-        SceneManager.UnloadSceneAsync(scenes[sceneId]);
+        // Resetování uložené scény kampanì (volitelné)
         campaignScene = default;
     }
-
 
     // Funkce pro získání všech GameObjectù ve scénì
     private GameObject[] GetAllGameObjectsInScene(Scene scene)
@@ -113,7 +123,6 @@ public class SceneSwap : MonoBehaviour
         }
     }
 }
-
 
 [Serializable]
 public class PassInformation

@@ -6,12 +6,15 @@ using UnityEngine;
 [Serializable]
 public class Player
 {
+    public int id;
+
     public FactionsInCiv faction; // Frakce hr·Ëe
     public List<GameObject> Armies = new List<GameObject>();
     public bool ai { get; private set; } = false;
 
-    public Player(FactionsInCiv faction, bool ai = false)
+    public Player(int id, FactionsInCiv faction, bool ai = false)
     {
+        this.id = id;
         this.faction = faction;
         this.ai = ai;
     }

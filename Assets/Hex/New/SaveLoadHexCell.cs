@@ -56,6 +56,9 @@ public class SaveLoadHexCell
         writer.Write((byte)data.featuresHexCell.SpecialIndex);
         Debug.Log($"7. Uložen SpecialIndex: {data.featuresHexCell.SpecialIndex}");
 
+        if(data.featuresHexCell.SpecialIndex > 0)
+        writer.Write((int)data.city.dataCity.playerOwner.id);
+
         // Uložení informace o tom, zda je hexagon opevnìný (Walled) jako boolean
         writer.Write(data.wallsScript.Walled);
         Debug.Log($"8. Uloženo Walled: {data.wallsScript.Walled}");
@@ -114,6 +117,9 @@ public class SaveLoadHexCell
         // Naètení speciálního indexu
         data.featuresHexCell.SpecialIndex = reader.ReadByte();
         Debug.Log($"7. Naèten SpecialIndex: {data.featuresHexCell.SpecialIndex}");
+
+        if (data.featuresHexCell.SpecialIndex > 0)
+            data.city = new MainCity(mainHexCell, CivGameManagerSingleton.Instance.players[reader.ReadInt32()]); 
 
         // Naètení informace o tom, zda je hexagon opevnìný (Walled)
         data.wallsScript.Walled = reader.ReadBoolean();

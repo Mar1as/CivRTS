@@ -18,15 +18,16 @@ public class MenuScripts : MonoBehaviour
     private Dictionary<GameObject, bool> panels = new Dictionary<GameObject, bool>();
     private GameObject currentPanel;
 
+
     [Header("Start Game UI")]
-    [SerializeField] private GameObject panelForSaves;
+    [SerializeField] private GameObject[] panelForSaves;
     [SerializeField] private GameObject prefab;
     [SerializeField] private TMP_Dropdown dropDown;
     [SerializeField] private Image factionImage;
     [SerializeField] private Button startGameButton;
     
     [Header("Create Map UI")]
-    [SerializeField] private Button createMap;
+    [SerializeField] private Button createMap, editMap;
     [SerializeField] private TMP_InputField widthInput, heightInput;
     
 
@@ -34,8 +35,15 @@ public class MenuScripts : MonoBehaviour
     [SerializeField] private TMP_Dropdown optionsResolution;
     [SerializeField] private AudioMixer audioMixer;
 
+    [Header("Esc")]
+    [SerializeField] private Canvas escPanel;
+    [SerializeField] private bool menu = true;
+
+
     [Header("Static")]
     public static GameStates gameState = GameStates.MainMenu;
+    public static bool loadMap = false;
+
     public static Vector2 chunks;
 
     public static int currentFileIndex;
@@ -48,8 +56,16 @@ public class MenuScripts : MonoBehaviour
         get => currentFileIndex;
         set
         {
-            if (value < 0) startGameButton.interactable = false;
-            else startGameButton.interactable = true;
+            if (value < 0)
+            {
+                startGameButton.interactable = false;
+                editMap.interactable = false;
+            }
+            else
+            {
+                startGameButton.interactable = true;
+                editMap.interactable = true;
+            }
             currentFileIndex = value;
         }
     }
@@ -57,6 +73,8 @@ public class MenuScripts : MonoBehaviour
 
     void Start()
     {
+        loadMap = false;
+
         StartOptionsUI();
 
         CurrentFileIndex = int.MinValue;
@@ -79,6 +97,15 @@ public class MenuScripts : MonoBehaviour
     {
         ClickedElsewhere();
         UpdateCreateMapUI();
+
+        if (menu == false)
+        {
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                escPanel.enabled = !escPanel.enabled;
+            }
+        }
+        
     }
 
     GameObject GMOverPointer()
@@ -215,11 +242,15 @@ public class MenuScripts : MonoBehaviour
             string filePath = saveFiles[i];
             saves.Add(Path.GetFileName(filePath));
 
-            GameObject but = Instantiate(prefab, panelForSaves.transform);
-            but.GetComponentInChildren<TextMeshProUGUI>().text = Path.GetFileName(filePath);
+            foreach (var item in panelForSaves)
+            {
+                GameObject but = Instantiate(prefab, item.transform);
+                but.GetComponentInChildren<TextMeshProUGUI>().text = Path.GetFileName(filePath);
 
-            int currentIndex = i;
-            but.GetComponent<Button>().onClick.AddListener(() => CurrentFileIndex = currentIndex);
+                int currentIndex = i;
+                but.GetComponent<Button>().onClick.AddListener(() => CurrentFileIndex = currentIndex);
+            }
+            
         }
 
         foreach (string save in saves)
@@ -231,6 +262,7 @@ public class MenuScripts : MonoBehaviour
     public void StartGame()
     {
         gameState = GameStates.Game;
+        loadMap = true;
 
         LoadLevel("SampleScene");
         //CivGameManagerSingleton.Instance.LoadGame(saveFiles[currentFileIndex]);
@@ -306,9 +338,24 @@ public class MenuScripts : MonoBehaviour
         //CivGameManagerSingleton.Instance.GenerateMap();
     }
 
+    public void EditMap()
+    {
+        gameState = GameStates.Editor;
+        loadMap = true;
+
+        Debug.Log("KAOTKOIDA " + gameState);
+
+        LoadLevel("SampleScene");
+    }
+
     #endregion
 
     #region Options UI
+
+    public void BackToMenu()
+    {
+        LoadLevel("Menu");
+    }
 
     Resolution[] resolutions;
 

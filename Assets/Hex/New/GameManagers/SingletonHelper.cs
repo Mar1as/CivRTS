@@ -26,9 +26,9 @@ public class SingletonHelper : MonoBehaviour
 
             if (i == 0)
             {
-                CivGameManagerSingleton.Instance.players[i] = new Player(factions[i], false);
+                CivGameManagerSingleton.Instance.players[i] = new Player(i, factions[i], false);
             }
-            else CivGameManagerSingleton.Instance.players[i] = new Player(factions[i], true);
+            else CivGameManagerSingleton.Instance.players[i] = new Player(i, factions[i], true);
 
             Debug.Log("LOL" + i);
         }

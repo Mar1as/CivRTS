@@ -26,6 +26,7 @@ public class UiManagerRTS : MonoBehaviour
         UpdateAllCitiesBar();
 
         GameOrEditor();
+
     }
     public void EnableGameUi()
     {
@@ -108,8 +109,9 @@ public class UiManagerRTS : MonoBehaviour
     void GameOrEditor()
     {
         //if (!DebugMode) return;
+        Debug.Log(MenuScripts.gameState);
 
-        if (MenuScripts.gameState == GameStates.MainMenu) return;
+        //if (MenuScripts.gameState == GameStates.MainMenu) return;
 
         ChangeUI.SetActive(false);
 

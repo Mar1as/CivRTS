@@ -40,6 +40,8 @@ public class HexGrid : MonoBehaviour
 
         ChangeChunks();
 
+        LoadChunks();
+
         cellCountX = chunkCountX * HexMetrics.chunkSizeX;
         cellCountZ = chunkCountZ * HexMetrics.chunkSizeZ;
 
@@ -54,7 +56,7 @@ public class HexGrid : MonoBehaviour
 
     void Start()
     {
-
+        
     }
 
     void OnEnable()
@@ -70,6 +72,12 @@ public class HexGrid : MonoBehaviour
 
     void CreateChunks()
     {
+        /*
+        foreach (var item in chunks)
+        {
+            Destroy(item.gameObject);
+        }*/
+
         chunks = new HexGridChunk[chunkCountX * chunkCountZ];
 
         for (int z = 0, i = 0; z < chunkCountZ; z++)
@@ -196,6 +204,9 @@ public class HexGrid : MonoBehaviour
 
     public void Save(BinaryWriter writer)
     {
+        writer.Write((int)chunkCountX);
+        writer.Write((int)chunkCountZ);
+
         Debug.Log($"Ukládání mapy. Poèet hexagonù: {CivGameManagerSingleton.Instance.hexagons.Length}");
         for (int i = 0; i < CivGameManagerSingleton.Instance.hexagons.Length; i++)
         {
@@ -208,9 +219,15 @@ public class HexGrid : MonoBehaviour
     {
         try
         {
+            chunkCountX = reader.ReadInt32();
+            chunkCountZ = reader.ReadInt32();
+
             Debug.Log("Naèítání mapy.");
             int header = 0;
             Debug.Log($"Naètený header: {header}");
+
+            //CreateChunks();
+
             ClearPath();
             ClearUnits();
 
@@ -478,6 +495,7 @@ public class HexGrid : MonoBehaviour
     {
         if (MenuScripts.gameState == GameStates.Editor)
         {
+            Debug.Log("ChangeChunks");
             chunkCountX = (int)MenuScripts.chunks.x;
             chunkCountZ = (int)MenuScripts.chunks.y;
         }
@@ -485,18 +503,35 @@ public class HexGrid : MonoBehaviour
 
     void LoadMap()
     {
-        if (MenuScripts.gameState == GameStates.Game && loaded == false)
+        if (MenuScripts.loadMap == true)
         {
             string save = MenuScripts.saveFiles[MenuScripts.currentFileIndex];
 
             using (BinaryReader reader = new BinaryReader(File.OpenRead(save)))
             {
-                Debug.Log("Load");
+                Debug.Log("LoadMap");
 
                 Load(reader);
             }
-            loaded = true;
         }
+    }
+
+    void LoadChunks()
+    {
+        if(MenuScripts.loadMap == true)
+        {
+            string save = MenuScripts.saveFiles[MenuScripts.currentFileIndex];
+
+            using (BinaryReader reader = new BinaryReader(File.OpenRead(save)))
+            {
+                Debug.Log("LoadChunks");
+
+                chunkCountX = reader.ReadInt32();
+                chunkCountZ = reader.ReadInt32();
+            }
+        }
+        
+        
     }
 
     public MainHexCell GetCell(Ray ray)

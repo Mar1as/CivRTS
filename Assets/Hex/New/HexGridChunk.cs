@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class HexGridChunk : MonoBehaviour
 {
+    [SerializeField]
     MainHexCell[] cells;
 
     public HexMesh terrain, rivers, roads, water;
@@ -955,5 +956,14 @@ public class HexGridChunk : MonoBehaviour
         v4 = Vector3.Lerp(v4, v2, t);
         rivers.AddQuadUnperturbed(v1, v2, v3, v4);
         rivers.AddQuadUV(0f, 1f, 0.8f, 1f);
+    }
+
+    private void OnDestroy()
+    {
+        Debug.Log("Des");
+        foreach (var item in cells)
+        {
+            Destroy(item);
+        }
     }
 }

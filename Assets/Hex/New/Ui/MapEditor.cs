@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using TMPro;
 using Unity.Burst.CompilerServices;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -29,6 +30,13 @@ public class MapEditor : MonoBehaviour
     HexDirection dragDirection;
     MainHexCell previousCell;
 
+    [SerializeField] TMP_InputField saveAs;
+
+    private void Start()
+    {
+        if (MenuScripts.currentFileIndex >= 0) saveAs.text = Path.GetFileNameWithoutExtension(MenuScripts.saveFiles[MenuScripts.currentFileIndex]);
+
+    }
 
     void Update()
     {
@@ -318,7 +326,7 @@ public class MapEditor : MonoBehaviour
     #region Save Load Manager
     public void Save()
     {
-        string path = Path.Combine(Application.persistentDataPath, "test.map");
+        string path = Path.Combine(Application.persistentDataPath, saveAs.text + ".map");
         Debug.Log(path);
         using (
             BinaryWriter writer =

@@ -20,6 +20,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Battle 1.unity
     guid: d304f45e62258b84ca5f9306e071a445
+  - enabled: 1
+    path: Assets/Scenes/TestScene/TestScene.unity
+    guid: 7d812d06dc34f304e9603fd7a22ceefc
+  - enabled: 1
+    path: Assets/Scenes/TestScene/SecoundScene.unity
+    guid: d850a828d640e6748b95de41b1c1bc30
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 1e00a26e3e7552a4d9b28297be264519,
       type: 3}
