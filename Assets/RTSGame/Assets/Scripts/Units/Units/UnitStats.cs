@@ -48,6 +48,8 @@ public class UnitStats : MonoBehaviour
     [Header("Death")]
     [SerializeField] public float deathTimer;
     [SerializeField] GameObject ragdoll;
+
+    [SerializeField] bool die = false;
     
     public GameObject target
     {
@@ -84,7 +86,7 @@ public class UnitStats : MonoBehaviour
         unitGraphics.statsBar.Update();
         HealthRegen();
         // if(!ReferenceEquals(Target, null)) Debug.Log(Target.name);
-
+        if(die) Death();
     }
 
     public Battalions battalion

@@ -1212,6 +1212,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3680430564096652046, guid: 34c50b38618fc7840a9d559e539593d3,
+        type: 3}
+      propertyPath: endScoros
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 3778607297596250091, guid: 34c50b38618fc7840a9d559e539593d3,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -1623,6 +1628,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8070454983047882653, guid: 34c50b38618fc7840a9d559e539593d3,
         type: 3}
+      propertyPath: delka
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8070454983047882653, guid: 34c50b38618fc7840a9d559e539593d3,
+        type: 3}
       propertyPath: maxBounds.x
       value: 900
       objectReference: {fileID: 0}
@@ -1639,7 +1649,7 @@ PrefabInstance:
     - target: {fileID: 8070454983047882653, guid: 34c50b38618fc7840a9d559e539593d3,
         type: 3}
       propertyPath: sensitivita
-      value: 500
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 8070454983047882653, guid: 34c50b38618fc7840a9d559e539593d3,
         type: 3}
@@ -1649,7 +1659,7 @@ PrefabInstance:
     - target: {fileID: 8070454983047882653, guid: 34c50b38618fc7840a9d559e539593d3,
         type: 3}
       propertyPath: rychlostVysky
-      value: 20000
+      value: 5000
       objectReference: {fileID: 0}
     - target: {fileID: 8070454983047882653, guid: 34c50b38618fc7840a9d559e539593d3,
         type: 3}
@@ -37953,3 +37963,11 @@ SceneRoots:
   - {fileID: 1110139}
   - {fileID: 14891622}
   - {fileID: 165564503}
+  - {fileID: 157950993}
+  - {fileID: 238024802}
+  - {fileID: 497553823}
+  - {fileID: 915691594}
+  - {fileID: 1308020039}
+  - {fileID: 1320474508}
+  - {fileID: 1976076342}
+  - {fileID: 2029443199}

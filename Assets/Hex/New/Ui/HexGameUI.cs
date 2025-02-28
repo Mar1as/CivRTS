@@ -9,6 +9,8 @@ using static UnityEngine.UI.CanvasScaler;
 
 public class HexGameUI : MonoBehaviour
 {
+    Player playeros;
+
     public HexGrid hexGrid;
 
     MainHexCell currentCell;
@@ -45,6 +47,13 @@ public class HexGameUI : MonoBehaviour
         cityUiHolder.SetActive(false);
 
         OnTurn += () => UpdateStatsPanel();
+
+        playeros = CivGameManagerSingleton.Instance.players[0];
+
+    }
+
+    private void OnEnable()
+    {
     }
 
     void Update()
@@ -185,7 +194,10 @@ public class HexGameUI : MonoBehaviour
         UpdateCurrentCell();
         if (currentCell)
         {
-            return currentCell.dataHexCell.Unit;
+            if (currentCell.dataHexCell.Unit.dataHexUnit.PlayerOwner == playeros)
+            {
+                return currentCell.dataHexCell.Unit;
+            }
         }
         return null;
     }
@@ -228,6 +240,11 @@ public class HexGameUI : MonoBehaviour
     #region BuildingMenu
     void SelectCity(MainHexCell currentCell)
     {
+        if(currentCell.dataHexCell.city.dataCity.playerOwner != playeros)
+        {
+            Debug.Log("Not your city");
+            return;
+        }
         newArmy = new DataHexUnitArmy();
         cityUiHolder.SetActive(true);
         ButtonCancel();

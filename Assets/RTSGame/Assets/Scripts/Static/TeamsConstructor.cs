@@ -17,7 +17,7 @@ public class TeamsConstructor : MonoBehaviour
     List<Battalions> ListBattalions = new List<Battalions>();
     public Faction playerFaction;
 
-    PassInformation infoFromCiv;
+    public PassInformation infoFromCiv;
 
     public string tag;
     public LayerMask layerMask;

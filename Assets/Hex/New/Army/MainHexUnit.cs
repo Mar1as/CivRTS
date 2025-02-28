@@ -24,6 +24,8 @@ public class MainHexUnit : MonoBehaviour
     private void Update()
     {
         text.ChangeText(dataHexUnit.armyHexUnit.unitsInArmy.Count.ToString());
+
+        if(!dataHexUnit.armyHexUnit.HasUnitsInArmy()) Die();
     }
     void OnEnable()
     {
@@ -100,8 +102,8 @@ public class MainHexUnit : MonoBehaviour
         
         
         Debug.Log("ATTACK " + dataHexUnit.armyHexUnit.unitsInArmy.Count);
-        SceneSwap.passInfo[0] = new PassInformation(attUnit.dataHexUnit.PlayerOwner, attUnit.dataHexUnit.armyHexUnit, PlayerStateInBattle.Attacker);
-        SceneSwap.passInfo[1] = new PassInformation(defUnit.dataHexUnit.PlayerOwner, defUnit.dataHexUnit.armyHexUnit, PlayerStateInBattle.Defender);
+        SceneSwap.passInfo[0] = new PassInformation(attUnit.dataHexUnit.PlayerOwner, attUnit.dataHexUnit.armyHexUnit, PlayerStateInBattle.Attacker, attUnit.gameObject);
+        SceneSwap.passInfo[1] = new PassInformation(defUnit.dataHexUnit.PlayerOwner, defUnit.dataHexUnit.armyHexUnit, PlayerStateInBattle.Defender, defUnit.gameObject);
 
         
 

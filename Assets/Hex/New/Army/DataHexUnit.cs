@@ -59,6 +59,7 @@ public class DataHexUnit : ITurnable
 
     [SerializeField]
     Player playerOwner;
+
     public Player PlayerOwner
     {
         get

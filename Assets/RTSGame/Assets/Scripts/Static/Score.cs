@@ -8,8 +8,12 @@ using UnityEngine.UI;
 public class Score : MonoBehaviour
 {
     [SerializeField]
+    int endScoros = 100;
+
     public static int endScore = 500;
-    bool endGame = false;
+    public static bool endGame = false;
+    public static TeamsConstructor loser;
+
 
     float TimeMax = 1;
     float TimeCurrent = 0;
@@ -35,6 +39,10 @@ public class Score : MonoBehaviour
     SliderConstructor leftSlider, rightSlider;
     private void Start()
     {
+        endScore = endScoros;
+
+        endGame = false;
+
         leftSlider = new SliderConstructor(left);
         rightSlider = new SliderConstructor(right);
     }
@@ -79,12 +87,10 @@ public class Score : MonoBehaviour
     }
     void EndScore(TeamsConstructor player)
     {
-        if (player.score >= endScore && endGame == false)
+        if ((player.score >= endScore) && endGame == false )
         {
             endGame = true; //aby se to nevolalo poøád dokola
 
-            
-            
             GameObject finalPanel = Instantiate(endText, canvas.transform);
             TextMeshProUGUI textMeshPro = finalPanel.GetComponentInChildren<TextMeshProUGUI>();
             Debug.Log(textMeshPro.gameObject.name);
@@ -93,6 +99,19 @@ public class Score : MonoBehaviour
             Debug.Log(img.gameObject.name);
             img.sprite = player.playerFaction.flag;
             img.color = player.teamColor;
+
+            TeamsConstructor winner = player;
+
+            if (winner == Teams.listOfPlayers[0])
+            {
+                loser = Teams.listOfPlayers[1];
+            }
+            else
+            {
+                loser = Teams.listOfPlayers[0];
+            }
+
+            loser.infoFromCiv.army.unitsInArmy.Clear();
         }
     }
 

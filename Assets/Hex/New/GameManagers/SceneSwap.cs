@@ -26,6 +26,15 @@ public class SceneSwap : MonoBehaviour
         {
             LoadScene(0, false);
         }
+
+        if (campaignScene != null && Score.endGame)
+        {
+            Debug.Log("Battle End");
+
+            
+
+            LoadScene(0, false);
+        }
     }
 
     public void LoadScene(int sceneId, bool loadBattle)
@@ -130,14 +139,17 @@ public class PassInformation
     public Player player { get; private set; }
     public DataHexUnitArmy army { get; private set; }
     PlayerStateInBattle state;
+    public GameObject unit;
     bool ai;
 
-    public PassInformation(Player player, DataHexUnitArmy army, PlayerStateInBattle state)
+    public PassInformation(Player player, DataHexUnitArmy army, PlayerStateInBattle state, GameObject unit)
     {
         this.player = player;
         this.army = army;
         this.state = state;
+
         this.ai = player.ai;
+        this.unit = unit;
     }
 }
 

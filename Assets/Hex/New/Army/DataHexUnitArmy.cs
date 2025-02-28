@@ -103,5 +103,17 @@ public class DataHexUnitArmy
     {
         return new DataHexUnitArmy(this);
     }
+
+    public bool HasUnitsInArmy()
+    {
+        if (unitsInArmy.Count > 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 }
 
