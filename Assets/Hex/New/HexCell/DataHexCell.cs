@@ -128,7 +128,7 @@ public class DataHexCell
     }
 
     [SerializeField]
-    public MainCity city;
+    public MainCity city = null;
     public MainCity City
     {
         get

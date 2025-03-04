@@ -326,6 +326,7 @@ public class MapEditor : MonoBehaviour
     #region Save Load Manager
     public void Save()
     {
+        Debug.Log(Application.persistentDataPath);
         string path = Path.Combine(Application.persistentDataPath, saveAs.text + ".map");
         Debug.Log(path);
         using (

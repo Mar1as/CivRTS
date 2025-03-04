@@ -131,15 +131,17 @@ public class HexGameUI : MonoBehaviour
             if (selectedUnit)
             {
                 MainHexUnit unitOnCell = currentCell.dataHexCell.Unit;
-                if(unitOnCell)
+                if(unitOnCell || currentCell.dataHexCell.featuresHexCell.SpecialIndex > 0)
                 {
                     MainHexCell[] neighbors = selectedUnit.dataHexUnit.Location.brainHexCell.GetAllNeighbors();
 
                     foreach (MainHexCell neighbor in neighbors)
                     {
                         var neighborUnit = neighbor.dataHexCell.Unit;
+                        var neighborCity = neighbor.dataHexCell.City;
+                        Debug.Log("Mìsto " + neighborCity);
 
-                        if (neighborUnit == unitOnCell)
+                        if (neighborUnit != null && neighborUnit == unitOnCell)
                         {
                             if (neighborUnit != selectedUnit &&
                                 neighborUnit.dataHexUnit.PlayerOwner != selectedUnit.dataHexUnit.PlayerOwner)
@@ -150,9 +152,17 @@ public class HexGameUI : MonoBehaviour
                             }
                             else if (neighborUnit == selectedUnit)
                             {
-                                Debug.Log("Povídání");
+                                Debug.Log("Klinutí na pøátelksou armádu");
                                 return;
                             }
+                            
+                        }
+                        else if (neighborCity != null &&
+                            neighborCity.dataCity.playerOwner != selectedUnit.dataHexUnit.PlayerOwner)
+                        {
+                            Debug.Log("Útok na nepøátelské mìsto");
+                            neighborCity.dataCity.CurrentHealth -= 40;
+                            return;
                         }
                     }
                 }

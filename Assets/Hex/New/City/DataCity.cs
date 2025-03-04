@@ -26,6 +26,31 @@ public class DataCity : ITurnable
             name = value;
         }
     }
+
+    int maxHealth = 100;
+    int currentHealth;
+    public int CurrentHealth
+    {
+        get
+        {
+            return currentHealth;
+        }
+        set
+        {
+            
+            currentHealth = value;
+            if(currentHealth > maxHealth)
+            {
+                currentHealth = maxHealth;
+            }
+            else
+            if (currentHealth <= 0)
+            {
+                mainCity.Destroy();
+            }
+        }
+    }
+
     public StatsCity Stats { get; private set; }
     public ProductionCity Production { get; private set; }
 
@@ -54,6 +79,9 @@ public class DataCity : ITurnable
         
         InitializeCity();
     }
+
+   
+
 
     private void InitializeCity()
     {
@@ -88,12 +116,20 @@ public class DataCity : ITurnable
     {
         Stats.ProcessTurn();
         Production.ProcessTurn(Stats.CalculateProduction());
+
+        CurrentHealth += 10;
     }
 
     public void SelfDestruct()
     {
         foreach (var cell in CellsInBorder)
         {
+            cell.dataHexCell.featuresHexCell.UrbanLevel = 0;
+            cell.dataHexCell.featuresHexCell.FarmLevel = 0;
+            cell.dataHexCell.featuresHexCell.SpecialIndex = 0;
+            cell.dataHexCell.city = null;
+            cell.dataHexCell.wallsScript.Walled = false;
+
             RemoveBorder(cell);
         }
 
