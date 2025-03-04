@@ -62,6 +62,8 @@ public class DataCity : ITurnable
 
     public DataCity(MainHexCell initialCell, MainCity mainCity, Player player)
     {
+        currentHealth = maxHealth;
+
         this.mainCity = mainCity;
         Location = initialCell;
 
