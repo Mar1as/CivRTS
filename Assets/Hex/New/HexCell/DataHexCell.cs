@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -137,6 +138,7 @@ public class DataHexCell
         }
         set
         {
+
             if (city == value)
             {
                 return;
@@ -146,6 +148,10 @@ public class DataHexCell
                 city.Destroy();
             }
             city = value;
+
+            Debug.Log("City changed");
+
+            mainHexCell.UpdateHexGraphics();
         }
     }
 

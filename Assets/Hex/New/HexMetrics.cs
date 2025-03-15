@@ -36,7 +36,7 @@ public static class HexMetrics
     //Hex noise
     public static Texture2D noiseSource;
 
-    public const float cellPerturbStrength = 2f;
+    public const float cellPerturbStrength = 1f;
 
     public const float noiseScale = 0.003f;
 

@@ -78,8 +78,12 @@ public class DataCity : ITurnable
         {
             playerOwner = CivGameManagerSingleton.Instance.players[Random.Range(0, CivGameManagerSingleton.Instance.players.Length)];
         }
-        
-        InitializeCity();
+
+        Name = playerOwner.faction.GetRandomCityName();
+
+        Debug.Log(playerOwner.faction.name);
+
+        //InitializeCity();
     }
 
    
@@ -87,14 +91,15 @@ public class DataCity : ITurnable
 
     private void InitializeCity()
     {
-        AddBordersOnCreation();
-        FindNextExpansion();
-        Name = playerOwner.faction.GetRandomCityName();
+        
         Debug.Log(name);
         if (Location != null)
         {
             Location.dataHexCell.chunk.Refresh();
         }
+
+        AddBordersOnCreation();
+        FindNextExpansion();
     }
 
     public void ExpandCity()
@@ -145,6 +150,7 @@ public class DataCity : ITurnable
         if (Location == null) return;
 
         AddBorder(Location);
+        Debug.Log("Added border to initial cell");
         foreach (HexDirection direction in System.Enum.GetValues(typeof(HexDirection)))
         {
             MainHexCell neighbor = Location.brainHexCell.GetNeighbor(direction);
@@ -163,7 +169,7 @@ public class DataCity : ITurnable
         if (cell == null || CellsInBorder.Contains(cell)) return;
 
         CellsInBorder.Add(cell);
-        cell.dataHexCell.city = mainCity;
+        cell.dataHexCell.City = mainCity;
         cell.dataHexCell.wallsScript.Walled = true;
     }
 
@@ -172,7 +178,7 @@ public class DataCity : ITurnable
         if (cell == null || !CellsInBorder.Contains(cell)) return;
 
         //CellsInBorder.Remove(cell);
-        cell.dataHexCell.city = null;
+        cell.dataHexCell.City = null;
         cell.dataHexCell.wallsScript.Walled = false;
     }
 

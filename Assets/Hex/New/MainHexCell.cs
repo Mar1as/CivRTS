@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -15,7 +16,6 @@ public class MainHexCell : MonoBehaviour
 
     private void Start()
     {
-        
     }
     public void Inicilizace()
     {
@@ -54,6 +54,38 @@ public class MainHexCell : MonoBehaviour
                     levelProgress: (float)stats.levelProgress / stats.levelUpRequirement
                 );
             }
+        }
+    }
+
+    [SerializeField] SpriteRenderer hexGraphics;
+    Color origColor;
+
+    public void UpdateHexGraphics()
+    {
+        Debug.Log("debil");
+
+        if (origColor == null)
+        {
+            Debug.Log("Get orig");
+            origColor = hexGraphics.color;
+        }
+
+        if (dataHexCell.city != null)
+        {
+            Debug.Log("ChangeHexGraphics");
+            Debug.Log("LOL " + dataHexCell.city);
+            Debug.Log("LOL " + dataHexCell.city.dataCity);
+            Debug.Log("LOL " + dataHexCell.city.dataCity.playerOwner);
+            Debug.Log("LOL " + dataHexCell.city.dataCity.playerOwner.faction.factionName);
+
+            Color color = dataHexCell.city.dataCity.playerOwner.faction.factionColor;
+            Debug.Log("Coloros " + color);
+            hexGraphics.color = color;
+        }
+        else
+        {
+            Debug.Log("Change to orig");
+            hexGraphics.color = origColor;
         }
     }
 }
