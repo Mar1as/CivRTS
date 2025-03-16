@@ -1258,6 +1258,12 @@ MonoBehaviour:
   scoreInput: {fileID: 0}
   moneyInput: {fileID: 0}
   panelBack: {fileID: 0}
+--- !u!1 &1943360567 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3103157184785466339, guid: 8db95bc326ece0549bcb15431773a461,
+    type: 3}
+  m_PrefabInstance: {fileID: 4954999665051085744}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &4954999665051085744
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1456,6 +1462,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7281907171239364820, guid: 8db95bc326ece0549bcb15431773a461,
+        type: 3}
+      propertyPath: panelForPanels
+      value: 
+      objectReference: {fileID: 1943360567}
     - target: {fileID: 7870460748878304634, guid: 8db95bc326ece0549bcb15431773a461,
         type: 3}
       propertyPath: m_Name

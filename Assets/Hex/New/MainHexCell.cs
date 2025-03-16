@@ -16,9 +16,11 @@ public class MainHexCell : MonoBehaviour
 
     private void OnEnable()
     {
+
         Debug.Log("OnEnable");
         if (dataHexCell != null)
         {
+            UpdateBarText();
             Debug.Log("go");
         }
         else

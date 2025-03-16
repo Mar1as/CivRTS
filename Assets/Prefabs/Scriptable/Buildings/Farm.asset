@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 41516b68a9987a346a28d48ad31e76a5, type: 3}
   m_Name: Farm
   m_EditorClassIdentifier: 
-  buildingName: Farm
+  buildingName: Farma
   description: 
   productionCost: 1
   iconBase: {fileID: 21300000, guid: 531df469c0b1fa3419768bc8101f9aea, type: 3}

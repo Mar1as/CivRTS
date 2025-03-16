@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 41516b68a9987a346a28d48ad31e76a5, type: 3}
   m_Name: Army
   m_EditorClassIdentifier: 
-  buildingName: Army
+  buildingName: "Arm\xE1da"
   description: 
   productionCost: 1
   iconBase: {fileID: 21300000, guid: d8d49cced7f46aa468eb7631118ab5d7, type: 3}

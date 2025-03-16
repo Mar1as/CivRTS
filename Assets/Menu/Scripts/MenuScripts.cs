@@ -14,6 +14,7 @@ public class MenuScripts : MonoBehaviour
     [SerializeField] private GameObject startGameUI, createMapUI, optionsUI;
     [SerializeField] private LayerMask[] bgLayers;
 
+    public static bool isTutorial = false;
 
     private Dictionary<GameObject, bool> panels = new Dictionary<GameObject, bool>();
     private GameObject currentPanel;
@@ -67,6 +68,18 @@ public class MenuScripts : MonoBehaviour
                 editMap.interactable = true;
             }
             currentFileIndex = value;
+
+            isTutorial = false;
+
+            if (currentFileIndex > 0)
+            {
+                Debug.Log("Save: " + saveFiles[CurrentFileIndex].ToString());
+                string saveText = saveFiles[CurrentFileIndex].ToString().ToLower();
+                if (saveText.Contains("tutorial") || saveText.Contains("tutoriál"))
+                {
+                    isTutorial = true;
+                }
+            }
         }
     }
 

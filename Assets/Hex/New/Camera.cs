@@ -67,6 +67,7 @@ public class Kamera : MonoBehaviour
         if (cam == null) return;
 
         float scroll = Input.mouseScrollDelta.y * decelerationFactor;
+        Debug.Log(scroll);
         if (scroll != 0f && !EventSystem.current.IsPointerOverGameObject())
         {
             Vector3 position = transform.position;
