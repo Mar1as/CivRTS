@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -76,14 +77,21 @@ public class DataCity : ITurnable
         }
         else
         {
-            playerOwner = CivGameManagerSingleton.Instance.players[Random.Range(0, CivGameManagerSingleton.Instance.players.Length)];
+            playerOwner = CivGameManagerSingleton.Instance.players[UnityEngine.Random.Range(0, CivGameManagerSingleton.Instance.players.Length)];
         }
 
         Name = playerOwner.faction.GetRandomCityName();
 
         Debug.Log(playerOwner.faction.name);
 
-        //InitializeCity();
+        try
+        {
+            InitializeCity();
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"Failed to initialize city: {e.Message}");
+        }
     }
 
    
@@ -93,9 +101,13 @@ public class DataCity : ITurnable
     {
         
         Debug.Log(name);
-        if (Location != null)
+        if (Location != null && Location.dataHexCell.chunk != null)
         {
             Location.dataHexCell.chunk.Refresh();
+        }
+        else
+        {
+            Debug.LogError("Chunk is null. Cannot refresh.");
         }
 
         AddBordersOnCreation();

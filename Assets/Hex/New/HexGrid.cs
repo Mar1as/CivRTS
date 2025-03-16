@@ -15,7 +15,7 @@ public class HexGrid : MonoBehaviour
     public int chunkCountX = 4, chunkCountZ = 3;
     private int cellCountX = 6, cellCountZ = 6;
 
-    public MainHexCell cellPrefab;
+    public GameObject cellPrefab;
     public TextMeshProUGUI cellLabelPrefab;
     public HexGridChunk chunkPrefab;
     public Texture2D noiseSource;
@@ -110,7 +110,8 @@ public class HexGrid : MonoBehaviour
         position.y = 0f;
         position.z = z * (HexMetrics.outerRadius * 1.5f);
 
-        MainHexCell cell = CivGameManagerSingleton.Instance.hexagons[i] = Instantiate(cellPrefab);
+        GameObject gm = Instantiate(cellPrefab);
+        MainHexCell cell = CivGameManagerSingleton.Instance.hexagons[i] = gm.GetComponent<MainHexCell>();
         cell.Inicilizace();
         //cell.transform.SetParent(transform, false);
         cell.transform.localPosition = position;

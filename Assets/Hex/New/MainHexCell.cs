@@ -14,8 +14,25 @@ public class MainHexCell : MonoBehaviour
     [SerializeField]
     public BarText barText;
 
+    private void OnEnable()
+    {
+        Debug.Log("OnEnable");
+        if (dataHexCell != null)
+        {
+            Debug.Log("go");
+        }
+        else
+        {
+            Debug.Log("no");
+        }
+    }
     private void Start()
     {
+        origColor = hexGraphics.color;
+    }
+    private void Update()
+    {
+        //UpdateHexGraphics();
     }
     public void Inicilizace()
     {
@@ -60,32 +77,56 @@ public class MainHexCell : MonoBehaviour
     [SerializeField] SpriteRenderer hexGraphics;
     Color origColor;
 
-    public void UpdateHexGraphics()
+    public void KKKT(float delay)
     {
-        Debug.Log("debil");
+        StartCoroutine(UpdateHexGraphics(delay));
+    }
 
-        if (origColor == null)
+    public IEnumerator UpdateHexGraphics(float delay)
+    {
+        yield return null;
+        UpdateHexGraphicsPicovina();
+    }
+
+
+    public void UpdateHexGraphicsPicovina()
+    {
+        if(dataHexCell.city != null)
         {
-            Debug.Log("Get orig");
-            origColor = hexGraphics.color;
-        }
+            Debug.Log("Has city");
+            Debug.Log("COLOR: " + dataHexCell.city.dataCity.playerOwner.faction.factionColor.ToString());
 
-        if (dataHexCell.city != null)
-        {
-            Debug.Log("ChangeHexGraphics");
-            Debug.Log("LOL " + dataHexCell.city);
-            Debug.Log("LOL " + dataHexCell.city.dataCity);
-            Debug.Log("LOL " + dataHexCell.city.dataCity.playerOwner);
-            Debug.Log("LOL " + dataHexCell.city.dataCity.playerOwner.faction.factionName);
+            Color newColor = dataHexCell.city.dataCity.playerOwner.faction.factionColor;
 
-            Color color = dataHexCell.city.dataCity.playerOwner.faction.factionColor;
-            Debug.Log("Coloros " + color);
-            hexGraphics.color = color;
+            newColor.a = origColor.a;
+
+            hexGraphics.color = newColor;
         }
         else
         {
-            Debug.Log("Change to orig");
             hexGraphics.color = origColor;
         }
+        /*
+        // Inicializace origColor, pokud je null
+        if (origColor == null)
+        {
+            origColor = hexGraphics.color;
+        }
+
+        // Pokud je pøedána barva (factionColor není null)
+        if (factionColor.HasValue)
+        {
+            Debug.Log("Updating graphics with faction color.");
+
+            // Zachování pùvodní prùhlednosti (alpha) origColor
+            Color newColor = new Color(factionColor.Value.r, factionColor.Value.g, factionColor.Value.b, origColor.a);
+            hexGraphics.color = newColor;
+        }
+        else
+        {
+            // Pokud není pøedána barva, použijeme pùvodní barvu
+            Debug.Log("No faction color provided. Resetting to original color.");
+            hexGraphics.color = origColor;
+        }*/
     }
 }

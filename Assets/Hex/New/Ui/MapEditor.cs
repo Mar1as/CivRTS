@@ -232,13 +232,16 @@ public class MapEditor : MonoBehaviour
         {
             if (activeSpecialIndex > 0 && cell.dataHexCell.featuresHexCell.SpecialIndex < 1 && cell.dataHexCell.city == null) //Vytvoøit mìsto
             {
+                Debug.Log("vyt");
+                Debug.Log(cell.gameObject.transform.position);
                 cell.dataHexCell.featuresHexCell.SpecialIndex = activeSpecialIndex;
-                cell.dataHexCell.City = new MainCity(cell, CivGameManagerSingleton.Instance.players[selectedPlayerIndex]);
+                MainCity city = new MainCity(cell, CivGameManagerSingleton.Instance.players[selectedPlayerIndex]);
+                //cell.dataHexCell.city = city;
             }
             else if (activeSpecialIndex < 1 && cell.dataHexCell.featuresHexCell.SpecialIndex > 0) //Vymazat mìsto
             {
                 cell.dataHexCell.featuresHexCell.SpecialIndex = activeSpecialIndex;
-                cell.dataHexCell.City = null;
+                cell.dataHexCell.city = null;
             }
 
         }

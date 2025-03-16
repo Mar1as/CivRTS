@@ -35,6 +35,7 @@ public class DataHexCell
 
     public DataHexCell(MainHexCell mainHexCell)
     {
+        
         this.mainHexCell = mainHexCell;
         river = new River(mainHexCell);
         roadScript = new Road(mainHexCell);
@@ -138,20 +139,38 @@ public class DataHexCell
         }
         set
         {
-
+            Debug.Log("Set");
             if (city == value)
             {
+                Debug.Log("city == value");
                 return;
             }
             if (value == null)
             {
+                Debug.Log("value == null");
                 city.Destroy();
             }
+            Debug.Log("city = value");
             city = value;
 
-            Debug.Log("City changed");
+            mainHexCell.KKKT(10f);
 
-            mainHexCell.UpdateHexGraphics();
+            /*
+            Debug.Log("City changed");
+            if(city.dataCity.playerOwner != null)
+            {
+                Debug.Log("Má frakci");
+
+                mainHexCell.UpdateHexGraphics(city.dataCity.playerOwner.faction.factionColor);
+
+            }
+            else
+            {
+                Debug.Log("Nemá");
+
+                mainHexCell.UpdateHexGraphics();
+            }*/
+
         }
     }
 
