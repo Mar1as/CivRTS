@@ -1602,7 +1602,7 @@ PrefabInstance:
     - target: {fileID: 3680430564096652046, guid: 34c50b38618fc7840a9d559e539593d3,
         type: 3}
       propertyPath: endScoros
-      value: 100
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 3778607297596250091, guid: 34c50b38618fc7840a9d559e539593d3,
         type: 3}
