@@ -426,12 +426,11 @@ public class MenuScripts : MonoBehaviour
 
     void LoadMapsInBuild()
     {
-        string mapsFolderPath = "Assets/Maps"; // Cesta k mapám v projektu
-        string[] mapFiles = Directory.GetFiles(mapsFolderPath, "*.map"); // Naèti všechny soubory s pøíponou .map
+        TextAsset[] mapFiles = Resources.LoadAll<TextAsset>("Maps"); // Naète všechny mapy ze složky Resources/Maps
 
         foreach (var mapFile in mapFiles)
         {
-            string fileName = Path.GetFileName(mapFile); // Získej název souboru
+            string fileName = mapFile.name + ".map"; // Název souboru (Resources neukládá pøípony)
             string persistentPath = Path.Combine(Application.persistentDataPath, fileName); // Cesta do persistentDataPath
 
             // Zkontroluj, zda soubor již existuje v persistentDataPath
@@ -439,8 +438,8 @@ public class MenuScripts : MonoBehaviour
             {
                 Debug.Log("Soubor " + fileName + " neexistuje v persistentDataPath, kopíruji...");
 
-                // Kopírování souboru z projektové složky do persistentDataPath
-                File.Copy(mapFile, persistentPath);
+                // Uložení souboru z Resources do persistentDataPath
+                File.WriteAllBytes(persistentPath, mapFile.bytes);
             }
             else
             {

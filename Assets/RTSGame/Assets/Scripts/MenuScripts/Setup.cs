@@ -20,7 +20,7 @@ public class Setup
         this.dropdown = dropdown;
         this.sceneAsset = sceneAsset;
 
-        SetupDropdowns();
+        //SetupDropdowns();
     }
 
     public void Update()
