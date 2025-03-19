@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 37e5f5680a917754d90b4ae050f59ce8, type: 3}
-  m_Name: GermanRifleman
+  m_Name: Kar98k
   m_EditorClassIdentifier: Assembly-CSharp::Unit
   unitPrefab: {fileID: 5453823684749052883, guid: 080cb9285feeecf48be6fbe19a3d537d,
     type: 3}

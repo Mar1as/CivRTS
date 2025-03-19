@@ -32,6 +32,8 @@ public class DataHexUnit : ITurnable
         CivGameManagerSingleton.Instance.allUnits.Add(mainHexUnit);
         PlayerOwner = CivGameManagerSingleton.Instance.players[(int)Random.Range(0,CivGameManagerSingleton.Instance.players.Length)];
 
+        CurSpeed = maxSpeed;
+
     }
     public DataHexUnit(MainHexUnit mainHexUnit, Player player, DataHexUnitArmy army)
     {
@@ -44,11 +46,15 @@ public class DataHexUnit : ITurnable
         PlayerOwner = player;
 
         Debug.Log("VelikostK: " + armyHexUnit.unitsInArmy.Count);
+
+        CurSpeed = maxSpeed;
     }
     public DataHexUnit(MainHexUnit mainHexUnit, DataHexUnitArmy armyHexUnit)
     {
         this.mainHexUnit = mainHexUnit;
         this.armyHexUnit = armyHexUnit;
+
+        CurSpeed = maxSpeed;
     }
 
     public static MainHexUnit unitPrefab;
@@ -56,6 +62,17 @@ public class DataHexUnit : ITurnable
     public List<MainHexCell> pathToTravel;
     const float travelSpeed = 4f;
     const float rotationSpeed = 180f;
+
+    public int maxSpeed = 15;
+    private int curSpeed = 15;
+    public int CurSpeed { get => curSpeed;
+        set
+        {
+            curSpeed = value;
+            if(curSpeed < 1) curSpeed = 1;
+            Debug.Log("CUR " + curSpeed);
+        }
+    }
 
     [SerializeField]
     Player playerOwner;
@@ -167,8 +184,9 @@ public class DataHexUnit : ITurnable
     {
         Vector3 a, b, c = pathToTravel[0].dataHexCell.Position;
         mainHexUnit.transform.localPosition = c;
+        Debug.Log("Zaèíná " + pathToTravel.Count);
         yield return LookAt(pathToTravel[1].dataHexCell.Position);
-
+        Debug.Log("POKRAÈUJE");
         float t = Time.deltaTime * travelSpeed;
         for (int i = 1; i < pathToTravel.Count; i++)
         {
@@ -212,12 +230,14 @@ public class DataHexUnit : ITurnable
         Quaternion toRotation = Quaternion.LookRotation(point - mainHexUnit.transform.localPosition);
         float angle = Quaternion.Angle(fromRotation, toRotation);
 
-        if (angle > 0f)
+        if (angle > 30f)
         {
             float speed = rotationSpeed / angle;
+            Debug.Log("Speed: " + speed);
 
-            for (float t = Time.deltaTime * speed; t < 1f * speed; t += Time.deltaTime)
+            for (float t = Time.deltaTime * speed; t < 0.6f * speed; t += Time.deltaTime)
             {
+                Debug.Log("T: " + t);
                 mainHexUnit.transform.localRotation = Quaternion.Slerp(fromRotation, toRotation, t);
                 yield return null;
             }
@@ -230,7 +250,7 @@ public class DataHexUnit : ITurnable
 
     public void Turn()
     {
-
+        CurSpeed = maxSpeed;
     }
 }
 

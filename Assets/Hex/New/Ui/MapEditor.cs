@@ -50,16 +50,17 @@ public class MapEditor : MonoBehaviour
                 HandleInput(DrawMode.Draw);
                 return;
             }
-            if (Input.GetKeyDown(KeyCode.U)) {
+            /*if (Input.GetKeyDown(KeyCode.U)) {
                 if (Input.GetKey(KeyCode.LeftShift))
                 {
                     DestroyUnit();
                 }
                 else CreateUnit();
                 return;
-            }
+            }*/
             try
             {
+                /*
                 if (Input.GetKeyDown(KeyCode.F)) //FARMA
                 {
                     MainHexCell currentCell = GetCellUnderCursor();
@@ -77,7 +78,7 @@ public class MapEditor : MonoBehaviour
                     MainHexCell currentCell = GetCellUnderCursor();
                     //currentCell.dataHexCell.city.dataCity.productionCity.productionQueue.AddToQueue(new Unit(2, currentCell, new MainHexUnit()));
                     return;
-                }
+                }*/
             }
             catch (System.Exception)
             {

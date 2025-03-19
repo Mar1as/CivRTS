@@ -110,6 +110,9 @@ public class TeamsConstructor : MonoBehaviour
         }*/
 
         Debug.Log($"AI: {infoFromCiv.player.faction} {infoFromCiv.player.ai} {infoFromCiv.army.unitsInArmy[0].name}");
+
+        rndMax = factionShopUnits.Count / 4;
+        if(rndMax < 1) rndMax = 1;
     }
 
     public TeamsConstructor(PassInformation infoFromCiv, GameObject spawnPointGM, List<GameObject> listUnits, string tag, int money, Color color, UiUnitsList uiUnitsListScript, Faction playerFaction)//Hráèský konstruktor kterému se pøidává UI
@@ -127,6 +130,7 @@ public class TeamsConstructor : MonoBehaviour
         playerFaction.factionUnits = UnitsFromCiv(infoFromCiv).ToList();
         this.playerFaction = playerFaction;
         factionShopUnits = playerFaction.factionUnits;
+        Debug.Log("PO4ET " + factionShopUnits.Count);
         uiUnitsListCreateButton = new UIUnitListCreateButton(listUnits, listSelectedUnits, listBattalions, Input.GetKey(KeyCode.LeftShift));
         if (uiManager == null) uiManager = new UiManager(this, infoFromCiv.army);
         uiManager.uiShop.CreateShop();
@@ -159,14 +163,16 @@ public class TeamsConstructor : MonoBehaviour
 
     List<Wave> waves;
     float delayCur = 0;
-    float delayMax = 30f;
+    float delayMax = 20f;
     int currentWave = 0;
     List<DestinationsXd> dest = new List<DestinationsXd>();
-    
+
+    int rndMax = 0;
 
     public void Updatos(List<PathWay> paths)
     {
-        if (paths == null || paths.Count == 0) return;
+        Debug.Log("Army update");
+        if (paths.Count == 0) return;
 
         if (true)
         {
@@ -219,6 +225,8 @@ public class TeamsConstructor : MonoBehaviour
 
     void SpawnWave(List<PathWay> paths)
     {
+        Debug.Log("PO4ET " + factionShopUnits.Count);
+
         List<GameObject> newUnits = new List<GameObject>();
         Debug.Log("Spawn " + currentWave);
 
@@ -259,7 +267,9 @@ public class TeamsConstructor : MonoBehaviour
     List<GameObject> PurchaseWaveUnits()
     {
         List<GameObject> purchasedUnits = new List<GameObject>();
-        int maxUnitsToBuy = Random.Range(3, 10); // Náhodný poèet jednotek ve vlnì
+        int maxUnitsToBuy = Random.Range(1, rndMax); // Náhodný poèet jednotek ve vlnì
+        if(rndMax > factionShopUnits.Count) maxUnitsToBuy = factionShopUnits.Count;
+
         int totalCost = 0;
 
         for (int i = 0; i < maxUnitsToBuy; i++)

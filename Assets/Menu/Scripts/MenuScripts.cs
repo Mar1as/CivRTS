@@ -246,8 +246,11 @@ public class MenuScripts : MonoBehaviour
 
     void UpdateSaves()
     {
+        LoadMapsInBuild();
+
         string saveFolderPath = Application.persistentDataPath;
         saveFiles = Directory.GetFiles(saveFolderPath, "*.map");
+        Debug.Log(saveFolderPath);
         List<string> saves = new List<string>();
 
         for (int i = 0; i < saveFiles.Length; i++)
@@ -420,6 +423,31 @@ public class MenuScripts : MonoBehaviour
     }
 
     #endregion
+
+    void LoadMapsInBuild()
+    {
+        string mapsFolderPath = "Assets/Maps"; // Cesta k mapám v projektu
+        string[] mapFiles = Directory.GetFiles(mapsFolderPath, "*.map"); // Naèti všechny soubory s pøíponou .map
+
+        foreach (var mapFile in mapFiles)
+        {
+            string fileName = Path.GetFileName(mapFile); // Získej název souboru
+            string persistentPath = Path.Combine(Application.persistentDataPath, fileName); // Cesta do persistentDataPath
+
+            // Zkontroluj, zda soubor již existuje v persistentDataPath
+            if (!File.Exists(persistentPath))
+            {
+                Debug.Log("Soubor " + fileName + " neexistuje v persistentDataPath, kopíruji...");
+
+                // Kopírování souboru z projektové složky do persistentDataPath
+                File.Copy(mapFile, persistentPath);
+            }
+            else
+            {
+                Debug.Log("Soubor " + fileName + " již existuje v persistentDataPath.");
+            }
+        }
+    }
 }
 
 public enum GameStates

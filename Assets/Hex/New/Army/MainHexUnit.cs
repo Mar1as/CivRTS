@@ -20,6 +20,8 @@ public class MainHexUnit : MonoBehaviour
         Inicilizace();
 
         ChangeColorOfModel();
+
+        //dataHexUnit.PlayerOwner.AddArmy(gameObject);
     }
     private void Update()
     {
@@ -34,6 +36,11 @@ public class MainHexUnit : MonoBehaviour
             transform.localPosition = dataHexUnit.Location.dataHexCell.Position;
         }
         ChangeColorOfModel();
+    }
+
+    private void OnDestroy()
+    {
+        dataHexUnit.PlayerOwner.RemoveArmy(gameObject);
     }
 
     public void Inicilizace()

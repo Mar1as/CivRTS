@@ -22,10 +22,10 @@ public class SceneSwap : MonoBehaviour
     private void Update()
     {
         // Debug: Naètení scény bitvy po stisknutí klávesy V
-        if (Input.GetKeyDown(KeyCode.V))
+        /*if (Input.GetKeyDown(KeyCode.V))
         {
             LoadScene(0, false);
-        }
+        }*/
 
         if (campaignScene != null && Score.endGame)
         {

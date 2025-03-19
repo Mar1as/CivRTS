@@ -92,7 +92,7 @@ public class CityAI
         int population = city.dataCity.Stats.CalculatePopulation();
         int production = city.dataCity.Stats.CalculateProduction();
 
-        if (food > population * 2 && production > 10)
+        if (food > population * 2 && production > 10 &&population > 4)
         {
             return true;
         }

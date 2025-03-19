@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 [System.Serializable]
 public class MainHexCell : MonoBehaviour
@@ -79,6 +80,8 @@ public class MainHexCell : MonoBehaviour
     [SerializeField] SpriteRenderer hexGraphics;
     Color origColor;
 
+    [SerializeField] Image barImg;
+
     public void KKKT(float delay)
     {
         StartCoroutine(UpdateHexGraphics(delay));
@@ -88,6 +91,7 @@ public class MainHexCell : MonoBehaviour
     {
         yield return null;
         UpdateHexGraphicsPicovina();
+        UpdateBarText();
     }
 
 
@@ -130,5 +134,11 @@ public class MainHexCell : MonoBehaviour
             Debug.Log("No faction color provided. Resetting to original color.");
             hexGraphics.color = origColor;
         }*/
+    }
+
+    public void UpdateHealthBar(int maxHP, int curHP)
+    {
+        Debug.Log($"Updating health bar.  {(float)((float)curHP / (float)maxHP)}  {(float)curHP} / {(float)maxHP}" );
+        barImg.fillAmount = (float)((float)curHP / (float)maxHP);
     }
 }

@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 37e5f5680a917754d90b4ae050f59ce8, type: 3}
-  m_Name: Pz2
+  m_Name: Pz 3
   m_EditorClassIdentifier: Assembly-CSharp::Unit
-  unitPrefab: {fileID: 3118599707429291717, guid: d0129900a553f34418fc798328c01390,
+  unitPrefab: {fileID: 6715246521220859128, guid: 4141923b8cbede447a02161566973bb6,
     type: 3}
-  productionCost: 1
+  productionCost: 2

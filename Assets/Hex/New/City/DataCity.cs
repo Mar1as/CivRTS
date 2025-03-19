@@ -44,7 +44,9 @@ public class DataCity : ITurnable
             {
                 currentHealth = maxHealth;
             }
-            else
+            
+            Location.UpdateHealthBar(maxHealth, currentHealth);
+
             if (currentHealth <= 0)
             {
                 mainCity.Destroy();
@@ -63,7 +65,7 @@ public class DataCity : ITurnable
 
     public DataCity(MainHexCell initialCell, MainCity mainCity, Player player)
     {
-        currentHealth = maxHealth;
+        
 
         this.mainCity = mainCity;
         Location = initialCell;
@@ -92,6 +94,8 @@ public class DataCity : ITurnable
         {
             Debug.LogError($"Failed to initialize city: {e.Message}");
         }
+
+        currentHealth = maxHealth;
     }
 
    
@@ -136,7 +140,7 @@ public class DataCity : ITurnable
         Stats.ProcessTurn();
         Production.ProcessTurn(Stats.CalculateProduction());
 
-        CurrentHealth += 10;
+        CurrentHealth += 5;
     }
 
     public void SelfDestruct()

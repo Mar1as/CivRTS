@@ -161,8 +161,8 @@ MonoBehaviour:
 
 '
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 627fe8c6effd9914088161059b3478ba, type: 2}
-  m_sharedMaterial: {fileID: -865515364270399309, guid: 627fe8c6effd9914088161059b3478ba,
+  m_fontAsset: {fileID: 11400000, guid: 2e2613ad9e791704abe2a8dbe4a2bdf0, type: 2}
+  m_sharedMaterial: {fileID: -3180169451206940267, guid: 2e2613ad9e791704abe2a8dbe4a2bdf0,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -209,7 +209,7 @@ MonoBehaviour:
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
-  m_ActiveFontFeatures: 00000000
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
@@ -2154,7 +2154,7 @@ GameObject:
   - component: {fileID: -540316914650342825}
   - component: {fileID: -324265019540402293}
   m_Layer: 6
-  m_Name: SU85
+  m_Name: SU-85
   m_TagString: FriendlyPlayer
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2241,6 +2241,7 @@ MonoBehaviour:
   image: {fileID: 808734678285912733}
   deathTimer: 0
   ragdoll: {fileID: 0}
+  die: 0
   maxOsadka: 4
   osadka: 0
   armorFront: 70

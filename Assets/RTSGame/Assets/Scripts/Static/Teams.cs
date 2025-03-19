@@ -44,7 +44,7 @@ public class Teams : MonoBehaviour
 
     private void Update()
     {
-        if(waves.Count > 0 && paths.Count > 0) enemyPlayer.Updatos(paths);
+        if(paths.Count > 0) enemyPlayer.Updatos(paths);
         //Debug.Log(listOfPlayers[0].listSelectedUnits.Count);
         //listOfPlayers[0].listUnits.Add(gameObject);
         //listOfPlayers[0].listUnitsAdd(listOfPlayers[0].listUnits, gm);

@@ -16,6 +16,13 @@ public class HexGameUI : MonoBehaviour
     MainHexCell currentCell;
 
     MainHexUnit selectedUnit;
+    public MainHexUnit SelectedUnit { get => selectedUnit;
+        set
+        {
+            hexGrid.ClearPath();
+            selectedUnit = value;
+        }
+    }
     MainCity selectedCity;
     BuildingData selectedBuilding;
     
@@ -69,7 +76,7 @@ public class HexGameUI : MonoBehaviour
             {
                 RightClickHandler();
             }
-            if (selectedUnit)
+            if (SelectedUnit)
             {
                 Pathfinding();
             }
@@ -83,21 +90,21 @@ public class HexGameUI : MonoBehaviour
         {
             currentCell = GetCellUnderCursor();
 
-            if (!selectedUnit)
+            if (!SelectedUnit)
             {
                 if (SelectUnit())
                 {
                     Debug.Log("select unit");
                     MainHexUnit unit = SelectUnit();
                     if (unit.dataHexUnit.PlayerOwner != playeros) return;
-                    selectedUnit = unit;
+                    SelectedUnit = unit;
                 }
                 
             }
-            else if (selectedUnit)
+            else if (SelectedUnit)
             {
                 Debug.Log("Unselect unit");
-                selectedUnit = null;
+                SelectedUnit = null;
             }
             if (currentCell.dataHexCell.featuresHexCell.SpecialIndex > 0)
             {
@@ -128,12 +135,12 @@ public class HexGameUI : MonoBehaviour
         {
             currentCell = GetCellUnderCursor();
 
-            if (selectedUnit)
+            if (SelectedUnit)
             {
                 MainHexUnit unitOnCell = currentCell.dataHexCell.Unit;
                 if(unitOnCell || currentCell.dataHexCell.featuresHexCell.SpecialIndex > 0)
                 {
-                    MainHexCell[] neighbors = selectedUnit.dataHexUnit.Location.brainHexCell.GetAllNeighbors();
+                    MainHexCell[] neighbors = SelectedUnit.dataHexUnit.Location.brainHexCell.GetAllNeighbors();
 
                     foreach (MainHexCell neighbor in neighbors)
                     {
@@ -141,16 +148,17 @@ public class HexGameUI : MonoBehaviour
                         var neighborCity = neighbor.dataHexCell.City;
                         Debug.Log("Mìsto " + neighborCity);
 
-                        if (neighborUnit != null && neighborUnit == unitOnCell)
+                        if (neighborUnit != null && neighborUnit == unitOnCell && selectedUnit.dataHexUnit.CurSpeed >= selectedUnit.dataHexUnit.maxSpeed)
                         {
-                            if (neighborUnit != selectedUnit &&
-                                neighborUnit.dataHexUnit.PlayerOwner != selectedUnit.dataHexUnit.PlayerOwner)
+                            if (neighborUnit != SelectedUnit &&
+                                neighborUnit.dataHexUnit.PlayerOwner != SelectedUnit.dataHexUnit.PlayerOwner)
                             {
                                 Debug.Log("Útok na nepøítele!");
-                                selectedUnit.Attack(selectedUnit, neighborUnit);
+                                selectedUnit.dataHexUnit.CurSpeed = 0;
+                                SelectedUnit.Attack(SelectedUnit, neighborUnit);
                                 return;
                             }
-                            else if (neighborUnit == selectedUnit)
+                            else if (neighborUnit == SelectedUnit)
                             {
                                 Debug.Log("Klinutí na pøátelksou armádu");
                                 return;
@@ -158,17 +166,27 @@ public class HexGameUI : MonoBehaviour
                             
                         }
                         else if (neighborCity != null &&
-                            neighborCity.dataCity.playerOwner != selectedUnit.dataHexUnit.PlayerOwner)
+                            neighborCity.dataCity.playerOwner != SelectedUnit.dataHexUnit.PlayerOwner)
                         {
-                            Debug.Log("Útok na nepøátelské mìsto");
-                            neighborCity.dataCity.CurrentHealth -= 40;
-                            return;
+                            if (selectedUnit.dataHexUnit.CurSpeed >= selectedUnit.dataHexUnit.maxSpeed)
+                            {
+                                Debug.Log("Útok na nepøátelské mìsto");
+                                selectedUnit.dataHexUnit.CurSpeed = 0;
+                                neighborCity.dataCity.CurrentHealth -= 45;
+                                return;
+                            }
+                            else
+                            {
+                                return;
+                            }
+                            
                         }
                     }
                 }
 
                 Debug.Log("Pohyb jednotky.");
                 DoMove();
+                //SelectedUnit = null;
             }
 
         }
@@ -220,10 +238,10 @@ public class HexGameUI : MonoBehaviour
     {
         if (UpdateCurrentCell())
         {
-            if (currentCell && selectedUnit.dataHexUnit.IsValidDestination(currentCell))
+            if (currentCell && SelectedUnit.dataHexUnit.IsValidDestination(currentCell))
             {
                 bool unitOnCell = currentCell.dataHexCell.Unit != null;
-                Player selectedUnitPlayer = selectedUnit.dataHexUnit.PlayerOwner;
+                Player selectedUnitPlayer = SelectedUnit.dataHexUnit.PlayerOwner;
                 Player destinationUnitPlayer = unitOnCell ? currentCell.dataHexCell.Unit.dataHexUnit.PlayerOwner : null;
                 UnitAtDestination unitAtD = UnitAtDestination.None;
                 if (unitOnCell)
@@ -231,7 +249,7 @@ public class HexGameUI : MonoBehaviour
                     unitAtD = selectedUnitPlayer == destinationUnitPlayer ? UnitAtDestination.Ally : UnitAtDestination.Enemy;
                 }
 
-                hexGrid.FindPath(selectedUnit.dataHexUnit.Location, currentCell, 24, unitAtD);
+                hexGrid.FindPath(SelectedUnit.dataHexUnit.Location, currentCell, SelectedUnit.dataHexUnit.CurSpeed, unitAtD);
             }
             else
             {
@@ -244,7 +262,9 @@ public class HexGameUI : MonoBehaviour
         if (hexGrid.HasPath)
         {
             Debug.Log("Move2");
-            selectedUnit.Travel(hexGrid.GetPath());
+            int tempSpeed = selectedUnit.dataHexUnit.CurSpeed;
+            SelectedUnit.Travel(hexGrid.GetPath(ref tempSpeed));
+            selectedUnit.dataHexUnit.CurSpeed = tempSpeed;
             hexGrid.ClearPath();
         }
     }
@@ -413,6 +433,7 @@ public class HexGameUI : MonoBehaviour
     ProductionTask armyTask;
     DataHexUnitArmy newArmy = new DataHexUnitArmy();
 
+
     void UpdateArmyPanel(Player player)
     {
         buildButtonText.text = "Build " + newArmy.CostOfArmy();
@@ -465,7 +486,7 @@ public class HexGameUI : MonoBehaviour
 
     void AddUnit(UnitData unit)
     {
-        if(selectedCity.dataCity.Stats.CalculatePopulation() > newArmy.unitsInArmy.Count)
+        if(selectedCity.dataCity.Stats.CalculatePopulation() * 3 > newArmy.unitsInArmy.Count)
         {
             newArmy.AddUnit(unit);
             Debug.Log("X " + newArmy.unitsInArmy.Count);

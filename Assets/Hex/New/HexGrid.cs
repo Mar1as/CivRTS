@@ -328,7 +328,7 @@ public class HexGrid : MonoBehaviour
                 int moveCost = 0;
                 if (current.dataHexCell.roadScript.HasRoadThroughEdge(d))
                 {
-                    moveCost += 1;
+                    moveCost += 2;
                 }/*
                 else if (current.dataHexCell.wallsScript.Walled != neighbor.dataHexCell.wallsScript.Walled) //Nemùže procházet zdí
                 {
@@ -367,7 +367,7 @@ public class HexGrid : MonoBehaviour
             }
         }
         //fromCell.dataHexCell.uiRect.GetComponent<TextMeshProUGUI>().text += " START";
-        toCell.dataHexCell.uiRect.GetComponent<TextMeshProUGUI>().text += $"CURRENT";
+        toCell.dataHexCell.uiRect.GetComponent<TextMeshProUGUI>().text += $"ATTACK";
 
         return false;
     }
@@ -392,7 +392,7 @@ public class HexGrid : MonoBehaviour
         int lastTurn = (currentPathTo.dataHexCell.hexCellDistance.Distance - 1) / speed;
         Debug.Log("Turn " + lastTurn);
         //currentPathFrom.dataHexCell.uiRect.GetComponent<TextMeshProUGUI>().text += " Start";
-        currentPathTo.dataHexCell.uiRect.GetComponent<TextMeshProUGUI>().text += lastTurn;
+        currentPathTo.dataHexCell.uiRect.GetComponent<TextMeshProUGUI>().text += $"{lastTurn}\ntah";
         //currentPathFrom.EnableHighlight(Color.blue);
         //currentPathTo.EnableHighlight(Color.red);
     }
@@ -458,7 +458,9 @@ public class HexGrid : MonoBehaviour
         newUnit.dataHexUnit.Orientation = orientation;
         Debug.Log("Velikost: " + newUnit.dataHexUnit.armyHexUnit.unitsInArmy.Count);
 
-        player.Armies.Add(unit.gameObject);
+        player.Armies.Add(newUnit.gameObject);
+
+        Debug.Log("PLAYER " + player.faction.factionName + " " + player.Armies.Count);
     }
 
     public void RemoveUnit(MainHexUnit unit)
@@ -475,7 +477,7 @@ public class HexGrid : MonoBehaviour
         }
     }
 
-    public List<MainHexCell> GetPath()
+    public List<MainHexCell> GetPath(ref int speed)
     {
         if (!currentPathExists)
         {
@@ -484,8 +486,14 @@ public class HexGrid : MonoBehaviour
         List<MainHexCell> path = ListPool<MainHexCell>.Get();
         for (MainHexCell c = currentPathTo; c != currentPathFrom; c = c.dataHexCell.hexCellDistance.PathFrom)
         {
+            int lastTurn = (c.dataHexCell.hexCellDistance.Distance - 1) / speed;
             path.Add(c);
+            if (lastTurn > 0) path.Remove(c);
+            Debug.Log($"Distance: {c.dataHexCell.hexCellDistance.Distance} {speed} {lastTurn}");
         }
+        speed -= path[0].dataHexCell.hexCellDistance.Distance;
+        Debug.Log($"KOKOTOSEPDOS: {speed}");
+
         path.Add(currentPathFrom);
         path.Reverse();
         return path;
